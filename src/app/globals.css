@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #020617;
+  color: #f1f5f9;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* REGLA DE ORO: Papel Térmico Físico de 80 mm (Inmune al Modo Oscuro) */
+.thermal-ticket {
+  background-color: #ffffff !important;
+  color: #020617 !important;
+  color-scheme: light !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+}
+
+.thermal-ticket * {
+  border-color: #cbd5e1;
+}
+
+/* Bordes dentados tipo recibo térmico (Serrated Top & Bottom) */
+.thermal-edge-top {
+  background-image: linear-gradient(135deg, transparent 50%, #ffffff 50%),
+    linear-gradient(225deg, transparent 50%, #ffffff 50%);
+  background-position: top;
+  background-size: 12px 8px;
+  background-repeat: repeat-x;
+  height: 8px;
+  width: 100%;
+}
+
+.thermal-edge-bottom {
+  background-image: linear-gradient(45deg, transparent 50%, #ffffff 50%),
+    linear-gradient(315deg, transparent 50%, #ffffff 50%);
+  background-position: bottom;
+  background-size: 12px 8px;
+  background-repeat: repeat-x;
+  height: 8px;
+  width: 100%;
+}
+
+/* Custom scrollbar for dark console */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
