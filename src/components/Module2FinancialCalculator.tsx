@@ -470,11 +470,11 @@ export const Module2FinancialCalculator: React.FC<
   const netWinAmount = netWinTriples + netWinAnimalitos;
 
   const distributableNetWinTriples = triplesBreakdowns.reduce(
-    (a, b) => a + b.distributableNetWin,
+    (a, b) => a + b.distributableNetWinReforma,
     0
   );
   const distributableNetWinAnimalitos = animalitosBreakdowns.reduce(
-    (a, b) => a + b.distributableNetWin,
+    (a, b) => a + b.distributableNetWinReforma,
     0
   );
   const distributableNetWinAmount =
