@@ -87,8 +87,7 @@ Configuradas en `COMMISSION_TIERS` (`src/components/ModuleCommissionsTier.tsx`) 
 | **Canon / Royalty de Beneficencia** | IOBPAS | Operadora de Lotería | **5,00%** (Triples) / **1,00%** (Animalitos) s/ **Valor Facial** | **5,00%** (Triples) / **1,00%** (Animalitos) sobre el **GGR** | Ley Nacional de Lotería Art. 23 |
 | **Impuesto a las Ganancias Fortuitas (IGF)** | SENIAT | Apostador Ganador (Retenido por Operadora) | **16,00%** sobre **Premios Brutos** (Fricción en taquilla) | **16,00%** sobre **Premios Brutos** (Retención automática en POS; Operadora Agente Único) | Art. 65 LISLR + Art. 9.2 Dcto. 1.808 (Concepto 077) + Planilla 99029 |
 | **Impuesto al Valor Agregado (IVA)** | SENIAT | Venta de Lotería | **0,00% (Exento)** | **0,00% (Exento)** | Art. 16 num. 7 Ley de IVA |
-| **Canon Tecnológico de Plataforma IT** | Empresas Sistemas IT | Operadora de Lotería | — | **1,00%** (editable) sobre la **Venta Bruta Facial** | Certificación ISO 27001 / Homologación RUNLOT |
-| **Canon / Honorario Responsable IT** | Responsables Informáticos (Custodios IT) | Operadora de Lotería | — | **1,00%** (editable) sobre la **Venta Bruta Facial** | Custodia Criptográfica y Auditoría RUNLOT |
+| **Gasto Operativo de Plataforma IT** | Costo Tecnológico | Operadora de Lotería | — | **1,00%** sobre la **Venta Bruta Facial** (Gasto exclusivo de Operadora) | Certificación ISO 27001 / Homologación RUNLOT |
 
 #### Distribución Auditada del Fondo Social IOBPAS (`src/components/Module4TributosEntes.tsx`)
 Cada Bolívar recaudado por concepto de **Canon IOBPAS sobre GGR** se distribuye automáticamente en 4 partidas sociales:
@@ -173,9 +172,8 @@ $$\text{Venta Bruta Total } (100,00\%) = \text{Apostadores } (53,583\%) + \text{
 | 5 | **Alcaldías — IAE Municipal (2,5% s/ Comisiones)** | $(18,40\% + 5,20\%) \times 2,5\%$ | **0,590%** | Recaudación Tributaria Municipal |
 | 6 | **Taquillas POS — Comisión Neta (97,5%)** | $[(0,80 \times 20\%) + (0,20 \times 12\%)] \times 97,5\%$ | **17,940%** | Ingreso Privado Nivel 1 (Antes de Licencias) |
 | 7 | **Comercializadoras — Spread Neto + 50% Net Win** | $(5,20\% \times 97,5\%) + (7,3474\% \times 50\%)$ | **8,744%** | Ingreso Privado Nivel 2 (Antes de Licencias) |
-| 8 | **Empresas Sistemas IT — Canon Tecnológico (1%)** | $1,00\% \text{ sobre Venta Facial Bruta (pagado por Operadora)}$ | **1,000%** | Ingreso Privado Nivel 4 (Antes de Licencias) |
-| 9 | **Responsables IT — Custodia y Auditoría (1%)** | $1,00\% \text{ sobre Venta Facial Bruta (pagado por Operadora)}$ | **1,000%** | Ingreso Privado Nivel 5 (Antes de Licencias) |
-| 10 | **Operadoras — 50% Net Win menos Cánones IT (2%)** | $(7,3474\% \times 50\%) - 1,00\% - 1,00\%$ | **1,674%** | Ingreso Privado Nivel 3 (Antes de Licencias) |
+| 8 | **Gasto Operativo IT de la Operadora (1%)** | $1,00\% \text{ sobre Venta Facial Bruta (Gasto de Operadora)}$ | **1,000%** | Gasto Operativo Tecnológico de la Operadora |
+| 9 | **Operadoras — 50% Net Win menos Gasto IT (1%)** | $(7,3474\% \times 50\%) - 1,00\%$ | **2,674%** | Ingreso Privado Nivel 3 (Antes de Licencias) |
 | — | **SUMA TOTAL CUADRADA AL CÉNTIMO** | **Cuadre Matemático Integral** | **100,000%** | **Diferencial: Bs. 0,00** |
 
 ---
@@ -194,31 +192,30 @@ El simulador incorpora cánones anuales editables (pagaderos **1 vez al año** p
 
 ---
 
-### 5.3. Resultados Numéricos de los 4 Escenarios Presets (Modo Devengo)
+### 5.3. Resultados Numéricos de los Escenarios Presets (Modo Devengo)
 
-A continuación se documentan los resultados exactos que arroja el motor para los **4 escenarios preconfigurados** en `src/components/Module4TributosEntes.tsx`:
+El simulador inicia por defecto en **Base 0 (`Bs. 0,00`)** cuando la taquilla POS está en blanco, y ofrece escenarios preconfigurados en `src/components/Module4TributosEntes.tsx`:
 
-| Indicador / Renglón Proyectado | Preset 1: Base Real Unitaria (1 Taq • 30d • Bs. 10k/día) | Preset 2: Piloto (25 Taq • 30d • Bs. 20k/día) | Preset 3: Regional (150 Taq • 30d • Bs. 40k/día) | Preset 4: Gran Escala Nacional (10.000 Taq • 365d • Bs. 50k/día) |
-| :--- | --: | --: | --: | --: |
-| **Configuración de Red (Taq / Com / Op / Sys / Resp)** | `1 / 1 / 1 / 1 / 1` | `25 / 1 / 1 / 1 / 1` | `150 / 3 / 2 / 2 / 2` | `10.000 / 50 / 10 / 10 / 10` |
-| **Venta Bruta Total Proyectada (100%)** | **Bs. 300.000,00** | **Bs. 15.000.000,00** | **Bs. 180.000.000,00** | **Bs. 182.500.000.000,00** |
-| **(−) Premios Brutos Totales (63,79%)** | Bs. 191.368,42 | Bs. 9.568.421,05 | Bs. 114.821.052,63 | Bs. 116.415.789.473,68 |
-| • **Efectivo Pagado al Apostador (84% = 53,58%)** | **Bs. 160.749,47** | **Bs. 8.037.473,68** | **Bs. 96.449.684,21** | **Bs. 97.789.263.157,89** |
-| • **Retención 16% IGF SENIAT (10,21%)** | **Bs. 30.618,95** | **Bs. 1.530.947,37** | **Bs. 18.371.368,42** | **Bs. 18.626.526.315,79** |
-| **(=) GGR Consolidado de Red (36,21%)** | **Bs. 108.631,58** | **Bs. 5.431.578,95** | **Bs. 65.178.947,37** | **Bs. 66.084.210.526,32** |
-| **RECAUDACIÓN PÚBLICA (4 ENTES DEL ESTADO)** | | | | |
-| 1. **SENIAT — Impuesto s/ Juegos (10% GGR = 3,62%)** | Bs. 10.863,16 | Bs. 543.157,89 | Bs. 6.517.894,74 | Bs. 6.608.421.052,63 |
-| 2. **SENIAT — Retención 16% IGF (10,21%)** | Bs. 30.618,95 | Bs. 1.530.947,37 | Bs. 18.371.368,42 | Bs. 18.626.526.315,79 |
-| 3. **IOBPAS — Canon GGR (1,64%) + Licencias** | Bs. 81.592,98 | Bs. 572.982,46 | Bs. 4.622.456,14 | Bs. 4.220.842.105,26 |
-| 4. **Alcaldías — IAE Municipal (2,5% Com. = 0,59%)** | Bs. 1.770,00 | Bs. 88.500,00 | Bs. 1.062.000,00 | Bs. 1.076.750.000,00 |
-| 5. **CONALOT — Tasas RUNLOT (5 Actores)** | Bs. 416.666,67 | Bs. 1.016.666,67 | Bs. 4.583.333,33 | Bs. 3.087.000.000,00 |
-| **(=) TOTAL APORTE AL ESTADO VENEZOLANO** | **Bs. 541.511,75** | **Bs. 3.752.254,39** | **Bs. 35.157.052,63** | **Bs. 33.619.539.473,68** |
-| **RENDIMIENTO PRIVADO NETO (TRAS IAE Y LICENCIAS)** | | | | |
-| • **Red de Taquillas POS (Total / Promedio Unit.)** | **+Bs. 18.820,00** *(Solvente)* | **Bs. 1.816.000,00** *(Bs. 72.640 c/u)* | **Bs. 27.042.000,00** *(Bs. 180.280 c/u)* | **Bs. 28.540.500.000,00** *(Bs. 2,85M c/u)* |
-| • **Comercializadoras (Total / Promedio Unit.)** | Bs. 0,00 *(Red de 1 Taq.)* | **Bs. 1.194.885,96** *(Bs. 1,19M c/u)* | **Bs. 15.388.631,58** *(Bs. 5,13M c/u)* | **Bs. 15.887.223.684,21** *(Bs. 317,74M c/u)* |
-| • **Operadoras (Total / Promedio Unit.)** | Bs. 0,00 *(Red de 1 Taq.)* | **Bs. 92.719,30** *(Bs. 92,7k c/u)* | **Bs. 2.695.964,91** *(Bs. 1,35M c/u)* | **Bs. 3.035.473.684,21** *(Bs. 303,55M c/u)* |
-| • **Empresas Sistemas IT (1% Facial − Licencias)** | Bs. 0,00 *(Red de 1 Taq.)* | **Bs. 50.000,00** *(Bs. 50k c/u)* | **Bs. 1.600.000,00** *(Bs. 800k c/u)* | **Bs. 1.813.000.000,00** *(Bs. 181,3M c/u)* |
-| • **Responsables IT (1% Facial − Licencias)** | Bs. 0,00 *(Red de 1 Taq.)* | **Bs. 66.666,67** *(Bs. 66,67k c/u)* | **Bs. 1.633.333,33** *(Bs. 816,67k c/u)* | **Bs. 1.815.000.000,00** *(Bs. 181,5M c/u)* |
+| Indicador / Renglón Proyectado | Base 0 (Taquilla en Blanco • Bs. 0/día) | Preset 1: Base Unitaria (1 Taq • 30d • Bs. 10k/día) | Preset 2: Piloto (25 Taq • 30d • Bs. 20k/día) | Preset 3: Regional (150 Taq • 30d • Bs. 40k/día) | Preset 4: Gran Escala Nacional (10.000 Taq • 365d • Bs. 50k/día) |
+| :--- | --: | --: | --: | --: | --: |
+| **Configuración de Red (Taq / Com / Op / Sys / Resp)** | `1 / 1 / 1 / 1 / 1` | `1 / 1 / 1 / 1 / 1` | `25 / 1 / 1 / 1 / 1` | `150 / 3 / 2 / 2 / 2` | `10.000 / 50 / 10 / 10 / 10` |
+| **Venta Bruta Total Proyectada (100%)** | **Bs. 0,00** | **Bs. 300.000,00** | **Bs. 15.000.000,00** | **Bs. 180.000.000,00** | **Bs. 182.500.000.000,00** |
+| **(−) Premios Brutos Totales (63,79%)** | Bs. 0,00 | Bs. 191.368,42 | Bs. 9.568.421,05 | Bs. 114.821.052,63 | Bs. 116.415.789.473,68 |
+| • **Efectivo Pagado al Apostador (84% = 53,58%)** | **Bs. 0,00** | **Bs. 160.749,47** | **Bs. 8.037.473,68** | **Bs. 96.449.684,21** | **Bs. 97.789.263.157,89** |
+| • **Retención 16% IGF SENIAT (10,21%)** | **Bs. 0,00** | **Bs. 30.618,95** | **Bs. 1.530.947,37** | **Bs. 18.371.368,42** | **Bs. 18.626.526.315,79** |
+| **(=) GGR Consolidado de Red (36,21%)** | **Bs. 0,00** | **Bs. 108.631,58** | **Bs. 5.431.578,95** | **Bs. 65.178.947,37** | **Bs. 66.084.210.526,32** |
+| **RECAUDACIÓN PÚBLICA (4 ENTES DEL ESTADO)** | | | | | |
+| 1. **SENIAT — Impuesto s/ Juegos (10% GGR = 3,62%)** | Bs. 0,00 | Bs. 10.863,16 | Bs. 543.157,89 | Bs. 6.517.894,74 | Bs. 6.608.421.052,63 |
+| 2. **SENIAT — Retención 16% IGF (10,21%)** | Bs. 0,00 | Bs. 30.618,95 | Bs. 1.530.947,37 | Bs. 18.371.368,42 | Bs. 18.626.526.315,79 |
+| 3. **IOBPAS — Canon GGR (1,64%) + Licencias** | Bs. 76.666,67 | Bs. 81.592,98 | Bs. 572.982,46 | Bs. 4.622.456,14 | Bs. 4.220.842.105,26 |
+| 4. **Alcaldías — IAE Municipal (2,5% Com. = 0,59%)** | Bs. 0,00 | Bs. 1.770,00 | Bs. 88.500,00 | Bs. 1.062.000,00 | Bs. 1.076.750.000,00 |
+| 5. **CONALOT — Tasas RUNLOT (5 Actores)** | Bs. 416.666,67 | Bs. 416.666,67 | Bs. 1.016.666,67 | Bs. 4.583.333,33 | Bs. 3.087.000.000,00 |
+| **(=) TOTAL APORTE AL ESTADO VENEZOLANO** | **Bs. 493.333,33** | **Bs. 541.511,75** | **Bs. 3.752.254,39** | **Bs. 35.157.052,63** | **Bs. 33.619.539.473,68** |
+| **RENDIMIENTO PRIVADO NETO (TRAS IAE, GASTO IT Y LICENCIAS)** | | | | | |
+| • **Red de Taquillas POS (Total / Promedio Unit.)** | Bs. 0,00 | **+Bs. 18.820,00** *(Solvente)* | **Bs. 1.816.000,00** *(Bs. 72.640 c/u)* | **Bs. 27.042.000,00** *(Bs. 180.280 c/u)* | **Bs. 28.540.500.000,00** *(Bs. 2,85M c/u)* |
+| • **Comercializadoras (Total / Promedio Unit.)** | Bs. 0,00 | Bs. 0,00 *(Red de 1 Taq.)* | **Bs. 1.194.885,96** *(Bs. 1,19M c/u)* | **Bs. 15.388.631,58** *(Bs. 5,13M c/u)* | **Bs. 15.887.223.684,21** *(Bs. 317,74M c/u)* |
+| • **Operadoras (Total / Promedio Unit. tras -1% Gasto IT)** | Bs. 0,00 | Bs. 0,00 *(Red de 1 Taq.)* | **Bs. 242.719,30** *(Bs. 242,7k c/u)* | **Bs. 4.495.964,91** *(Bs. 2,25M c/u)* | **Bs. 4.860.473.684,21** *(Bs. 486,05M c/u)* |
+| • **Sistemas IT y Responsables IT (Solo Licencias)** | *-Bs. 100k / -Bs. 83,3k* | *-Bs. 100k / -Bs. 83,3k* | *-Bs. 100k / -Bs. 83,3k* | *-Bs. 200k / -Bs. 166,7k* | *-Bs. 12M / -Bs. 10M* |
 
 ---
 
@@ -251,9 +248,9 @@ Todos los 5 hallazgos detectados durante la auditoría interna fueron corregidos
 > - Se unificó la tasa de Payout de Animalitos en `src/app/page.tsx` (línea 44), `src/components/Module1POS.tsx` (línea 198) y el Simulador de Proyecciones Multi-Actor en `src/components/Module4TributosEntes.tsx` (línea 388) al factor matemático exacto de 38 figuras pagando 30x ($\frac{30}{38} = \mathbf{78,947368\%}$ de Payout y $\frac{8}{38} = \mathbf{21,052632\%}$ de GGR), garantizando total coherencia entre los cálculos por ticket y las proyecciones nacionales.
 
 > [!IMPORTANT]
-> **Hallazgo 3 (RESUELTO) — Punto de Equilibrio (*Break-Even*) en el Preset 1 ("Base Real Unitaria") y Cánones IT sobre % Facial Bruto:**
-> - Se ajustó el parámetro de venta diaria del **Preset 1 ("Base Real Unitaria")** en `src/components/Module4TributosEntes.tsx` (línea 337) a **Bs. 10.000/día** (**Bs. 300.000/mes**), superando el *break-even* de **Bs. 6.503,16/día** (**Bs. 195.094,76/mes**) necesario para cubrir la alícuota mensual devengada de licencia de 1 Taquilla (**Bs. 35.000/mes**), logrando una utilidad neta de **+Bs. 18.820,00/mes** para la taquilla unitaria.
-> - Asimismo, tanto **Empresas de Sistemas IT (Actor 4)** como **Responsables Informáticos (Actor 5)** operan sobre **% de Venta Bruta Facial** (`1,00%` por defecto, editable en vivo).
+> **Hallazgo 3 (RESUELTO) — Inicio en Base 0 (`Bs. 0,00`) y Canon IT (`1%`) Exclusivamente como Gasto de la Operadora:**
+> - El Simulador Multi-Actor en `src/components/Module4TributosEntes.tsx` inicia en **Base 0 (`Bs. 0,00`)** cuando la taquilla POS está en blanco, e incluye el escenario **Base Unitaria (Bs. 10.000/día = Bs. 300.000/mes)** que supera el *break-even* de **Bs. 6.503,16/día** (**Bs. 195.094,76/mes**) necesario para cubrir la alícuota mensual devengada de licencia de 1 Taquilla (**Bs. 35.000/mes**).
+> - El **Canon / Gasto IT (`1%` sobre Venta Facial Bruta)** se mantiene exclusivamente como gasto operativo deducido del margen de la **Operadora (Actor 3)**, mientras que **Sistemas IT (Actor 4)** y **Responsables IT (Actor 5)** reflejan únicamente sus tasas anuales de registro (`RUNLOT` e `IOBPAS`) sin participar del valor facial.
 
 > [!TIP]
 > **Hallazgo 4 (RESUELTO) — Jugadas Ejemplo en Pantalla POS (`defaultPlays`) y Actualización de `README.md`:**
