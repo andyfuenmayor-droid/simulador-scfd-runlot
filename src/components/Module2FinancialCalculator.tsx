@@ -268,7 +268,7 @@ export const Module2FinancialCalculator: React.FC<
   const [iaeMode] =
     useState<IaeImputationMode>("base_premios_sin_igf");
   const [taxMode] =
-    useState<GamingTaxImputationMode>("operadora_absorbe");
+    useState<GamingTaxImputationMode>("deducido_netwin");
   const [triplesCommRate] =
     useState<TriplesCommissionRate>(25);
   const [selectedTier] =
@@ -458,7 +458,7 @@ export const Module2FinancialCalculator: React.FC<
   const comercializadoraFinalCommTotal =
     comercializadoraFinalCommTriples + comercializadoraFinalCommAnimalitos;
 
-  // NET WIN TOTAL
+  // NET WIN TOTAL (BASE Y DISTRIBUIBLE TRAS TRIBUTOS DE JUEGO)
   const netWinTriples = triplesBreakdowns.reduce(
     (a, b) => a + b.netWinReforma,
     0
@@ -468,6 +468,18 @@ export const Module2FinancialCalculator: React.FC<
     0
   );
   const netWinAmount = netWinTriples + netWinAnimalitos;
+
+  const distributableNetWinTriples = triplesBreakdowns.reduce(
+    (a, b) => a + b.distributableNetWin,
+    0
+  );
+  const distributableNetWinAnimalitos = animalitosBreakdowns.reduce(
+    (a, b) => a + b.distributableNetWin,
+    0
+  );
+  const distributableNetWinAmount =
+    distributableNetWinTriples + distributableNetWinAnimalitos;
+  const operadoraGrossShareAmount = netWinAmount * (operadoraSharePct / 100);
 
   // REPARTO NET WIN COMERCIALIZADORA (% Dinámico)
   const comercializadoraNetWinTriples = triplesBreakdowns.reduce(
@@ -566,7 +578,7 @@ export const Module2FinancialCalculator: React.FC<
   const lvl3TotalTaxVigente =
     lvl3TotalTaxVigenteTriples + lvl3TotalTaxVigenteAnimalitos;
 
-  const lvl3DeficitVigente = operadoraRemanenteAmount - lvl3TotalTaxVigente;
+  const lvl3DeficitVigente = operadoraGrossShareAmount - lvl3TotalTaxVigente;
 
   // REFORMA OPERADORA (SENIAT + IOBPAS + IAE OPERADORA)
   const lvl3SeniatReformaTriples = triplesBreakdowns.reduce(
@@ -690,28 +702,28 @@ export const Module2FinancialCalculator: React.FC<
           badgeText: `Comisiones Finales + ${comercializadoraSharePct}% Net Win`,
         }
       : {
-          title: `SUPERÁVIT OPERADORA (NIVEL 3: REMANENTE ${operadoraSharePct}% NET WIN TRAS TRIBUTOS)`,
+          title: `SUPERÁVIT OPERADORA (NIVEL 3: REMANENTE ${operadoraSharePct}% NET WIN DISTRIBUIBLE)`,
           totalAmount: lvl3SurplusReforma,
           triplesLabel: `Superávit Triples: Bs. ${formatBs(
             lvl3SurplusReformaTriples,
             2
-          )} (Remanente ${operadoraSharePct}% Bs. ${formatBs(
-            operadoraRemanenteTriples,
+          )} (${operadoraSharePct}% de Net Win Distribuible Bs. ${formatBs(
+            distributableNetWinTriples,
             2
-          )} − Tributos)`,
+          )})`,
           animalitosLabel: `Superávit Animalitos: Bs. ${formatBs(
             lvl3SurplusReformaAnimalitos,
             2
-          )} (Remanente ${operadoraSharePct}% Bs. ${formatBs(
-            operadoraRemanenteAnimalitos,
+          )} (${operadoraSharePct}% de Net Win Distribuible Bs. ${formatBs(
+            distributableNetWinAnimalitos,
             2
-          )} − Tributos)`,
+          )})`,
           accentClass:
             "bg-emerald-950/35 border-emerald-500/50 text-emerald-300 shadow-emerald-950/30",
           badgeText:
             taxMode === "operadora_absorbe"
               ? `Superávit tras SENIAT 10% e IOBPAS 5%/1% (IAE Operadora 0%)`
-              : `Remanente ${operadoraSharePct}% con Tributos Deducidos (IAE Operadora 0%)`,
+              : `Remanente ${operadoraSharePct}% con Tributos GGR Deducidos (IAE Operadora 0%)`,
         };
 
   return (
@@ -1575,19 +1587,19 @@ export const Module2FinancialCalculator: React.FC<
                     {/* FILA 5: PARTICIPACIÓN SOCIETARIA EN EL NET WIN */}
                     <tr>
                       <td className="py-3 px-5 font-sans font-semibold text-slate-200">
-                        <div>(+) Participación Societaria del {comercializadoraSharePct}% en el Net Win</div>
+                        <div>(+) Participación Societaria del {comercializadoraSharePct}% en el Net Win Distribuible</div>
                         <div className="text-[11px] text-slate-400 font-mono mt-1 space-y-0.5">
                           <div className="text-slate-300 font-sans">
-                            Modo actual: {iaeMode === "individual_sujeto" ? "Opción B (Individual por Sujeto)" : iaeMode === "base_premios_sin_igf" ? "Opción C (Premios s/ IGF)" : "Opción A (Cascada CDAPUESTAS)"} • Alícuota: {comercializadoraSharePct}% Máster / {operadoraSharePct}% Operadora
+                            Modo actual: {iaeMode === "individual_sujeto" ? "Opción B (Individual por Sujeto)" : iaeMode === "base_premios_sin_igf" ? "Opción C (Premios s/ IGF)" : "Opción A (Cascada CDAPUESTAS)"} • Reparto {comercializadoraSharePct}% / {operadoraSharePct}% tras deducir tributos de juego (SENIAT 10% + IOBPAS 5%/1%)
                           </div>
                           {hasTriples && (
                             <div>
-                              • Triples: Net Win <strong className="text-amber-300">Bs. {formatBs(netWinTriples, 2)}</strong> ({comercializadoraSharePct}% = <strong className="text-white">Bs. {formatBs(comercializadoraNetWinTriples, 2)}</strong>)
+                              • Triples: Net Win Distribuible <strong className="text-amber-300">Bs. {formatBs(distributableNetWinTriples, 2)}</strong> ({comercializadoraSharePct}% = <strong className="text-white">Bs. {formatBs(comercializadoraNetWinTriples, 2)}</strong>) [Base: Bs. {formatBs(netWinTriples, 2)}]
                             </div>
                           )}
                           {hasAnimalitos && (
                             <div>
-                              • Animalitos: Net Win <strong className="text-blue-300">Bs. {formatBs(netWinAnimalitos, 2)}</strong> ({comercializadoraSharePct}% = <strong className="text-white">Bs. {formatBs(comercializadoraNetWinAnimalitos, 2)}</strong>)
+                              • Animalitos: Net Win Distribuible <strong className="text-blue-300">Bs. {formatBs(distributableNetWinAnimalitos, 2)}</strong> ({comercializadoraSharePct}% = <strong className="text-white">Bs. {formatBs(comercializadoraNetWinAnimalitos, 2)}</strong>) [Base: Bs. {formatBs(netWinAnimalitos, 2)}]
                             </div>
                           )}
                         </div>
@@ -1607,12 +1619,12 @@ export const Module2FinancialCalculator: React.FC<
                         <div className="text-[11px] text-emerald-300/90 font-mono mt-0.5 space-y-0.5">
                           {hasTriples && (
                             <div>
-                              • Triples: <strong className="text-white">+Bs. {formatBs(comercializadoraNetWinTriples, 2)}</strong> ({comercializadoraSharePct}% de Bs. {formatBs(netWinTriples, 2)})
+                              • Triples: <strong className="text-white">+Bs. {formatBs(comercializadoraNetWinTriples, 2)}</strong> ({comercializadoraSharePct}% de Bs. {formatBs(distributableNetWinTriples, 2)})
                             </div>
                           )}
                           {hasAnimalitos && (
                             <div>
-                              • Animalitos: <strong className="text-white">+Bs. {formatBs(comercializadoraNetWinAnimalitos, 2)}</strong> ({comercializadoraSharePct}% de Bs. {formatBs(netWinAnimalitos, 2)})
+                              • Animalitos: <strong className="text-white">+Bs. {formatBs(comercializadoraNetWinAnimalitos, 2)}</strong> ({comercializadoraSharePct}% de Bs. {formatBs(distributableNetWinAnimalitos, 2)})
                             </div>
                           )}
                         </div>
@@ -1873,12 +1885,12 @@ export const Module2FinancialCalculator: React.FC<
                       </td>
                     </tr>
 
-                    {/* FILA 0.6: (=) NET WIN DE LA OPERACIÓN */}
+                    {/* FILA 0.6: (=) NET WIN BASE DE LA OPERACIÓN */}
                     <tr className="bg-slate-900/80 border-y border-emerald-500/30">
                       <td className="py-2.5 px-5 font-sans font-extrabold text-emerald-400">
-                        <div>(=) Net Win de la Operación (GGR - Comisiones de Red)</div>
+                        <div>(=) Net Win Base de la Operación (GGR - Comisiones de Red)</div>
                         <div className="text-[11px] text-slate-400 font-normal font-sans">
-                          Utilidad bruta de juego sujeta a reparto societario {comercializadoraSharePct}% / {operadoraSharePct}%
+                          Utilidad bruta de juego antes de deducir tributos de lotería (SENIAT 10% + IOBPAS 5%/1%)
                         </div>
                       </td>
                       <td className="py-2.5 px-5 bg-red-950/15 border-x border-slate-800 font-bold text-slate-300">
@@ -1891,29 +1903,7 @@ export const Module2FinancialCalculator: React.FC<
 
                     <tr>
                       <td className="py-3 px-5 font-sans font-semibold text-slate-200">
-                        Remanente Propio Bruto de Operación ({operadoraSharePct}% Net Win)
-                      </td>
-                      <td className="py-3 px-5 bg-red-950/10 border-x border-slate-800 text-slate-200">
-                        <span className="font-extrabold text-white">
-                          Bs. {formatBs(operadoraRemanenteAmount, 2)}
-                        </span>
-                        <span className="text-[11px] text-slate-400 block font-sans">
-                          Remanente bruto societario de la Operadora
-                        </span>
-                      </td>
-                      <td className="py-3 px-5 bg-emerald-950/10 text-slate-200">
-                        <span className="font-extrabold text-white">
-                          Bs. {formatBs(operadoraRemanenteAmount, 2)}
-                        </span>
-                        <span className="text-[11px] text-emerald-300 block font-sans">
-                          {operadoraSharePct}% de la utilidad neta de juego (Net Win)
-                        </span>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td className="py-3 px-5 font-sans font-semibold text-slate-200">
-                        <div>Impuesto SENIAT sobre Juegos de Lotería (GGR Venta - Premios)</div>
+                        <div>(-) Impuesto SENIAT sobre Juegos de Lotería (GGR Venta - Premios)</div>
                         <div className="text-[11px] text-slate-400 font-sans mt-0.5">
                           Base imponible GGR del Neto recomendada por el CIAT (10% Armonizado para todos)
                         </div>
@@ -1934,7 +1924,7 @@ export const Module2FinancialCalculator: React.FC<
 
                     <tr>
                       <td className="py-3 px-5 font-sans font-semibold text-slate-200">
-                        <div>Royalty / Canon IOBPAS Beneficencia Pública</div>
+                        <div>(-) Royalty / Canon IOBPAS Beneficencia Pública</div>
                         <div className="text-[11px] text-slate-400 font-sans mt-0.5">
                           Aporte de beneficencia a la Lotería Oficial (5% Triples / 1% Animalitos)
                         </div>
@@ -1949,6 +1939,49 @@ export const Module2FinancialCalculator: React.FC<
                         -Bs. {formatBs(lvl3IobpasReforma, 2)}
                         <span className="text-[11px] text-emerald-300/90 block font-sans">
                           5% Triples (-Bs. {formatBs(lvl3IobpasReformaTriples, 2)}) + 1% Animalitos (-Bs. {formatBs(lvl3IobpasReformaAnimalitos, 2)}) s/ GGR
+                        </span>
+                      </td>
+                    </tr>
+
+                    <tr className="bg-slate-900/60">
+                      <td className="py-2.5 px-5 font-sans font-extrabold text-emerald-300">
+                        <div>(=) Net Win Distribuible (Net Win Base - Tributos de Juego)</div>
+                        <div className="text-[11px] text-slate-400 font-normal font-sans">
+                          Utilidad líquida sujeta a reparto societario {comercializadoraSharePct}% Comercializadora / {operadoraSharePct}% Operadora
+                        </div>
+                      </td>
+                      <td className="py-2.5 px-5 bg-red-950/15 border-x border-slate-800 font-bold text-red-300">
+                        Bs. {formatBs(operadoraGrossShareAmount, 2)}
+                        <span className="text-[11px] text-slate-400 block font-sans font-normal">
+                          Cuota bruta ({operadoraSharePct}% Net Win Base) antes de quiebra por tributos faciales
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-5 bg-emerald-950/15 font-extrabold text-emerald-300">
+                        Bs. {formatBs(distributableNetWinAmount, 2)}
+                        <span className="text-[11px] text-emerald-300/80 block font-sans font-normal">
+                          50% Comercializadora (Bs. {formatBs(comercializadoraNetWinShareAmount, 2)}) + 50% Operadora (Bs. {formatBs(operadoraRemanenteAmount, 2)})
+                        </span>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td className="py-3 px-5 font-sans font-semibold text-slate-200">
+                        Remanente Propio de Operación ({operadoraSharePct}% Net Win Distribuible)
+                      </td>
+                      <td className="py-3 px-5 bg-red-950/10 border-x border-slate-800 text-slate-200">
+                        <span className="font-extrabold text-white">
+                          Bs. {formatBs(operadoraGrossShareAmount, 2)}
+                        </span>
+                        <span className="text-[11px] text-slate-400 block font-sans">
+                          Remanente bruto societario de la Operadora antes de impuestos faciales
+                        </span>
+                      </td>
+                      <td className="py-3 px-5 bg-emerald-950/10 text-slate-200">
+                        <span className="font-extrabold text-emerald-300">
+                          +Bs. {formatBs(operadoraRemanenteAmount, 2)}
+                        </span>
+                        <span className="text-[11px] text-emerald-300 block font-sans">
+                          {operadoraSharePct}% del Net Win Distribuible libre de tributos de juego
                         </span>
                       </td>
                     </tr>

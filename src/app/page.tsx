@@ -41,11 +41,14 @@ const GAME_MODALITIES: Record<GameModalityId, GameModalityConfig> = {
     name: 'Sorteos de Figuras "Animalitos"',
     shortName: "Animalitos",
     multiplier: 30,
-    standardPayoutPct: 75,
+    standardPayoutPct: 78.95,
     tirajeTotalOptions: 38,
     tirajeRangeLabel: "01 al 38 (38 figuras)",
     defaultUnitBetTiraje: 1000,
-    defaultPlays: [],
+    defaultPlays: [
+      { id: "def-ani-1", option: "04 Tigre", amount: 100, combinationsCount: 1 },
+      { id: "def-ani-2", option: "12 Caballo", amount: 100, combinationsCount: 1 },
+    ],
     catalogOptions: ANIMALITOS_38_FIGURES,
   },
   triples: {
@@ -57,7 +60,10 @@ const GAME_MODALITIES: Record<GameModalityId, GameModalityConfig> = {
     tirajeTotalOptions: 1000,
     tirajeRangeLabel: "000 al 999 (1.000 comb.)",
     defaultUnitBetTiraje: 1000,
-    defaultPlays: [],
+    defaultPlays: [
+      { id: "def-tri-1", option: "748 Zulia", amount: 50, combinationsCount: 1 },
+      { id: "def-tri-2", option: "125 Táchira", amount: 50, combinationsCount: 1 },
+    ],
     catalogOptions: [
       "748 Zulia",
       "125 Táchira",
@@ -87,8 +93,8 @@ export default function SimulatorDashboardPage() {
   const [playsByModality, setPlaysByModality] = useState<
     Record<GameModalityId, BetPlay[]>
   >({
-    animalitos: GAME_MODALITIES.animalitos.defaultPlays,
-    triples: GAME_MODALITIES.triples.defaultPlays,
+    animalitos: [],
+    triples: [],
   });
 
   const [ticketSequence, setTicketSequence] = useState<number>(12345);

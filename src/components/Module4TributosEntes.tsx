@@ -327,14 +327,14 @@ export function Module4TributosEntes({
   // =========================================================================
   // PARÁMETROS DEL SIMULADOR DE PROYECCIONES MULTI-ACTOR (5 ACTORES DE RED)
   // =========================================================================
-  // Inicializado con el Caso Real Base Unitario: 1 Taquilla • 30 Días • Bs. 150.000
+  // Inicializado con el Caso Real Base Unitario: 1 Taquilla • 30 Días • Bs. 300.000 (Bs. 10.000/día, sobre break-even de licencias)
   const [numTaquillas, setNumTaquillas] = useState<number>(1);
   const [numComercializadoras, setNumComercializadoras] = useState<number>(1);
   const [numOperadoras, setNumOperadoras] = useState<number>(1);
   const [numSistemasIT, setNumSistemasIT] = useState<number>(1);
   const [numResponsablesIT, setNumResponsablesIT] = useState<number>(1);
   const [dailySalesPerTaquilla, setDailySalesPerTaquilla] = useState<number>(
-    totalSales > 0 ? Math.round(totalSales) : 5000
+    totalSales > 0 ? Math.round(totalSales) : 10000
   );
 
   useEffect(() => {
@@ -358,10 +358,11 @@ export function Module4TributosEntes({
 
   const [costoRunlotSistemaIT, setCostoRunlotSistemaIT] = useState<number>(1200000);
   const [costoIobpasSistemaIT, setCostoIobpasSistemaIT] = useState<number>(0);
+  const [pctSistemasITFacial, setPctSistemasITFacial] = useState<number>(1);
 
   const [costoRunlotResponsableIT, setCostoRunlotResponsableIT] = useState<number>(1000000);
   const [costoIobpasResponsableIT, setCostoIobpasResponsableIT] = useState<number>(0);
-  const [honorarioRespITPorMes, setHonorarioRespITPorMes] = useState<number>(1500);
+  const [pctRespITFacial, setPctRespITFacial] = useState<number>(1);
 
   // Modalidad de cómputo de los cargos anuales:
   // "devengo" = proporcional al horizonte (ej: ÷12 en 30 días, ÷365 en 1 día, 100% en 1 año)
@@ -378,15 +379,13 @@ export function Module4TributosEntes({
       ? 1 / 12
       : timeHorizonDays / 365;
 
-  const mesesEquivalentes = Math.max(1, timeHorizonDays / 30);
-
   // Cálculos de Proyección Multi-Actor
   const projVentaTotal = numTaquillas * dailySalesPerTaquilla * timeHorizonDays;
   const projTriplesSales = projVentaTotal * (mixTriplesPct / 100);
   const projAnimalitosSales = projVentaTotal * ((100 - mixTriplesPct) / 100);
 
   const projTriplesGrossPrizes = projTriplesSales * 0.6;
-  const projAnimalitosGrossPrizes = projAnimalitosSales * 0.75;
+  const projAnimalitosGrossPrizes = projAnimalitosSales * (30 / 38);
   const projTotalGrossPrizes =
     projTriplesGrossPrizes + projAnimalitosGrossPrizes;
 
@@ -466,9 +465,9 @@ export function Module4TributosEntes({
     numSistemasIT * costoIobpasSistemaIT +
     numResponsablesIT * costoIobpasResponsableIT;
 
-  // Software IT: El sistema cobra 1% a la Operadora (Licencia de plataforma transaccional)
-  const projSistemasITFee = projVentaTotal * 0.01;
-  const projTotalHonorariosRespIT = numResponsablesIT * honorarioRespITPorMes * mesesEquivalentes;
+  // Software IT y Responsable Informático: Cobran % sobre la Venta Bruta Facial
+  const projSistemasITFee = projVentaTotal * (pctSistemasITFacial / 100);
+  const projTotalHonorariosRespIT = projVentaTotal * (pctRespITFacial / 100);
 
   // Net Win del Juego y Reparto 50% / 50%
   const projNetWinJuego =
@@ -479,9 +478,12 @@ export function Module4TributosEntes({
   const projNetWinDistribuible = Math.max(0, projNetWinJuego - projCargasJuego);
 
   const projShareComercializadoras = projNetWinDistribuible * 0.5;
-  // La Operadora recibe el 50% del Net Win y de allí asume el 1% del Sistema IT y sus licencias anuales
+  // La Operadora recibe el 50% del Net Win y de allí asume el % del Sistema IT, el % del Responsable IT y sus licencias anuales
   const projShareOperadorasBruto = projNetWinDistribuible * 0.5;
-  const projShareOperadorasNetoSoftware = Math.max(0, projShareOperadorasBruto - projSistemasITFee);
+  const projShareOperadorasNetoSoftware = Math.max(
+    0,
+    projShareOperadorasBruto - projSistemasITFee - projTotalHonorariosRespIT
+  );
   const projShareOperadoras = projShareOperadorasBruto;
 
   // Rendimientos Netos Reales por Actor deduciendo IAE y costos de licencias IOBPAS + RUNLOT
@@ -495,11 +497,12 @@ export function Module4TributosEntes({
       projShareComercializadoras -
       (totalRunlotComercializadoras + totalIobpasComercializadoras)
   );
-  // Operadora asume el 1% del Sistema IT y sus licencias RUNLOT (Operadora + Juego) e IOBPAS
+  // Operadora asume el % del Sistema IT, el % del Responsable IT y sus licencias RUNLOT (Operadora + Juego) e IOBPAS
   const projOperadoraUtilidadNeta = Math.max(
     0,
     projShareOperadorasBruto -
       projSistemasITFee -
+      projTotalHonorariosRespIT -
       (totalRunlotOperadoras + totalIobpasOperadoras)
   );
   const projSistemasITNeto = Math.max(
@@ -547,9 +550,9 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
 --- RENDIMIENTO PRIVADO NETO (DEDUCIDAS LICENCIAS IOBPAS Y RUNLOT) ---
 • Taquillas / Agencias (${numTaquillas}): Bs. ${formatBs(projTaquillaUtilidadNeta, 2)} (Promedio: Bs. ${formatBs(avgPerTaquilla, 2)})
 • Comercializadoras (${numComercializadoras}): Bs. ${formatBs(projComercialUtilidadNeta, 2)} (Promedio: Bs. ${formatBs(avgPerComercializadora, 2)})
-• Operadoras Concesionarias (${numOperadoras}): Bs. ${formatBs(projOperadoraUtilidadNeta, 2)} (Promedio: Bs. ${formatBs(avgPerOperadora, 2)}) [Net Win: Bs. ${formatBs(projShareOperadorasBruto, 2)} menos 1% Canon IT: -Bs. ${formatBs(projSistemasITFee, 2)}]
-• Empresas Sistemas IT (${numSistemasIT}): Bs. ${formatBs(projSistemasITNeto, 2)} (Promedio: Bs. ${formatBs(avgPerSistemaIT, 2)}) [Canon 1% Venta: Bs. ${formatBs(projSistemasITFee, 2)} cobrado a Operadoras]
-• Responsables Informáticos (${numResponsablesIT}): Bs. ${formatBs(projResponsablesITNeto, 2)} (Promedio: Bs. ${formatBs(avgPerResponsableIT, 2)})
+• Operadoras Concesionarias (${numOperadoras}): Bs. ${formatBs(projOperadoraUtilidadNeta, 2)} (Promedio: Bs. ${formatBs(avgPerOperadora, 2)}) [Net Win: Bs. ${formatBs(projShareOperadorasBruto, 2)} menos Canon IT (${pctSistemasITFacial}%): -Bs. ${formatBs(projSistemasITFee, 2)} y Resp. IT (${pctRespITFacial}%): -Bs. ${formatBs(projTotalHonorariosRespIT, 2)}]
+• Empresas Sistemas IT (${numSistemasIT}): Bs. ${formatBs(projSistemasITNeto, 2)} (Promedio: Bs. ${formatBs(avgPerSistemaIT, 2)}) [Canon ${pctSistemasITFacial}% Venta Facial Bruta: Bs. ${formatBs(projSistemasITFee, 2)}]
+• Responsables Informáticos (${numResponsablesIT}): Bs. ${formatBs(projResponsablesITNeto, 2)} (Promedio: Bs. ${formatBs(avgPerResponsableIT, 2)}) [Canon ${pctRespITFacial}% Venta Facial Bruta: Bs. ${formatBs(projTotalHonorariosRespIT, 2)}]
 `;
     navigator.clipboard.writeText(text);
     setCopiedSummary(true);
@@ -571,16 +574,16 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
       ["(-) Canon IOBPAS Beneficencia Pública", (-projIobpasCanonGGR).toFixed(2), `${((projIobpasCanonGGR / projVentaTotal) * 100).toFixed(2)}%`, "5% Triples / 1% Anim s/ GGR", "Lotería Oficial (Hospitales)", "Ley Nacional Lotería Art 23"],
       ["(-) Licencias y Avales IOBPAS (5 Actores)", (-projIobpasLicenciasTotal).toFixed(2), `${((projIobpasLicenciasTotal / projVentaTotal) * 100).toFixed(2)}%`, "Cánones Fijos de Licencia", "IOBPAS (Lotería Oficial)", "Reglamento IOBPAS"],
       ["(-) Tasas y Homologación RUNLOT / CONALOT", (-projConalotTotal).toFixed(2), `${((projConalotTotal / projVentaTotal) * 100).toFixed(2)}%`, "Cánones SCFD por Actor", "CONALOT (Ente Regulador)", "Resolución 002-2026"],
-      ["(-) Canon Plataforma Sistemas Informáticos (1%)", (-projSistemasITFee).toFixed(2), `${((projSistemasITFee / projVentaTotal) * 100).toFixed(2)}%`, "1.0% s/ Venta (Cobrado a Operadora)", "Empresas Software IT", "Certificación ISO 27001"],
-      ["(-) Honorarios Responsables Informáticos", (-projTotalHonorariosRespIT).toFixed(2), `${((projTotalHonorariosRespIT / projVentaTotal) * 100).toFixed(2)}%`, "Auditoría y Custodia IT", "Profesionales Colegiados", "Ley de Ejercicio Profesional"],
-      ["(=) Superávit Operativo Neto Operadoras", projOperadoraUtilidadNeta.toFixed(2), `${((projOperadoraUtilidadNeta / projVentaTotal) * 100).toFixed(2)}%`, "Net Win tras Licencias y Software 1%", "Operadoras Concesionarias", "Solvencia Patrimonial"],
+      [`(-) Canon Plataforma Sistemas Informáticos (${pctSistemasITFacial}% s/ Facial Bruto)`, (-projSistemasITFee).toFixed(2), `${((projSistemasITFee / projVentaTotal) * 100).toFixed(2)}%`, `${pctSistemasITFacial}% s/ Venta Bruta Facial (Cobrado a Operadora)`, "Empresas Software IT", "Certificación ISO 27001"],
+      [`(-) Canon Responsables Informáticos (${pctRespITFacial}% s/ Facial Bruto)`, (-projTotalHonorariosRespIT).toFixed(2), `${((projTotalHonorariosRespIT / projVentaTotal) * 100).toFixed(2)}%`, `${pctRespITFacial}% s/ Venta Bruta Facial (Cobrado a Operadora)`, "Profesionales Colegiados Custodios IT", "Ley de Ejercicio Profesional / RUNLOT"],
+      ["(=) Superávit Operativo Neto Operadoras", projOperadoraUtilidadNeta.toFixed(2), `${((projOperadoraUtilidadNeta / projVentaTotal) * 100).toFixed(2)}%`, `Net Win tras Licencias, Sistemas IT (${pctSistemasITFacial}%) y Resp. IT (${pctRespITFacial}%)`, "Operadoras Concesionarias", "Solvencia Patrimonial"],
       ["", "", "", "", "", ""],
       ["DISTRIBUCIÓN POR ACTOR DE LA RED", "CANTIDAD", "VENTA GESTIONADA", "INGRESO BRUTO", "CARGA FISCAL", "COSTOS RUNLOT + IOBPAS", "PROMEDIO UNITARIO NETO", "TOTAL RED NETO"],
       ["Taquillas / Centros de Apuestas", numTaquillas.toString(), projVentaTotal.toFixed(2), projTaquillaCommBruta.toFixed(2), (-projAlcaldiaTaquillas).toFixed(2), (-(totalRunlotTaquillas + totalIobpasTaquillas)).toFixed(2), avgPerTaquilla.toFixed(2), projTaquillaUtilidadNeta.toFixed(2)],
       ["Comercializadoras Intermediarias", numComercializadoras.toString(), projVentaTotal.toFixed(2), (projComercialSpreadBruto + projShareComercializadoras).toFixed(2), (-projAlcaldiaComercial).toFixed(2), (-(totalRunlotComercializadoras + totalIobpasComercializadoras)).toFixed(2), avgPerComercializadora.toFixed(2), projComercialUtilidadNeta.toFixed(2)],
-      ["Operadoras de Juegos de Lotería", numOperadoras.toString(), projVentaTotal.toFixed(2), projShareOperadorasBruto.toFixed(2), `Canon IT 1%: -${projSistemasITFee.toFixed(2)}`, (-(totalRunlotOperadoras + totalIobpasOperadoras)).toFixed(2), avgPerOperadora.toFixed(2), projOperadoraUtilidadNeta.toFixed(2)],
-      ["Empresas de Sistemas Informáticos", numSistemasIT.toString(), projVentaTotal.toFixed(2), projSistemasITFee.toFixed(2), "0.00", (-(totalRunlotSistemasIT + totalIobpasSistemasIT)).toFixed(2), avgPerSistemaIT.toFixed(2), projSistemasITNeto.toFixed(2)],
-      ["Responsables Informáticos Registrados", numResponsablesIT.toString(), projVentaTotal.toFixed(2), projTotalHonorariosRespIT.toFixed(2), "0.00", (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT)).toFixed(2), avgPerResponsableIT.toFixed(2), projResponsablesITNeto.toFixed(2)]
+      ["Operadoras de Juegos de Lotería", numOperadoras.toString(), projVentaTotal.toFixed(2), projShareOperadorasBruto.toFixed(2), `Sistemas IT (${pctSistemasITFacial}%): -${projSistemasITFee.toFixed(2)} | Resp. IT (${pctRespITFacial}%): -${projTotalHonorariosRespIT.toFixed(2)}`, (-(totalRunlotOperadoras + totalIobpasOperadoras)).toFixed(2), avgPerOperadora.toFixed(2), projOperadoraUtilidadNeta.toFixed(2)],
+      [`Empresas de Sistemas Informáticos (${pctSistemasITFacial}% s/ Facial)`, numSistemasIT.toString(), projVentaTotal.toFixed(2), projSistemasITFee.toFixed(2), "0.00", (-(totalRunlotSistemasIT + totalIobpasSistemasIT)).toFixed(2), avgPerSistemaIT.toFixed(2), projSistemasITNeto.toFixed(2)],
+      [`Responsables Informáticos (${pctRespITFacial}% s/ Facial)`, numResponsablesIT.toString(), projVentaTotal.toFixed(2), projTotalHonorariosRespIT.toFixed(2), "0.00", (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT)).toFixed(2), avgPerResponsableIT.toFixed(2), projResponsablesITNeto.toFixed(2)]
     ];
 
     const tsv = rows.map((r) => r.join("\t")).join("\n");
@@ -604,16 +607,16 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
       ["(-) Canon IOBPAS Beneficencia Publica", (-projIobpasCanonGGR).toFixed(2), `${((projIobpasCanonGGR / projVentaTotal) * 100).toFixed(2)}%`, "5% Triples / 1% Anim s/ GGR", "Loteria Oficial (Hospitales)", "Ley Nacional Loteria Art 23"],
       ["(-) Licencias y Avales IOBPAS (5 Actores)", (-projIobpasLicenciasTotal).toFixed(2), `${((projIobpasLicenciasTotal / projVentaTotal) * 100).toFixed(2)}%`, "Canones Fijos de Licencia", "IOBPAS (Loteria Oficial)", "Reglamento IOBPAS"],
       ["(-) Tasas y Homologacion RUNLOT / CONALOT", (-projConalotTotal).toFixed(2), `${((projConalotTotal / projVentaTotal) * 100).toFixed(2)}%`, "Canones SCFD por Actor", "CONALOT (Ente Regulador)", "Resolucion 002-2026"],
-      ["(-) Canon Plataforma Sistemas Informaticos (1%)", (-projSistemasITFee).toFixed(2), `${((projSistemasITFee / projVentaTotal) * 100).toFixed(2)}%`, "1.0% s/ Venta (Cobrado a Operadora)", "Empresas Software IT", "Certificacion ISO 27001"],
-      ["(-) Honorarios Responsables Informaticos", (-projTotalHonorariosRespIT).toFixed(2), `${((projTotalHonorariosRespIT / projVentaTotal) * 100).toFixed(2)}%`, "Auditoria y Custodia IT", "Profesionales Colegiados", "Ley de Ejercicio Profesional"],
-      ["(=) Superavit Operativo Neto Operadoras", projOperadoraUtilidadNeta.toFixed(2), `${((projOperadoraUtilidadNeta / projVentaTotal) * 100).toFixed(2)}%`, "Net Win tras Licencias y Software 1%", "Operadoras Concesionarias", "Solvencia Patrimonial"],
+      [`(-) Canon Plataforma Sistemas Informaticos (${pctSistemasITFacial}% s/ Facial Bruto)`, (-projSistemasITFee).toFixed(2), `${((projSistemasITFee / projVentaTotal) * 100).toFixed(2)}%`, `${pctSistemasITFacial}% s/ Venta Bruta Facial (Cobrado a Operadora)`, "Empresas Software IT", "Certificacion ISO 27001"],
+      [`(-) Canon Responsables Informaticos (${pctRespITFacial}% s/ Facial Bruto)`, (-projTotalHonorariosRespIT).toFixed(2), `${((projTotalHonorariosRespIT / projVentaTotal) * 100).toFixed(2)}%`, `${pctRespITFacial}% s/ Venta Bruta Facial (Cobrado a Operadora)`, "Profesionales Colegiados Custodios IT", "Ley de Ejercicio Profesional / RUNLOT"],
+      ["(=) Superavit Operativo Neto Operadoras", projOperadoraUtilidadNeta.toFixed(2), `${((projOperadoraUtilidadNeta / projVentaTotal) * 100).toFixed(2)}%`, `Net Win tras Licencias, Sistemas IT (${pctSistemasITFacial}%) y Resp. IT (${pctRespITFacial}%)`, "Operadoras Concesionarias", "Solvencia Patrimonial"],
       ["", "", "", "", "", ""],
       ["DISTRIBUCION POR ACTOR DE LA RED", "CANTIDAD", "VENTA GESTIONADA", "INGRESO BRUTO", "CARGA FISCAL", "COSTOS RUNLOT + IOBPAS", "PROMEDIO UNITARIO NETO", "TOTAL RED NETO"],
       ["Taquillas / Centros de Apuestas", numTaquillas.toString(), projVentaTotal.toFixed(2), projTaquillaCommBruta.toFixed(2), (-projAlcaldiaTaquillas).toFixed(2), (-(totalRunlotTaquillas + totalIobpasTaquillas)).toFixed(2), avgPerTaquilla.toFixed(2), projTaquillaUtilidadNeta.toFixed(2)],
       ["Comercializadoras Intermediarias", numComercializadoras.toString(), projVentaTotal.toFixed(2), (projComercialSpreadBruto + projShareComercializadoras).toFixed(2), (-projAlcaldiaComercial).toFixed(2), (-(totalRunlotComercializadoras + totalIobpasComercializadoras)).toFixed(2), avgPerComercializadora.toFixed(2), projComercialUtilidadNeta.toFixed(2)],
-      ["Operadoras de Juegos de Loteria", numOperadoras.toString(), projVentaTotal.toFixed(2), projShareOperadorasBruto.toFixed(2), `Canon IT 1%: -${projSistemasITFee.toFixed(2)}`, (-(totalRunlotOperadoras + totalIobpasOperadoras)).toFixed(2), avgPerOperadora.toFixed(2), projOperadoraUtilidadNeta.toFixed(2)],
-      ["Empresas de Sistemas Informaticos", numSistemasIT.toString(), projVentaTotal.toFixed(2), projSistemasITFee.toFixed(2), "0.00", (-(totalRunlotSistemasIT + totalIobpasSistemasIT)).toFixed(2), avgPerSistemaIT.toFixed(2), projSistemasITNeto.toFixed(2)],
-      ["Responsables Informaticos Registrados", numResponsablesIT.toString(), projVentaTotal.toFixed(2), projTotalHonorariosRespIT.toFixed(2), "0.00", (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT)).toFixed(2), avgPerResponsableIT.toFixed(2), projResponsablesITNeto.toFixed(2)]
+      ["Operadoras de Juegos de Loteria", numOperadoras.toString(), projVentaTotal.toFixed(2), projShareOperadorasBruto.toFixed(2), `Sistemas IT (${pctSistemasITFacial}%): -${projSistemasITFee.toFixed(2)} | Resp. IT (${pctRespITFacial}%): -${projTotalHonorariosRespIT.toFixed(2)}`, (-(totalRunlotOperadoras + totalIobpasOperadoras)).toFixed(2), avgPerOperadora.toFixed(2), projOperadoraUtilidadNeta.toFixed(2)],
+      [`Empresas de Sistemas Informaticos (${pctSistemasITFacial}% s/ Facial)`, numSistemasIT.toString(), projVentaTotal.toFixed(2), projSistemasITFee.toFixed(2), "0.00", (-(totalRunlotSistemasIT + totalIobpasSistemasIT)).toFixed(2), avgPerSistemaIT.toFixed(2), projSistemasITNeto.toFixed(2)],
+      [`Responsables Informaticos (${pctRespITFacial}% s/ Facial)`, numResponsablesIT.toString(), projVentaTotal.toFixed(2), projTotalHonorariosRespIT.toFixed(2), "0.00", (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT)).toFixed(2), avgPerResponsableIT.toFixed(2), projResponsablesITNeto.toFixed(2)]
     ];
 
     const csvContent = "\uFEFF" + rows.map((r) => r.map((c) => `"${c}"`).join(",")).join("\n");
@@ -2534,12 +2537,12 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     setNumOperadoras(1);
                     setNumSistemasIT(1);
                     setNumResponsablesIT(1);
-                    setDailySalesPerTaquilla(5000);
+                    setDailySalesPerTaquilla(10000);
                     setTimeHorizonDays(30);
                   }}
                   className="px-3 py-1 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 dark:border-emerald-600/50 text-[11px] font-bold dark:text-emerald-300 rounded-lg transition-all cursor-pointer flex items-center gap-1 shadow-sm"
                 >
-                  🎯 Base Real Unitaria (1 Taquilla • 30d • Bs. 150.000)
+                  🎯 Base Real Unitaria (1 Taquilla • 30d • Bs. 300.000)
                 </button>
                 <button
                   type="button"
@@ -2591,11 +2594,11 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
               {/* Botón sincronizar con la venta real de taquilla */}
               <button
                 type="button"
-                onClick={() => setDailySalesPerTaquilla(totalSales > 0 ? Math.round(totalSales) : 5000)}
+                onClick={() => setDailySalesPerTaquilla(totalSales > 0 ? Math.round(totalSales) : 10000)}
                 className="px-3 py-1 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 dark:bg-emerald-600/20 dark:hover:bg-emerald-600/30 dark:border-emerald-500/40 text-[11px] font-bold dark:text-emerald-300 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
               >
                 <Store className="w-3.5 h-3.5" />
-                Sincronizar con Taquilla: Bs. {formatBs(totalSales > 0 ? totalSales : 5000, 0)}
+                Sincronizar con Taquilla: Bs. {formatBs(totalSales > 0 ? totalSales : 10000, 0)}
               </button>
             </div>
 
@@ -2995,8 +2998,8 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       <span>Bs. {formatBs(totalRunlotOperadoras + totalIobpasOperadoras, 2)}</span>
                     </div>
                     <div className="flex justify-between items-center text-purple-600 dark:text-purple-400 font-semibold pt-0.5">
-                      <span>Canon IT (1% Venta):</span>
-                      <span>-Bs. {formatBs(projSistemasITFee, 2)}</span>
+                      <span>Canon IT ({pctSistemasITFacial}% + {pctRespITFacial}%):</span>
+                      <span>-Bs. {formatBs(projSistemasITFee + projTotalHonorariosRespIT, 2)}</span>
                     </div>
                   </div>
                 </div>
@@ -3034,6 +3037,18 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                         className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-purple-300 focus:outline-none focus:border-purple-500"
                       />
                     </div>
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">% s/ Venta Facial Bruta:</label>
+                      <input
+                        type="number"
+                        min={0}
+                        max={20}
+                        step={0.1}
+                        value={pctSistemasITFacial}
+                        onChange={(e) => setPctSistemasITFacial(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-purple-300 focus:outline-none focus:border-purple-500"
+                      />
+                    </div>
                   </div>
                   <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 space-y-0.5 text-[10px] font-mono">
                     <div className="flex justify-between items-center text-slate-500">
@@ -3045,7 +3060,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       <span>Bs. {formatBs(totalRunlotSistemasIT + totalIobpasSistemasIT, 2)}</span>
                     </div>
                     <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400 font-semibold pt-0.5">
-                      <span>Ingreso Canon IT (1%):</span>
+                      <span>Ingreso ({pctSistemasITFacial}% Facial):</span>
                       <span>+Bs. {formatBs(projSistemasITFee, 2)}</span>
                     </div>
                   </div>
@@ -3085,25 +3100,30 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Honorarios IT (Bs./mes):</label>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">% s/ Venta Facial Bruta:</label>
                       <input
                         type="number"
                         min={0}
-                        step={50}
-                        value={honorarioRespITPorMes}
-                        onChange={(e) => setHonorarioRespITPorMes(Math.max(0, Number(e.target.value)))}
+                        max={20}
+                        step={0.1}
+                        value={pctRespITFacial}
+                        onChange={(e) => setPctRespITFacial(Math.max(0, Number(e.target.value)))}
                         className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-indigo-300 focus:outline-none focus:border-indigo-500"
                       />
                     </div>
                   </div>
                   <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 space-y-0.5 text-[10px] font-mono">
                     <div className="flex justify-between items-center text-slate-500">
-                      <span>Licencias (1 vez/año):</span>
+                      <span>Anual (1 vez/año):</span>
                       <span className="font-bold text-slate-700 dark:text-slate-300">Bs. {formatBs(costoRunlotResponsableIT + costoIobpasResponsableIT, 0)}</span>
                     </div>
                     <div className="flex justify-between items-center text-indigo-700 dark:text-indigo-300 font-bold">
-                      <span>Carga Licencias:</span>
+                      <span>Carga Período:</span>
                       <span>Bs. {formatBs(totalRunlotResponsablesIT + totalIobpasResponsablesIT, 2)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400 font-semibold pt-0.5">
+                      <span>Ingreso ({pctRespITFacial}% Facial):</span>
+                      <span>+Bs. {formatBs(projTotalHonorariosRespIT, 2)}</span>
                     </div>
                   </div>
                 </div>
@@ -3331,14 +3351,14 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                 <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
-                      <Cpu className="w-3.5 h-3.5 text-purple-500" /> Sistemas Informáticos ({numSistemasIT} Plataformas):
+                      <Cpu className="w-3.5 h-3.5 text-purple-500" /> Sistemas Informáticos ({numSistemasIT} Plataformas • {pctSistemasITFacial}% Facial):
                     </span>
                     <span className="font-mono text-sm font-bold text-purple-700 dark:text-purple-400">
                       Bs. {formatBs(projSistemasITNeto, 2)}
                     </span>
                   </div>
                   <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                    <span>Promedio por Empresa de Software IT:</span>
+                    <span>Promedio Neto tras Licencias ({pctSistemasITFacial}% s/ Facial Bruto):</span>
                     <span className="font-mono text-purple-700 dark:text-purple-300 font-bold">
                       Bs. {formatBs(avgPerSistemaIT, 2)}
                     </span>
@@ -3349,14 +3369,14 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                 <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
-                      <UserCheck className="w-3.5 h-3.5 text-indigo-500" /> Responsables Informáticos ({numResponsablesIT} Custodios IT):
+                      <UserCheck className="w-3.5 h-3.5 text-indigo-500" /> Responsables Informáticos ({numResponsablesIT} Custodios IT • {pctRespITFacial}% Facial):
                     </span>
                     <span className="font-mono text-sm font-bold text-indigo-700 dark:text-indigo-400">
                       Bs. {formatBs(projResponsablesITNeto, 2)}
                     </span>
                   </div>
                   <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                    <span>Honorario Neto Promedio por Custodio IT:</span>
+                    <span>Promedio Neto tras Licencias ({pctRespITFacial}% s/ Facial Bruto):</span>
                     <span className="font-mono text-indigo-700 dark:text-indigo-300 font-bold">
                       Bs. {formatBs(avgPerResponsableIT, 2)}
                     </span>
@@ -3596,16 +3616,29 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   </tr>
 
                   <tr className="bg-purple-50/40 dark:bg-purple-950/10">
-                    <td className="p-3 text-purple-800 dark:text-purple-300 font-semibold pl-6">(−) Canon Plataforma Sistemas IT (1% cobrado a Operadora)</td>
+                    <td className="p-3 text-purple-800 dark:text-purple-300 font-semibold pl-6">(−) Canon Plataforma Sistemas IT ({pctSistemasITFacial}% s/ Facial Bruto)</td>
                     <td className="p-3 text-right font-mono text-purple-700 dark:text-purple-400 font-bold">
                       -Bs. {formatBs(projSistemasITFee, 2)}
                     </td>
                     <td className="p-3 text-right font-mono text-purple-700 dark:text-purple-400">
                       {((projSistemasITFee / projVentaTotal) * 100).toFixed(2)}%
                     </td>
-                    <td className="p-3 text-slate-500 dark:text-slate-400">1,00% s/ Venta Bruta (Cobrado a la Operadora)</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">{pctSistemasITFacial}% s/ Venta Bruta Facial (Cobrado a Operadora)</td>
                     <td className="p-3 text-purple-800 dark:text-purple-300 font-semibold">{numSistemasIT} Plataformas Homologadas</td>
                     <td className="p-3 text-slate-500 dark:text-slate-400">Certificación ISO 27001</td>
+                  </tr>
+
+                  <tr className="bg-indigo-50/40 dark:bg-indigo-950/10">
+                    <td className="p-3 text-indigo-800 dark:text-indigo-300 font-semibold pl-6">(−) Canon Responsables Informáticos ({pctRespITFacial}% s/ Facial Bruto)</td>
+                    <td className="p-3 text-right font-mono text-indigo-700 dark:text-indigo-400 font-bold">
+                      -Bs. {formatBs(projTotalHonorariosRespIT, 2)}
+                    </td>
+                    <td className="p-3 text-right font-mono text-indigo-700 dark:text-indigo-400">
+                      {((projTotalHonorariosRespIT / projVentaTotal) * 100).toFixed(2)}%
+                    </td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">{pctRespITFacial}% s/ Venta Bruta Facial (Cobrado a Operadora)</td>
+                    <td className="p-3 text-indigo-800 dark:text-indigo-300 font-semibold">{numResponsablesIT} Custodios IT Colegiados</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Homologación RUNLOT</td>
                   </tr>
 
                   <tr>
@@ -3622,14 +3655,14 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   </tr>
 
                   <tr className="bg-emerald-50 dark:bg-emerald-950/30 font-bold border-t-2 border-slate-300 dark:border-slate-700">
-                    <td className="p-3 text-emerald-800 dark:text-emerald-400">(=) Superávit Operativo Operadoras (Net Win tras canon IT 1%)</td>
+                    <td className="p-3 text-emerald-800 dark:text-emerald-400">(=) Superávit Operativo Operadoras (Net Win tras Canon IT y Resp. IT)</td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400 text-sm font-black">
                       +Bs. {formatBs(projShareOperadorasNetoSoftware, 2)}
                     </td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">
                       {((projShareOperadorasNetoSoftware / projVentaTotal) * 100).toFixed(2)}%
                     </td>
-                    <td className="p-3 text-slate-500 dark:text-slate-400">50% Net Win menos 1% Canon IT</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">50% Net Win menos Sistemas IT ({pctSistemasITFacial}%) y Resp. IT ({pctRespITFacial}%)</td>
                     <td className="p-3 text-emerald-800 dark:text-emerald-300 font-semibold">{numOperadoras} Operadoras Oficiales</td>
                     <td className="p-3 text-slate-500 dark:text-slate-400">Solvencia de Fianza</td>
                   </tr>
@@ -3648,7 +3681,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   Exacto al Céntimo (Diferencial: Bs. 0,00)
                 </span>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-9 gap-2 text-[11px] font-mono">
+              <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2 text-[11px] font-mono">
                 <div className="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
                   <div className="text-[10px] text-slate-500">Apostadores</div>
                   <div className="font-bold text-slate-900 dark:text-white">{((projPremiosEfectivo84 / projVentaTotal) * 100).toFixed(2)}%</div>
@@ -3685,9 +3718,14 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   <div className="text-[10px] text-slate-500">Bs. {formatBs(projComercialSpreadNeto + projShareComercializadoras, 0)}</div>
                 </div>
                 <div className="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                  <div className="text-[10px] text-purple-600 dark:text-purple-400">Sistemas IT 1%</div>
+                  <div className="text-[10px] text-purple-600 dark:text-purple-400">Sistemas IT {pctSistemasITFacial}%</div>
                   <div className="font-bold text-purple-700 dark:text-purple-400">{((projSistemasITFee / projVentaTotal) * 100).toFixed(2)}%</div>
                   <div className="text-[10px] text-slate-500">Bs. {formatBs(projSistemasITFee, 0)}</div>
+                </div>
+                <div className="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <div className="text-[10px] text-indigo-600 dark:text-indigo-400">Resp. IT {pctRespITFacial}%</div>
+                  <div className="font-bold text-indigo-700 dark:text-indigo-400">{((projTotalHonorariosRespIT / projVentaTotal) * 100).toFixed(2)}%</div>
+                  <div className="text-[10px] text-slate-500">Bs. {formatBs(projTotalHonorariosRespIT, 0)}</div>
                 </div>
                 <div className="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
                   <div className="text-[10px] text-emerald-600 dark:text-emerald-400">Operadoras</div>
@@ -3790,7 +3828,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">
                       <div>Bs. {formatBs(projShareOperadorasBruto, 2)}</div>
                       <span className="text-[10px] text-purple-600 dark:text-purple-400 font-sans block">
-                        (-1% IT: -Bs. {formatBs(projSistemasITFee, 2)})
+                        (-{pctSistemasITFacial}% IT: -Bs. {formatBs(projSistemasITFee, 2)} | -{pctRespITFacial}% Resp. IT: -Bs. {formatBs(projTotalHonorariosRespIT, 2)})
                       </span>
                     </td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">Bs. 0,00 (No Sujeto)</td>
@@ -3818,7 +3856,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <td className="p-3 text-right font-mono text-purple-700 dark:text-purple-300">
                       <div>Bs. {formatBs(projSistemasITFee, 2)}</div>
                       <span className="text-[10px] text-slate-400 dark:text-slate-500 font-sans block">
-                        (1% Venta cobrado a Operadora)
+                        ({pctSistemasITFacial}% Venta Facial Bruta cobrado a Operadora)
                       </span>
                     </td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">Bs. 0,00</td>
@@ -3843,7 +3881,12 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     </td>
                     <td className="p-3 text-center font-mono text-indigo-700 dark:text-indigo-300 font-bold">{numResponsablesIT}</td>
                     <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
-                    <td className="p-3 text-right font-mono text-indigo-700 dark:text-indigo-300">Bs. {formatBs(projTotalHonorariosRespIT, 2)}</td>
+                    <td className="p-3 text-right font-mono text-indigo-700 dark:text-indigo-300">
+                      <div>Bs. {formatBs(projTotalHonorariosRespIT, 2)}</div>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-sans block">
+                        ({pctRespITFacial}% Venta Facial Bruta cobrado a Operadora)
+                      </span>
+                    </td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">Bs. 0,00</td>
                     <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">
                       <div>-Bs. {formatBs(totalRunlotResponsablesIT + totalIobpasResponsablesIT, 2)}</div>

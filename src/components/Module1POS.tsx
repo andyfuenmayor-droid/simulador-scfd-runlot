@@ -195,7 +195,7 @@ export const Module1POS: React.FC<Module1POSProps> = ({
                 <div className="text-[11px] text-slate-400 space-y-0.5">
                   <div>• Tiraje: <strong>38 figuras (01 al 38)</strong></div>
                   <div>• Premio: <strong>30x</strong> la apuesta</div>
-                  <div>• Payout estándar: <strong>75%</strong></div>
+                  <div>• Payout matemático (30/38): <strong>78,95%</strong></div>
                 </div>
               </button>
 
@@ -367,7 +367,16 @@ export const Module1POS: React.FC<Module1POSProps> = ({
                   {totalComb === 1 ? "Opción" : "Opciones"} Activas)
                 </h3>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleResetDefaults}
+                  className="text-xs font-bold text-emerald-300 hover:text-white flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600/25 hover:bg-emerald-600/45 border border-emerald-500/40 transition-all shadow-sm"
+                  title="Cargar las 2 jugadas de ejemplo por defecto de esta modalidad"
+                >
+                  <RefreshCw className="w-3.5 h-3.5 text-emerald-400" />
+                  Jugadas Ejemplo
+                </button>
                 <button
                   type="button"
                   onClick={() => handleLoadFullTiraje()}

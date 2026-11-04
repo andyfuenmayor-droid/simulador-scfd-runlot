@@ -570,38 +570,6 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
 
 
 
-      {/* AVISO DE ESTADO CUANDO LA TAQUILLA ESTÁ EN BLANCO */}
-      {!hasRealTickets && (
-        <div className="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0">
-              <AlertCircle className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-white flex items-center gap-2">
-                <span>[ Taquilla en Blanco: Bs. 0,00 ]</span>
-                <span className="text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
-                  Sin Jugadas Cargadas
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                No hay jugadas cargadas en pantalla ni tickets emitidos en el Módulo 1. Todos los conceptos de la Ruta del Dinero se muestran en <strong>Bs. 0,00</strong>.
-              </p>
-            </div>
-          </div>
-          {onGoToPOS && (
-            <button
-              type="button"
-              onClick={onGoToPOS}
-              className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shrink-0 cursor-pointer"
-            >
-              <Store className="w-3.5 h-3.5" />
-              <span>Cargar Jugadas en POS</span>
-            </button>
-          )}
-        </div>
-      )}
-
       {/* ====================================================================
           NUEVO PANEL: CONCILIACIÓN EN LOS 3 NIVELES DE LA CADENA
           (TAQUILLA • COMERCIALIZADORA • OPERADORA)
@@ -830,38 +798,6 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
 
 
 
-      {/* AVISO DE ESTADO CUANDO LA TAQUILLA ESTÁ EN BLANCO */}
-      {!hasRealTickets && (
-        <div className="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0">
-              <AlertCircle className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-white flex items-center gap-2">
-                <span>[ Taquilla en Blanco: Bs. 0,00 ]</span>
-                <span className="text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
-                  Sin Jugadas Cargadas
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                No hay jugadas cargadas en pantalla ni tickets emitidos en el Módulo 1. Todos los conceptos de la Ruta del Dinero se muestran en <strong>Bs. 0,00</strong>.
-              </p>
-            </div>
-          </div>
-          {onGoToPOS && (
-            <button
-              type="button"
-              onClick={onGoToPOS}
-              className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shrink-0 cursor-pointer"
-            >
-              <Store className="w-3.5 h-3.5" />
-              <span>Cargar Jugadas en POS</span>
-            </button>
-          )}
-        </div>
-      )}
-
       {/* ====================================================================
           PANEL 2: DIAGRAMA INTERACTIVO DE LAS 5 ESTACIONES DEL DINERO
       ==================================================================== */}
@@ -943,38 +879,6 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
       </div>
 
 
-
-      {/* AVISO DE ESTADO CUANDO LA TAQUILLA ESTÁ EN BLANCO */}
-      {!hasRealTickets && (
-        <div className="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0">
-              <AlertCircle className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-white flex items-center gap-2">
-                <span>[ Taquilla en Blanco: Bs. 0,00 ]</span>
-                <span className="text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
-                  Sin Jugadas Cargadas
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                No hay jugadas cargadas en pantalla ni tickets emitidos en el Módulo 1. Todos los conceptos de la Ruta del Dinero se muestran en <strong>Bs. 0,00</strong>.
-              </p>
-            </div>
-          </div>
-          {onGoToPOS && (
-            <button
-              type="button"
-              onClick={onGoToPOS}
-              className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shrink-0 cursor-pointer"
-            >
-              <Store className="w-3.5 h-3.5" />
-              <span>Cargar Jugadas en POS</span>
-            </button>
-          )}
-        </div>
-      )}
 
       {/* ====================================================================
           PANEL 3: CUADRO COMPARATIVO POR MODALIDAD
@@ -1095,38 +999,6 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
 
 
 
-      {/* AVISO DE ESTADO CUANDO LA TAQUILLA ESTÁ EN BLANCO */}
-      {!hasRealTickets && (
-        <div className="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0">
-              <AlertCircle className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-white flex items-center gap-2">
-                <span>[ Taquilla en Blanco: Bs. 0,00 ]</span>
-                <span className="text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
-                  Sin Jugadas Cargadas
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                No hay jugadas cargadas en pantalla ni tickets emitidos en el Módulo 1. Todos los conceptos de la Ruta del Dinero se muestran en <strong>Bs. 0,00</strong>.
-              </p>
-            </div>
-          </div>
-          {onGoToPOS && (
-            <button
-              type="button"
-              onClick={onGoToPOS}
-              className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shrink-0 cursor-pointer"
-            >
-              <Store className="w-3.5 h-3.5" />
-              <span>Cargar Jugadas en POS</span>
-            </button>
-          )}
-        </div>
-      )}
-
       {/* ====================================================================
           PANEL 4: MATRIZ DE BLINDAJE JURÍDICO PARA LA CADENA DE VALOR
       ==================================================================== */}
@@ -1175,38 +1047,6 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
       </div>
 
 
-
-      {/* AVISO DE ESTADO CUANDO LA TAQUILLA ESTÁ EN BLANCO */}
-      {!hasRealTickets && (
-        <div className="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0">
-              <AlertCircle className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-white flex items-center gap-2">
-                <span>[ Taquilla en Blanco: Bs. 0,00 ]</span>
-                <span className="text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
-                  Sin Jugadas Cargadas
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                No hay jugadas cargadas en pantalla ni tickets emitidos en el Módulo 1. Todos los conceptos de la Ruta del Dinero se muestran en <strong>Bs. 0,00</strong>.
-              </p>
-            </div>
-          </div>
-          {onGoToPOS && (
-            <button
-              type="button"
-              onClick={onGoToPOS}
-              className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shrink-0 cursor-pointer"
-            >
-              <Store className="w-3.5 h-3.5" />
-              <span>Cargar Jugadas en POS</span>
-            </button>
-          )}
-        </div>
-      )}
 
       {/* ====================================================================
           PANEL 5: VISOR Y DESCARGA XML SENIAT PLANILLA 99029 EN CALIENTE
@@ -1263,38 +1103,6 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
       </div>
 
 
-
-      {/* AVISO DE ESTADO CUANDO LA TAQUILLA ESTÁ EN BLANCO */}
-      {!hasRealTickets && (
-        <div className="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0">
-              <AlertCircle className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-white flex items-center gap-2">
-                <span>[ Taquilla en Blanco: Bs. 0,00 ]</span>
-                <span className="text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
-                  Sin Jugadas Cargadas
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                No hay jugadas cargadas en pantalla ni tickets emitidos en el Módulo 1. Todos los conceptos de la Ruta del Dinero se muestran en <strong>Bs. 0,00</strong>.
-              </p>
-            </div>
-          </div>
-          {onGoToPOS && (
-            <button
-              type="button"
-              onClick={onGoToPOS}
-              className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shrink-0 cursor-pointer"
-            >
-              <Store className="w-3.5 h-3.5" />
-              <span>Cargar Jugadas en POS</span>
-            </button>
-          )}
-        </div>
-      )}
 
       {/* ====================================================================
           MODAL PREVIEW: COMPROBANTE FISCAL ARC (80 MM TÉRMICO)
