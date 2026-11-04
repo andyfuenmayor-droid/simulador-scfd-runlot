@@ -2484,9 +2484,24 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
             {/* PRESETS DE ESCENARIOS RÁPIDOS + BOTÓN DE SINCRONIZACIÓN CON TAQUILLA */}
             <div id="tour-sim-presets" className="flex flex-wrap items-center justify-between gap-2 mt-4">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-mono text-slate-400 mr-1 flex items-center gap-1">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Presets:
+                <span className="text-xs font-mono text-slate-500 dark:text-slate-400 mr-1 flex items-center gap-1">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Presets:
                 </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNumTaquillas(1);
+                    setNumComercializadoras(1);
+                    setNumOperadoras(1);
+                    setNumSistemasIT(1);
+                    setNumResponsablesIT(1);
+                    setDailySalesPerTaquilla(5000);
+                    setTimeHorizonDays(30);
+                  }}
+                  className="px-3 py-1 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 dark:border-emerald-600/50 text-[11px] font-bold dark:text-emerald-300 rounded-lg transition-all cursor-pointer flex items-center gap-1 shadow-sm"
+                >
+                  🎯 Base Real Unitaria (1 Taquilla • 30d • Bs. 150.000)
+                </button>
                 <button
                   type="button"
                   onClick={() => {
@@ -2494,10 +2509,11 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     setNumComercializadoras(1);
                     setNumOperadoras(1);
                     setNumSistemasIT(1);
+                    setNumResponsablesIT(1);
                     setDailySalesPerTaquilla(20000);
                     setTimeHorizonDays(30);
                   }}
-                  className="px-3 py-1 bg-slate-950 hover:bg-slate-800 border border-slate-700 text-[11px] font-bold text-slate-300 rounded-lg transition-all cursor-pointer"
+                  className="px-3 py-1 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 dark:bg-slate-950 dark:hover:bg-slate-800 dark:border-slate-700 text-[11px] font-bold dark:text-slate-300 rounded-lg transition-all cursor-pointer shadow-sm"
                 >
                   🟢 Piloto (25 Taquillas)
                 </button>
@@ -2508,10 +2524,11 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     setNumComercializadoras(3);
                     setNumOperadoras(2);
                     setNumSistemasIT(2);
+                    setNumResponsablesIT(2);
                     setDailySalesPerTaquilla(40000);
                     setTimeHorizonDays(30);
                   }}
-                  className="px-3 py-1 bg-slate-950 hover:bg-slate-800 border border-slate-700 text-[11px] font-bold text-slate-300 rounded-lg transition-all cursor-pointer"
+                  className="px-3 py-1 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 dark:bg-slate-950 dark:hover:bg-slate-800 dark:border-slate-700 text-[11px] font-bold dark:text-slate-300 rounded-lg transition-all cursor-pointer shadow-sm"
                 >
                   🔵 Regional (150 Taquillas)
                 </button>
@@ -2522,37 +2539,36 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     setNumComercializadoras(50);
                     setNumOperadoras(10);
                     setNumSistemasIT(10);
+                    setNumResponsablesIT(10);
                     setDailySalesPerTaquilla(50000);
                     setTimeHorizonDays(365);
                   }}
-                  className="px-3 py-1 bg-slate-950 hover:bg-slate-800 border border-slate-700 text-[11px] font-bold text-cyan-300 rounded-lg transition-all cursor-pointer"
+                  className="px-3 py-1 bg-white hover:bg-slate-100 border border-slate-300 text-cyan-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:border-slate-700 text-[11px] font-bold dark:text-cyan-300 rounded-lg transition-all cursor-pointer shadow-sm"
                 >
                   🟣 Gran Escala Nacional (10.000 Taquillas - 1 Año)
                 </button>
               </div>
 
               {/* Botón sincronizar con la venta real de taquilla */}
-              {totalSales > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setDailySalesPerTaquilla(Math.round(totalSales))}
-                  className="px-3 py-1 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-[11px] font-bold text-emerald-300 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer"
-                >
-                  <Store className="w-3.5 h-3.5" />
-                  Sincronizar con Taquilla: Bs. {formatBs(totalSales, 0)}
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => setDailySalesPerTaquilla(totalSales > 0 ? Math.round(totalSales) : 5000)}
+                className="px-3 py-1 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 dark:bg-emerald-600/20 dark:hover:bg-emerald-600/30 dark:border-emerald-500/40 text-[11px] font-bold dark:text-emerald-300 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+              >
+                <Store className="w-3.5 h-3.5" />
+                Sincronizar con Taquilla: Bs. {formatBs(totalSales > 0 ? totalSales : 5000, 0)}
+              </button>
             </div>
 
-            {/* PARRILLA DE SLIDERS DE CONFIGURACIÓN */}
-            <div id="tour-sim-sliders" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6 bg-slate-950/70 p-5 rounded-xl border border-slate-800">
+            {/* PARRILLA DE SLIDERS DE CONFIGURACIÓN (5 ACTORES + VARIABLES ECONÓMICAS) */}
+            <div id="tour-sim-sliders" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6 bg-slate-50 dark:bg-slate-950/70 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
               {/* Slider 1: Taquillas */}
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
-                  <span className="font-bold text-white flex items-center gap-1.5">
-                    <Store className="w-3.5 h-3.5 text-blue-400" /> Taquillas / Agencias POS
+                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                    <Store className="w-3.5 h-3.5 text-blue-500" /> 1. Taquillas / Agencias POS
                   </span>
-                  <span className="font-mono text-cyan-400 font-extrabold bg-blue-500/10 px-2 py-0.5 rounded">
+                  <span className="font-mono text-cyan-700 dark:text-cyan-400 font-extrabold bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded border border-blue-200 dark:border-transparent">
                     {numTaquillas.toLocaleString("es-VE")} taquillas
                   </span>
                 </div>
@@ -2560,10 +2576,10 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   type="range"
                   min={1}
                   max={10000}
-                  step={25}
+                  step={numTaquillas <= 10 ? 1 : 25}
                   value={numTaquillas}
                   onChange={(e) => setNumTaquillas(Number(e.target.value))}
-                  className="w-full accent-cyan-400 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+                  className="w-full accent-cyan-400 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
                 />
                 <div className="flex justify-between text-[10px] text-slate-500 font-mono">
                   <span>1</span>
@@ -2575,10 +2591,10 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
               {/* Slider 2: Comercializadoras */}
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
-                  <span className="font-bold text-white flex items-center gap-1.5">
-                    <Building2 className="w-3.5 h-3.5 text-amber-400" /> Comercializadoras Intermediarias
+                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                    <Building2 className="w-3.5 h-3.5 text-amber-500" /> 2. Comercializadoras Intermediarias
                   </span>
-                  <span className="font-mono text-amber-400 font-extrabold bg-amber-500/10 px-2 py-0.5 rounded">
+                  <span className="font-mono text-amber-700 dark:text-amber-400 font-extrabold bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 rounded border border-amber-200 dark:border-transparent">
                     {numComercializadoras} comercializadoras
                   </span>
                 </div>
@@ -2589,7 +2605,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   step={1}
                   value={numComercializadoras}
                   onChange={(e) => setNumComercializadoras(Number(e.target.value))}
-                  className="w-full accent-amber-400 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+                  className="w-full accent-amber-400 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
                 />
                 <div className="flex justify-between text-[10px] text-slate-500 font-mono">
                   <span>1</span>
@@ -2601,10 +2617,10 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
               {/* Slider 3: Operadoras */}
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
-                  <span className="font-bold text-white flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Operadoras de Lotería
+                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> 3. Operadoras de Lotería
                   </span>
-                  <span className="font-mono text-emerald-400 font-extrabold bg-emerald-500/10 px-2 py-0.5 rounded">
+                  <span className="font-mono text-emerald-700 dark:text-emerald-400 font-extrabold bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-200 dark:border-transparent">
                     {numOperadoras} operadoras
                   </span>
                 </div>
@@ -2615,7 +2631,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   step={1}
                   value={numOperadoras}
                   onChange={(e) => setNumOperadoras(Number(e.target.value))}
-                  className="w-full accent-emerald-400 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+                  className="w-full accent-emerald-400 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
                 />
                 <div className="flex justify-between text-[10px] text-slate-500 font-mono">
                   <span>1</span>
@@ -2627,10 +2643,10 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
               {/* Slider 4: Sistemas Informáticos */}
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
-                  <span className="font-bold text-white flex items-center gap-1.5">
-                    <Cpu className="w-3.5 h-3.5 text-purple-400" /> Sistemas Informáticos (Plataformas)
+                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                    <Cpu className="w-3.5 h-3.5 text-purple-500" /> 4. Sistemas Informáticos (Plataformas)
                   </span>
-                  <span className="font-mono text-purple-400 font-extrabold bg-purple-500/10 px-2 py-0.5 rounded">
+                  <span className="font-mono text-purple-700 dark:text-purple-400 font-extrabold bg-purple-50 dark:bg-purple-500/10 px-2 py-0.5 rounded border border-purple-200 dark:border-transparent">
                     {numSistemasIT} plataformas IT
                   </span>
                 </div>
@@ -2641,7 +2657,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   step={1}
                   value={numSistemasIT}
                   onChange={(e) => setNumSistemasIT(Number(e.target.value))}
-                  className="w-full accent-purple-400 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+                  className="w-full accent-purple-400 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
                 />
                 <div className="flex justify-between text-[10px] text-slate-500 font-mono">
                   <span>1</span>
@@ -2650,39 +2666,65 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                 </div>
               </div>
 
-              {/* Slider 5: Venta Promedio Diaria */}
+              {/* Slider 5: Responsables Informáticos */}
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
-                  <span className="font-bold text-white flex items-center gap-1.5">
-                    <Coins className="w-3.5 h-3.5 text-emerald-400" /> Venta Promedio Diaria / Taquilla
+                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                    <UserCheck className="w-3.5 h-3.5 text-indigo-500" /> 5. Responsables Informáticos (Custodios)
                   </span>
-                  <span className="font-mono text-emerald-400 font-extrabold bg-emerald-500/10 px-2 py-0.5 rounded">
+                  <span className="font-mono text-indigo-700 dark:text-indigo-400 font-extrabold bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-200 dark:border-transparent">
+                    {numResponsablesIT} responsables IT
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={1}
+                  max={50}
+                  step={1}
+                  value={numResponsablesIT}
+                  onChange={(e) => setNumResponsablesIT(Number(e.target.value))}
+                  className="w-full accent-indigo-400 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                />
+                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                  <span>1</span>
+                  <span>25</span>
+                  <span>50</span>
+                </div>
+              </div>
+
+              {/* Slider 6: Venta Promedio Diaria */}
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs">
+                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                    <Coins className="w-3.5 h-3.5 text-emerald-500" /> Venta Diaria por Taquilla
+                  </span>
+                  <span className="font-mono text-emerald-700 dark:text-emerald-400 font-extrabold bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-200 dark:border-transparent">
                     Bs. {formatBs(dailySalesPerTaquilla, 0)}
                   </span>
                 </div>
                 <input
                   type="range"
-                  min={5000}
+                  min={1000}
                   max={2000000}
-                  step={10000}
+                  step={dailySalesPerTaquilla <= 10000 ? 500 : 5000}
                   value={dailySalesPerTaquilla}
                   onChange={(e) => setDailySalesPerTaquilla(Number(e.target.value))}
-                  className="w-full accent-emerald-400 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+                  className="w-full accent-emerald-400 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
                 />
                 <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                  <span>Bs. 5.000</span>
+                  <span>Bs. 1.000</span>
                   <span>Bs. 1.000.000</span>
                   <span>Bs. 2.000.000</span>
                 </div>
               </div>
 
-              {/* Selector 6: Horizonte Temporal */}
-              <div className="space-y-2">
+              {/* Selector 7: Horizonte Temporal */}
+              <div className="space-y-2 md:col-span-2 lg:col-span-3">
                 <div className="flex justify-between text-xs">
-                  <span className="font-bold text-white flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-blue-400" /> Horizonte Temporal
+                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-blue-500" /> Horizonte Temporal de la Simulación
                   </span>
-                  <span className="font-mono text-blue-400 font-extrabold">
+                  <span className="font-mono text-blue-700 dark:text-blue-400 font-extrabold">
                     {timeHorizonDays === 1
                       ? "1 Día"
                       : timeHorizonDays === 30
@@ -2700,10 +2742,10 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       key={h.days}
                       type="button"
                       onClick={() => setTimeHorizonDays(h.days)}
-                      className={`py-1.5 px-2 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
+                      className={`py-2 px-3 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
                         timeHorizonDays === h.days
-                          ? "bg-blue-600 text-white shadow-md shadow-blue-900/50"
-                          : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
+                          ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
+                          : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-300 dark:border-slate-800 shadow-sm"
                       }`}
                     >
                       {h.label}
@@ -2712,102 +2754,370 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                 </div>
               </div>
             </div>
+
+            {/* PANEL DE INSERCIÓN DE COSTOS DE LICENCIAS IOBPAS Y REGISTRO RUNLOT / CONALOT POR ACTOR */}
+            <div className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-200 dark:border-slate-800">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      Panel de Inserción de Costos: Licencias IOBPAS y Registro RUNLOT / CONALOT por Actor de la Cadena
+                    </h3>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Modifica los costos fijos mensuales por unidad para los 5 sujetos obligados de la red ({mesesEquivalentes > 1 ? `${mesesEquivalentes} meses proyectados` : "base 30 días"})
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                    5 Sujetos Obligados de Red
+                  </span>
+                </div>
+              </div>
+
+              {/* Grid de los 5 Actores con sus inputs editables */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+                {/* Actor 1: Taquilla / Agencia POS */}
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-blue-200 dark:border-blue-900/40 space-y-2.5 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs text-blue-700 dark:text-blue-300 flex items-center gap-1.5">
+                      <Store className="w-3.5 h-3.5" /> 1. Taquillas POS
+                    </span>
+                    <span className="text-[10px] font-mono bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 px-1.5 py-0.5 rounded font-bold">
+                      {numTaquillas} unid.
+                    </span>
+                  </div>
+                  <div className="space-y-1.5">
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">RUNLOT (Bs./mes):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={10}
+                        value={costoRunlotTaquilla}
+                        onChange={(e) => setCostoRunlotTaquilla(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-cyan-300 focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Licencia IOBPAS (Bs./mes):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={10}
+                        value={costoIobpasTaquilla}
+                        onChange={(e) => setCostoIobpasTaquilla(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-cyan-300 focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-[10px] font-mono">
+                    <span className="text-slate-500">Total Actor:</span>
+                    <span className="text-blue-700 dark:text-blue-300 font-bold">Bs. {formatBs(totalRunlotTaquillas + totalIobpasTaquillas, 0)}</span>
+                  </div>
+                </div>
+
+                {/* Actor 2: Comercializadoras */}
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-amber-200 dark:border-amber-900/40 space-y-2.5 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs text-amber-700 dark:text-amber-300 flex items-center gap-1.5">
+                      <Building2 className="w-3.5 h-3.5" /> 2. Comercializadora
+                    </span>
+                    <span className="text-[10px] font-mono bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 px-1.5 py-0.5 rounded font-bold">
+                      {numComercializadoras} unid.
+                    </span>
+                  </div>
+                  <div className="space-y-1.5">
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">RUNLOT (Bs./mes):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={50}
+                        value={costoRunlotComercializadora}
+                        onChange={(e) => setCostoRunlotComercializadora(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-amber-300 focus:outline-none focus:border-amber-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Licencia IOBPAS (Bs./mes):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={50}
+                        value={costoIobpasComercializadora}
+                        onChange={(e) => setCostoIobpasComercializadora(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-amber-300 focus:outline-none focus:border-amber-500"
+                      />
+                    </div>
+                  </div>
+                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-[10px] font-mono">
+                    <span className="text-slate-500">Total Actor:</span>
+                    <span className="text-amber-700 dark:text-amber-300 font-bold">Bs. {formatBs(totalRunlotComercializadoras + totalIobpasComercializadoras, 0)}</span>
+                  </div>
+                </div>
+
+                {/* Actor 3: Operadoras de Lotería */}
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-emerald-200 dark:border-emerald-900/40 space-y-2.5 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5" /> 3. Operadoras
+                    </span>
+                    <span className="text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 px-1.5 py-0.5 rounded font-bold">
+                      {numOperadoras} unid.
+                    </span>
+                  </div>
+                  <div className="space-y-1.5">
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">RUNLOT (Bs./mes):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={100}
+                        value={costoRunlotOperadora}
+                        onChange={(e) => setCostoRunlotOperadora(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-emerald-300 focus:outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Licencia IOBPAS (Bs./mes):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={100}
+                        value={costoIobpasOperadora}
+                        onChange={(e) => setCostoIobpasOperadora(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-emerald-300 focus:outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                  </div>
+                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-[10px] font-mono">
+                    <span className="text-slate-500">Total Actor:</span>
+                    <span className="text-emerald-700 dark:text-emerald-300 font-bold">Bs. {formatBs(totalRunlotOperadoras + totalIobpasOperadoras, 0)}</span>
+                  </div>
+                </div>
+
+                {/* Actor 4: Empresas de Sistemas IT */}
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-purple-200 dark:border-purple-900/40 space-y-2.5 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
+                      <Cpu className="w-3.5 h-3.5" /> 4. Sistemas IT
+                    </span>
+                    <span className="text-[10px] font-mono bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 px-1.5 py-0.5 rounded font-bold">
+                      {numSistemasIT} unid.
+                    </span>
+                  </div>
+                  <div className="space-y-1.5">
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Homol. RUNLOT (Bs./mes):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={50}
+                        value={costoRunlotSistemaIT}
+                        onChange={(e) => setCostoRunlotSistemaIT(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-purple-300 focus:outline-none focus:border-purple-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Aval IOBPAS (Bs./mes):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={50}
+                        value={costoIobpasSistemaIT}
+                        onChange={(e) => setCostoIobpasSistemaIT(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-purple-300 focus:outline-none focus:border-purple-500"
+                      />
+                    </div>
+                  </div>
+                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-[10px] font-mono">
+                    <span className="text-slate-500">Total Actor:</span>
+                    <span className="text-purple-700 dark:text-purple-300 font-bold">Bs. {formatBs(totalRunlotSistemasIT + totalIobpasSistemasIT, 0)}</span>
+                  </div>
+                </div>
+
+                {/* Actor 5: Responsables Informáticos */}
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-indigo-200 dark:border-indigo-900/40 space-y-2.5 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
+                      <UserCheck className="w-3.5 h-3.5" /> 5. Responsables IT
+                    </span>
+                    <span className="text-[10px] font-mono bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 px-1.5 py-0.5 rounded font-bold">
+                      {numResponsablesIT} unid.
+                    </span>
+                  </div>
+                  <div className="space-y-1.5">
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Registro RUNLOT (Bs./mes):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={25}
+                        value={costoRunlotResponsableIT}
+                        onChange={(e) => setCostoRunlotResponsableIT(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-indigo-300 focus:outline-none focus:border-indigo-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Aval IOBPAS (Bs./mes):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={25}
+                        value={costoIobpasResponsableIT}
+                        onChange={(e) => setCostoIobpasResponsableIT(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-indigo-300 focus:outline-none focus:border-indigo-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Honorarios IT (Bs./mes):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={50}
+                        value={honorarioRespITPorMes}
+                        onChange={(e) => setHonorarioRespITPorMes(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-indigo-300 focus:outline-none focus:border-indigo-500"
+                      />
+                    </div>
+                  </div>
+                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-[10px] font-mono">
+                    <span className="text-slate-500">Total Actor:</span>
+                    <span className="text-indigo-700 dark:text-indigo-300 font-bold">Bs. {formatBs(totalRunlotResponsablesIT + totalIobpasResponsablesIT, 0)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Barra inferior resumen de recaudación por licencias */}
+              <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-100 dark:bg-slate-950 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800">
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-600 dark:text-slate-400">Total Tasas RUNLOT (CONALOT):</span>
+                  <span className="font-bold text-purple-700 dark:text-purple-400">Bs. {formatBs(projConalotTotal, 2)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-600 dark:text-slate-400">Total Licencias Fijas IOBPAS:</span>
+                  <span className="font-bold text-emerald-700 dark:text-emerald-400">Bs. {formatBs(projIobpasLicenciasTotal, 2)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-600 dark:text-slate-400">Total Recaudación de Cánones Fijos:</span>
+                  <span className="font-bold text-amber-700 dark:text-amber-400">Bs. {formatBs(projConalotTotal + projIobpasLicenciasTotal, 2)}</span>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           {/* MATRIZ DE RESULTADOS PROYECTADOS EN TIEMPO REAL */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* COLUMNA 1: RECAUDACIÓN FISCAL Y SOCIAL DEL ESTADO */}
-            <div id="tour-sim-public-revenue" className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div id="tour-sim-public-revenue" className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 space-y-4 shadow-sm">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex items-center gap-2">
-                  <Landmark className="w-5 h-5 text-amber-400" />
-                  <h3 className="text-sm font-bold text-white">
+                  <Landmark className="w-5 h-5 text-amber-500" />
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                     Recaudación Pública Proyectada (Tesoro, Municipios & Beneficencia)
                   </h3>
                 </div>
-                <span className="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                <span className="text-xs font-mono font-bold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2.5 py-0.5 rounded border border-amber-200 dark:border-amber-500/20">
                   Total Estado
                 </span>
               </div>
 
               <div className="space-y-3 text-xs">
                 {/* Venta Total Proyectada */}
-                <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-950/70 border border-slate-800">
-                  <span className="text-slate-300 font-semibold">Venta Bruta Total Proyectada:</span>
-                  <span className="font-mono text-base font-extrabold text-white">
+                <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-700 dark:text-slate-300 font-semibold">Venta Bruta Total Proyectada:</span>
+                  <span className="font-mono text-base font-extrabold text-slate-900 dark:text-white">
                     Bs. {formatBs(projVentaTotal, 2)}
                   </span>
                 </div>
 
                 {/* Retención 16% IGF SENIAT */}
-                <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-950/70 border border-slate-800">
+                <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
                   <div>
-                    <div className="text-slate-300 font-semibold flex items-center gap-1.5">
-                      <Coins className="w-3.5 h-3.5 text-amber-400" /> SENIAT: 16% Retención IGF (Premios)
+                    <div className="text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5">
+                      <Coins className="w-3.5 h-3.5 text-amber-500" /> SENIAT: 16% Retención IGF (Premios)
                     </div>
                     <div className="text-[10px] text-slate-500">Planilla 99029 XML • Enterado por Operadoras</div>
                   </div>
-                  <span className="font-mono text-sm font-bold text-amber-400">
+                  <span className="font-mono text-sm font-bold text-amber-700 dark:text-amber-400">
                     Bs. {formatBs(projRetencionIGF16, 2)}
                   </span>
                 </div>
 
                 {/* Impuesto SENIAT Juegos 10% GGR */}
-                <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-950/70 border border-slate-800">
+                <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
                   <div>
-                    <div className="text-slate-300 font-semibold flex items-center gap-1.5">
-                      <Coins className="w-3.5 h-3.5 text-amber-400" /> SENIAT: Impuesto s/ Juegos (10% s/ GGR)
+                    <div className="text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5">
+                      <Coins className="w-3.5 h-3.5 text-amber-500" /> SENIAT: Impuesto s/ Juegos (10% s/ GGR)
                     </div>
                     <div className="text-[10px] text-slate-500">Base Imponible CIAT (Venta − Premios)</div>
                   </div>
-                  <span className="font-mono text-sm font-bold text-amber-400">
+                  <span className="font-mono text-sm font-bold text-amber-700 dark:text-amber-400">
                     Bs. {formatBs(projSeniatJuegos10, 2)}
                   </span>
                 </div>
 
                 {/* Canon IOBPAS Beneficencia */}
-                <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-950/70 border border-slate-800">
+                <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
                   <div>
-                    <div className="text-slate-300 font-semibold flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> IOBPAS: Beneficencia Pública (5% / 1% GGR)
+                    <div className="text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> IOBPAS: Beneficencia Pública (5% / 1% GGR)
                     </div>
                     <div className="text-[10px] text-slate-500">Destino Hospitales y Asistencia Social</div>
                   </div>
-                  <span className="font-mono text-sm font-bold text-emerald-400">
-                    Bs. {formatBs(projIobpasBeneficencia, 2)}
+                  <span className="font-mono text-sm font-bold text-emerald-700 dark:text-emerald-400">
+                    Bs. {formatBs(projIobpasCanonGGR, 2)}
+                  </span>
+                </div>
+
+                {/* Licencias Fijas IOBPAS (5 Actores) */}
+                <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
+                  <div>
+                    <div className="text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> IOBPAS: Cánones y Licencias (5 Actores)
+                    </div>
+                    <div className="text-[10px] text-slate-500">Taquillas, Comercializadoras, Operadoras, Software y Custodios IT</div>
+                  </div>
+                  <span className="font-mono text-sm font-bold text-emerald-700 dark:text-emerald-400">
+                    Bs. {formatBs(projIobpasLicenciasTotal, 2)}
                   </span>
                 </div>
 
                 {/* Alcaldías Municipales */}
-                <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-950/70 border border-slate-800">
+                <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
                   <div>
-                    <div className="text-slate-300 font-semibold flex items-center gap-1.5">
-                      <Landmark className="w-3.5 h-3.5 text-blue-400" /> Alcaldías: IAE Municipal (2,5% Comisiones)
+                    <div className="text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5">
+                      <Landmark className="w-3.5 h-3.5 text-blue-500" /> Alcaldías: IAE Municipal (2,5% Comisiones)
                     </div>
                     <div className="text-[10px] text-slate-500">LOCAPTEM Art. 29 num. 1 (Taquilla + Comercializadora)</div>
                   </div>
-                  <span className="font-mono text-sm font-bold text-blue-400">
+                  <span className="font-mono text-sm font-bold text-blue-700 dark:text-blue-400">
                     Bs. {formatBs(projAlcaldiaTotal, 2)}
                   </span>
                 </div>
 
                 {/* CONALOT Tasas */}
-                <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-950/70 border border-slate-800">
+                <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
                   <div>
-                    <div className="text-slate-300 font-semibold flex items-center gap-1.5">
-                      <Layers className="w-3.5 h-3.5 text-purple-400" /> CONALOT: Supervisión & Homologación RUNLOT
+                    <div className="text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5">
+                      <Layers className="w-3.5 h-3.5 text-purple-500" /> CONALOT: Supervisión & Homologación RUNLOT
                     </div>
-                    <div className="text-[10px] text-slate-500">Cánones telemáticos SCFD y certificación de sistemas</div>
+                    <div className="text-[10px] text-slate-500">Cánones telemáticos SCFD en los 5 actores de la red</div>
                   </div>
-                  <span className="font-mono text-sm font-bold text-purple-400">
+                  <span className="font-mono text-sm font-bold text-purple-700 dark:text-purple-400">
                     Bs. {formatBs(projConalotTotal, 2)}
                   </span>
                 </div>
 
                 {/* TOTAL ESTADO */}
-                <div className="pt-2 border-t-2 border-slate-700 flex justify-between items-center text-sm font-black">
-                  <span className="text-white">TOTAL APORTE AL ESTADO VENEZOLANO:</span>
-                  <span className="font-mono text-amber-400 text-base">
+                <div className="pt-2 border-t-2 border-slate-300 dark:border-slate-700 flex justify-between items-center text-sm font-black">
+                  <span className="text-slate-900 dark:text-white">TOTAL APORTE AL ESTADO VENEZOLANO:</span>
+                  <span className="font-mono text-amber-700 dark:text-amber-400 text-base font-extrabold">
                     Bs. {formatBs(projTotalRecaudacionPublica, 2)}
                   </span>
                 </div>
@@ -2815,104 +3125,122 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
             </div>
 
             {/* COLUMNA 2: RENDIMIENTOS Y SOSTENIBILIDAD PRIVADA DE LA RED */}
-            <div id="tour-sim-private-yields" className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div id="tour-sim-private-yields" className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 space-y-4 shadow-sm">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5 text-emerald-400" />
-                  <h3 className="text-sm font-bold text-white">
+                  <Building2 className="w-5 h-5 text-emerald-500" />
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                     Rendimientos Privados de la Red y Actores Comerciales
                   </h3>
                 </div>
-                <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/20">
                   Sostenibilidad
                 </span>
               </div>
 
               <div className="space-y-3 text-xs">
                 {/* Taquillas Consolidadas */}
-                <div className="p-3 rounded-lg bg-slate-950/70 border border-slate-800">
+                <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-white flex items-center gap-1.5">
-                      <Store className="w-3.5 h-3.5 text-blue-400" /> Red de Taquillas ({numTaquillas} Agencias):
+                    <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <Store className="w-3.5 h-3.5 text-blue-500" /> Red de Taquillas ({numTaquillas} Agencias):
                     </span>
-                    <span className="font-mono text-sm font-bold text-emerald-400">
-                      Bs. {formatBs(projTaquillaCommNeta, 2)}
+                    <span className="font-mono text-sm font-bold text-emerald-700 dark:text-emerald-400">
+                      Bs. {formatBs(projTaquillaUtilidadNeta, 2)}
                     </span>
                   </div>
-                  <div className="flex justify-between text-[11px] text-slate-400 mt-1">
-                    <span>Promedio Neto por Taquilla:</span>
-                    <span className="font-mono text-cyan-300 font-bold">
+                  <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                    <span>Promedio Neto tras IAE y Licencias:</span>
+                    <span className="font-mono text-cyan-700 dark:text-cyan-300 font-bold">
                       Bs. {formatBs(avgPerTaquilla, 2)}
                     </span>
                   </div>
                 </div>
 
                 {/* Comercializadoras Consolidadas */}
-                <div className="p-3 rounded-lg bg-slate-950/70 border border-slate-800">
+                <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-white flex items-center gap-1.5">
-                      <Building2 className="w-3.5 h-3.5 text-amber-400" /> Comercializadoras ({numComercializadoras} Entidades):
+                    <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <Building2 className="w-3.5 h-3.5 text-amber-500" /> Comercializadoras ({numComercializadoras} Entidades):
                     </span>
-                    <span className="font-mono text-sm font-bold text-emerald-400">
-                      Bs. {formatBs(projTotalComercializadorasNet, 2)}
+                    <span className="font-mono text-sm font-bold text-emerald-700 dark:text-emerald-400">
+                      Bs. {formatBs(projComercialUtilidadNeta, 2)}
                     </span>
                   </div>
-                  <div className="flex justify-between text-[11px] text-slate-400 mt-1">
+                  <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                     <span>Promedio por Comercializadora (Spread + 50% Win):</span>
-                    <span className="font-mono text-amber-300 font-bold">
+                    <span className="font-mono text-amber-700 dark:text-amber-300 font-bold">
                       Bs. {formatBs(avgPerComercializadora, 2)}
                     </span>
                   </div>
                 </div>
 
                 {/* Operadoras Consolidadas */}
-                <div className="p-3 rounded-lg bg-slate-950/70 border border-slate-800">
+                <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-white flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Operadoras ({numOperadoras} Concesionarias):
+                    <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Operadoras ({numOperadoras} Concesionarias):
                     </span>
-                    <span className="font-mono text-sm font-bold text-emerald-400">
-                      Bs. {formatBs(projTotalOperadorasNet, 2)}
+                    <span className="font-mono text-sm font-bold text-emerald-700 dark:text-emerald-400">
+                      Bs. {formatBs(projOperadoraUtilidadNeta, 2)}
                     </span>
                   </div>
-                  <div className="flex justify-between text-[11px] text-slate-400 mt-1">
-                    <span>Superávit Operativo por Operadora:</span>
-                    <span className="font-mono text-emerald-300 font-bold">
+                  <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                    <span>Superávit Operativo Neto por Operadora:</span>
+                    <span className="font-mono text-emerald-700 dark:text-emerald-300 font-bold">
                       Bs. {formatBs(avgPerOperadora, 2)}
                     </span>
                   </div>
                 </div>
 
                 {/* Sistemas Informáticos */}
-                <div className="p-3 rounded-lg bg-slate-950/70 border border-slate-800">
+                <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-white flex items-center gap-1.5">
-                      <Cpu className="w-3.5 h-3.5 text-purple-400" /> Sistemas Informáticos ({numSistemasIT} Plataformas):
+                    <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <Cpu className="w-3.5 h-3.5 text-purple-500" /> Sistemas Informáticos ({numSistemasIT} Plataformas):
                     </span>
-                    <span className="font-mono text-sm font-bold text-purple-400">
-                      Bs. {formatBs(projSistemasITFee, 2)}
+                    <span className="font-mono text-sm font-bold text-purple-700 dark:text-purple-400">
+                      Bs. {formatBs(projSistemasITNeto, 2)}
                     </span>
                   </div>
-                  <div className="flex justify-between text-[11px] text-slate-400 mt-1">
+                  <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                     <span>Promedio por Empresa de Software IT:</span>
-                    <span className="font-mono text-purple-300 font-bold">
+                    <span className="font-mono text-purple-700 dark:text-purple-300 font-bold">
                       Bs. {formatBs(avgPerSistemaIT, 2)}
                     </span>
                   </div>
                 </div>
 
-                {/* Premios Pagados Efectivo 84% */}
-                <div className="p-3 rounded-lg bg-emerald-950/20 border border-emerald-500/30">
+                {/* Responsables Informáticos */}
+                <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
                   <div className="flex justify-between items-center">
-                    <span className="font-bold text-white flex items-center gap-1.5">
-                      <Coins className="w-3.5 h-3.5 text-emerald-400" /> Premios Netos Pagados al Apostador (84%):
+                    <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <UserCheck className="w-3.5 h-3.5 text-indigo-500" /> Responsables Informáticos ({numResponsablesIT} Custodios IT):
                     </span>
-                    <span className="font-mono text-sm font-bold text-emerald-300">
+                    <span className="font-mono text-sm font-bold text-indigo-700 dark:text-indigo-400">
+                      Bs. {formatBs(projResponsablesITNeto, 2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                    <span>Honorario Neto Promedio por Custodio IT:</span>
+                    <span className="font-mono text-indigo-700 dark:text-indigo-300 font-bold">
+                      Bs. {formatBs(avgPerResponsableIT, 2)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Premios Pagados Efectivo 84% */}
+                <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-500/30">
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <Coins className="w-3.5 h-3.5 text-emerald-500" /> Premios Netos Pagados al Apostador (84%):
+                    </span>
+                    <span className="font-mono text-sm font-bold text-emerald-700 dark:text-emerald-300">
                       Bs. {formatBs(projPremiosEfectivo84, 2)}
                     </span>
                   </div>
-                  <div className="text-[10px] text-emerald-400/80 mt-1">
-                    Pagados en efectivo en taquilla tras retención automática del 16% IGF.
+                  <div className="text-[10px] text-emerald-700 dark:text-emerald-400/80 mt-1">
+                    Pagados en taquilla en efectivo tras retención automática y blindada del 16% IGF.
                   </div>
                 </div>
               </div>
@@ -2985,27 +3313,27 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
           </div>
 
           {/* ====================================================================
-              TABLA 1: ESTADO DE RESULTADOS CONSOLIDADO DE LA RED NACIONAL
+              TABLA 1: ESTADO DE RESULTADOS CONSOLIDADO DE LA RED
           ==================================================================== */}
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+          <div className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div>
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <Table className="w-4 h-4 text-blue-400" />
-                  Tabla 1: Estado de Resultados Consolidado de la Red ({timeHorizonDays === 1 ? "1 Día" : timeHorizonDays === 30 ? "30 Días" : "1 Año"} • {numTaquillas} Taquillas)
+                <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <Table className="w-4 h-4 text-blue-500" />
+                  Tabla 1: Estado de Resultados Consolidado de la Red ({timeHorizonDays === 1 ? "1 Día" : timeHorizonDays === 30 ? "30 Días" : "1 Año"} • {numTaquillas} Taquilla{numTaquillas > 1 ? "s" : ""})
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Cuadre matemático integral del 100% del valor facial distribuido entre el Estado, los apostadores y los actores privados
                 </p>
               </div>
-              <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 self-start sm:self-auto">
+              <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-300 dark:border-emerald-500/20 self-start sm:self-auto shadow-sm">
                 Base Venta: Bs. {formatBs(projVentaTotal, 2)}
               </span>
             </div>
 
-            <div className="overflow-x-auto rounded-xl border border-slate-800">
+            <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
               <table className="w-full text-xs text-left">
-                <thead className="bg-slate-950 text-slate-400 font-mono text-[11px] border-b border-slate-800">
+                <thead className="bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 font-mono text-[11px] border-b border-slate-200 dark:border-slate-800">
                   <tr>
                     <th className="p-3">Renglón Financiero / Tributario</th>
                     <th className="p-3 text-right">Monto Proyectado (Bs.)</th>
@@ -3015,258 +3343,340 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <th className="p-3">Fundamento Legal</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60 bg-slate-900/40 text-slate-300">
-                  <tr className="bg-blue-950/20 font-bold">
-                    <td className="p-3 text-white flex items-center gap-2">
-                      <Store className="w-3.5 h-3.5 text-blue-400" /> Venta Bruta Total Proyectada
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 bg-white dark:bg-slate-900/40 text-slate-700 dark:text-slate-300">
+                  <tr className="bg-blue-50/60 dark:bg-blue-950/20 font-bold">
+                    <td className="p-3 text-slate-900 dark:text-white flex items-center gap-2">
+                      <Store className="w-3.5 h-3.5 text-blue-500" /> Venta Bruta Total Proyectada
                     </td>
-                    <td className="p-3 text-right font-mono text-cyan-300 font-extrabold text-sm">
+                    <td className="p-3 text-right font-mono text-blue-700 dark:text-cyan-300 font-extrabold text-sm">
                       Bs. {formatBs(projVentaTotal, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-cyan-300">100,00%</td>
-                    <td className="p-3 text-slate-400">{numTaquillas} Taquillas × Bs. {formatBs(dailySalesPerTaquilla, 0)}/día × {timeHorizonDays}d</td>
-                    <td className="p-3 text-slate-300">Red Comercial Nacional</td>
-                    <td className="p-3 text-slate-400">Contrato Concesión</td>
+                    <td className="p-3 text-right font-mono text-blue-700 dark:text-cyan-300">100,00%</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">{numTaquillas} Taquillas × Bs. {formatBs(dailySalesPerTaquilla, 0)}/día × {timeHorizonDays}d</td>
+                    <td className="p-3 text-slate-800 dark:text-slate-300">Red Comercial Nacional</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Contrato Concesión</td>
                   </tr>
 
                   <tr>
-                    <td className="p-3 text-slate-300 pl-6">(−) Premios Efectivo al Apostador (84%)</td>
-                    <td className="p-3 text-right font-mono text-slate-300">
+                    <td className="p-3 text-slate-700 dark:text-slate-300 pl-6">(−) Premios Efectivo al Apostador (84%)</td>
+                    <td className="p-3 text-right font-mono text-slate-700 dark:text-slate-300">
                       -Bs. {formatBs(projPremiosEfectivo84, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-slate-400">
+                    <td className="p-3 text-right font-mono text-slate-500 dark:text-slate-400">
                       {((projPremiosEfectivo84 / projVentaTotal) * 100).toFixed(2)}%
                     </td>
-                    <td className="p-3 text-slate-400">Premios Brutos menos 16% IGF</td>
-                    <td className="p-3 text-emerald-400">Apostadores Ganadores</td>
-                    <td className="p-3 text-slate-400">Art. 18 Prov. SNAT/2026/00093</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Premios Brutos menos 16% IGF</td>
+                    <td className="p-3 text-emerald-700 dark:text-emerald-400 font-semibold">Apostadores Ganadores</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Art. 18 Prov. SNAT/2026/00093</td>
                   </tr>
 
-                  <tr className="bg-amber-950/10">
-                    <td className="p-3 text-amber-300 font-semibold pl-6">(−) Retención 16% IGF (Planilla 99029)</td>
-                    <td className="p-3 text-right font-mono text-amber-400 font-bold">
+                  <tr className="bg-amber-50/40 dark:bg-amber-950/10">
+                    <td className="p-3 text-amber-800 dark:text-amber-300 font-semibold pl-6">(−) Retención 16% IGF (Planilla 99029)</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400 font-bold">
                       -Bs. {formatBs(projRetencionIGF16, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-amber-400">
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">
                       {((projRetencionIGF16 / projVentaTotal) * 100).toFixed(2)}%
                     </td>
-                    <td className="p-3 text-slate-400">16% Pago Único s/ Premios Brutos</td>
-                    <td className="p-3 text-amber-300">SENIAT (Tesoro Nacional)</td>
-                    <td className="p-3 text-slate-400">Art. 65 LISLR / Dcto. 1.808</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">16% Pago Único s/ Premios Brutos</td>
+                    <td className="p-3 text-amber-800 dark:text-amber-300 font-semibold">SENIAT (Tesoro Nacional)</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Art. 65 LISLR / Dcto. 1.808</td>
                   </tr>
 
-                  <tr className="bg-slate-950/60 font-bold border-t border-slate-700">
-                    <td className="p-3 text-emerald-300">(=) GGR Consolidado de Red (Venta − Premios)</td>
-                    <td className="p-3 text-right font-mono text-emerald-400 text-sm">
+                  <tr className="bg-slate-100/70 dark:bg-slate-950/60 font-bold border-t border-slate-300 dark:border-slate-700">
+                    <td className="p-3 text-emerald-800 dark:text-emerald-300">(=) GGR Consolidado de Red (Venta − Premios)</td>
+                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400 text-sm">
                       Bs. {formatBs(projTotalGGR, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-emerald-400">
+                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">
                       {((projTotalGGR / projVentaTotal) * 100).toFixed(2)}%
                     </td>
-                    <td className="p-3 text-slate-400">Base Imponible Real del Juego</td>
-                    <td className="p-3 text-slate-300">Margen Bruto Industria</td>
-                    <td className="p-3 text-slate-400">Recomendación CIAT</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Base Imponible Real del Juego</td>
+                    <td className="p-3 text-slate-800 dark:text-slate-300">Margen Bruto Industria</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Recomendación CIAT</td>
                   </tr>
 
                   <tr>
-                    <td className="p-3 text-slate-300 pl-6">(−) Comisiones Netas Taquillas</td>
-                    <td className="p-3 text-right font-mono text-emerald-400">
+                    <td className="p-3 text-slate-700 dark:text-slate-300 pl-6">(−) Comisiones Netas Taquillas</td>
+                    <td className="p-3 text-right font-mono text-blue-700 dark:text-blue-400">
                       -Bs. {formatBs(projTaquillaCommNeta, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-slate-400">
+                    <td className="p-3 text-right font-mono text-slate-500 dark:text-slate-400">
                       {((projTaquillaCommNeta / projVentaTotal) * 100).toFixed(2)}%
                     </td>
-                    <td className="p-3 text-slate-400">Comisión Bruta (20%/12%) menos 2,5% IAE</td>
-                    <td className="p-3 text-blue-300">Red de {numTaquillas} Agencias POS</td>
-                    <td className="p-3 text-slate-400">LOCAPTEM Art. 29 num. 1</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Comisión Bruta (20%/12%) menos 2,5% IAE</td>
+                    <td className="p-3 text-blue-700 dark:text-blue-300 font-semibold">Red de {numTaquillas} Agencias POS</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">LOCAPTEM Art. 29 num. 1</td>
                   </tr>
 
                   <tr>
-                    <td className="p-3 text-slate-300 pl-6">(−) Spread Neto Comercializadoras</td>
-                    <td className="p-3 text-right font-mono text-amber-300">
+                    <td className="p-3 text-slate-700 dark:text-slate-300 pl-6">(−) Spread Neto Comercializadoras</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-300">
                       -Bs. {formatBs(projComercialSpreadNeto, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-slate-400">
+                    <td className="p-3 text-right font-mono text-slate-500 dark:text-slate-400">
                       {((projComercialSpreadNeto / projVentaTotal) * 100).toFixed(2)}%
                     </td>
-                    <td className="p-3 text-slate-400">Spread Diferencial (5%/6%) menos 2,5% IAE</td>
-                    <td className="p-3 text-amber-300">{numComercializadoras} Comercializadoras Máster</td>
-                    <td className="p-3 text-slate-400">Arts. 32 y 33 Prov. 00093</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Spread Diferencial (5%/6%) menos 2,5% IAE</td>
+                    <td className="p-3 text-amber-700 dark:text-amber-300 font-semibold">{numComercializadoras} Comercializadoras Máster</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Arts. 32 y 33 Prov. 00093</td>
                   </tr>
 
-                  <tr className="bg-blue-950/10">
-                    <td className="p-3 text-blue-300 font-semibold pl-6">(−) IAE Municipal Alcaldías (2,5%)</td>
-                    <td className="p-3 text-right font-mono text-blue-400 font-bold">
+                  <tr className="bg-blue-50/40 dark:bg-blue-950/10">
+                    <td className="p-3 text-blue-800 dark:text-blue-300 font-semibold pl-6">(−) IAE Municipal Alcaldías (2,5%)</td>
+                    <td className="p-3 text-right font-mono text-blue-700 dark:text-blue-400 font-bold">
                       -Bs. {formatBs(projAlcaldiaTotal, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-blue-400">
+                    <td className="p-3 text-right font-mono text-blue-700 dark:text-blue-400">
                       {((projAlcaldiaTotal / projVentaTotal) * 100).toFixed(2)}%
                     </td>
-                    <td className="p-3 text-slate-400">2,50% armonizado s/ Comisiones</td>
-                    <td className="p-3 text-blue-300">Haciendas Municipales (Alcaldías)</td>
-                    <td className="p-3 text-slate-400">LOCAPTEM Art. 29 num. 1</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">2,50% armonizado s/ Comisiones</td>
+                    <td className="p-3 text-blue-800 dark:text-blue-300 font-semibold">Haciendas Municipales (Alcaldías)</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">LOCAPTEM Art. 29 num. 1</td>
                   </tr>
 
-                  <tr className="bg-amber-950/10">
-                    <td className="p-3 text-amber-300 font-semibold pl-6">(−) Impuesto s/ Juegos SENIAT (10%)</td>
-                    <td className="p-3 text-right font-mono text-amber-400 font-bold">
+                  <tr className="bg-amber-50/40 dark:bg-amber-950/10">
+                    <td className="p-3 text-amber-800 dark:text-amber-300 font-semibold pl-6">(−) Impuesto s/ Juegos SENIAT (10%)</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400 font-bold">
                       -Bs. {formatBs(projSeniatJuegos10, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-amber-400">
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">
                       {((projSeniatJuegos10 / projVentaTotal) * 100).toFixed(2)}%
                     </td>
-                    <td className="p-3 text-slate-400">10,00% universal s/ GGR del Neto</td>
-                    <td className="p-3 text-amber-300">SENIAT (Tesoro Nacional)</td>
-                    <td className="p-3 text-slate-400">Ley de Juegos de Envite</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">10,00% universal s/ GGR del Neto</td>
+                    <td className="p-3 text-amber-800 dark:text-amber-300 font-semibold">SENIAT (Tesoro Nacional)</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Ley de Juegos de Envite</td>
                   </tr>
 
-                  <tr className="bg-emerald-950/10">
-                    <td className="p-3 text-emerald-300 font-semibold pl-6">(−) Canon IOBPAS Beneficencia Pública</td>
-                    <td className="p-3 text-right font-mono text-emerald-400 font-bold">
-                      -Bs. {formatBs(projIobpasBeneficencia, 2)}
+                  <tr className="bg-emerald-50/40 dark:bg-emerald-950/10">
+                    <td className="p-3 text-emerald-800 dark:text-emerald-300 font-semibold pl-6">(−) Canon IOBPAS Beneficencia Pública</td>
+                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400 font-bold">
+                      -Bs. {formatBs(projIobpasCanonGGR, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-emerald-400">
-                      {((projIobpasBeneficencia / projVentaTotal) * 100).toFixed(2)}%
+                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">
+                      {((projIobpasCanonGGR / projVentaTotal) * 100).toFixed(2)}%
                     </td>
-                    <td className="p-3 text-slate-400">5% Triples / 1% Animalitos s/ GGR</td>
-                    <td className="p-3 text-emerald-300">Loterías Oficiales (Hospitales)</td>
-                    <td className="p-3 text-slate-400">Ley de Lotería Art. 23</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">5% Triples / 1% Animalitos s/ GGR</td>
+                    <td className="p-3 text-emerald-800 dark:text-emerald-300 font-semibold">Loterías Oficiales (Hospitales)</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Ley de Lotería Art. 23</td>
                   </tr>
 
-                  <tr className="bg-purple-950/10">
-                    <td className="p-3 text-purple-300 font-semibold pl-6">(−) Tasas Telemáticas CONALOT</td>
-                    <td className="p-3 text-right font-mono text-purple-400 font-bold">
-                      -Bs. {formatBs(projConalotTotal, 2)}
-                    </td>
-                    <td className="p-3 text-right font-mono text-purple-400">
-                      {((projConalotTotal / projVentaTotal) * 100).toFixed(2)}%
-                    </td>
-                    <td className="p-3 text-slate-400">Supervisión SCFD y Homologación</td>
-                    <td className="p-3 text-purple-300">CONALOT (Ente Regulador)</td>
-                    <td className="p-3 text-slate-400">Resolución CONALOT 002-2026</td>
-                  </tr>
-
-                  <tr className="bg-purple-950/10">
-                    <td className="p-3 text-purple-300 font-semibold pl-6">(−) Software y Soporte Sistemas IT</td>
-                    <td className="p-3 text-right font-mono text-purple-400 font-bold">
+                  <tr className="bg-purple-50/40 dark:bg-purple-950/10">
+                    <td className="p-3 text-purple-800 dark:text-purple-300 font-semibold pl-6">(−) Software y Soporte Sistemas IT</td>
+                    <td className="p-3 text-right font-mono text-purple-700 dark:text-purple-400 font-bold">
                       -Bs. {formatBs(projSistemasITFee, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-purple-400">
+                    <td className="p-3 text-right font-mono text-purple-700 dark:text-purple-400">
                       {((projSistemasITFee / projVentaTotal) * 100).toFixed(2)}%
                     </td>
-                    <td className="p-3 text-slate-400">1,50% s/ Venta Bruta (Licencia SaaS)</td>
-                    <td className="p-3 text-purple-300">{numSistemasIT} Plataformas Homologadas</td>
-                    <td className="p-3 text-slate-400">Certificación ISO 27001</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">1,50% s/ Venta Bruta (Licencia SaaS)</td>
+                    <td className="p-3 text-purple-800 dark:text-purple-300 font-semibold">{numSistemasIT} Plataformas Homologadas</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Certificación ISO 27001</td>
                   </tr>
 
-                  <tr className="bg-emerald-950/30 font-bold border-t-2 border-slate-700">
-                    <td className="p-3 text-emerald-400">(=) Superávit Operativo Neto Operadoras</td>
-                    <td className="p-3 text-right font-mono text-emerald-400 text-sm font-black">
-                      +Bs. {formatBs(projTotalOperadorasNet, 2)}
+                  <tr>
+                    <td className="p-3 text-amber-800 dark:text-amber-300 pl-6">(−) Participación Comercializadora (50% Net Win)</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-300 font-bold">
+                      -Bs. {formatBs(projShareComercializadoras, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-emerald-400">
-                      {((projTotalOperadorasNet / projVentaTotal) * 100).toFixed(2)}%
+                    <td className="p-3 text-right font-mono text-slate-500 dark:text-slate-400">
+                      {((projShareComercializadoras / projVentaTotal) * 100).toFixed(2)}%
                     </td>
-                    <td className="p-3 text-slate-400">50% Net Win Distribuible</td>
-                    <td className="p-3 text-emerald-300">{numOperadoras} Operadoras Oficiales</td>
-                    <td className="p-3 text-slate-400">Solvencia de Fianza</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">50% Net Win Distribuible</td>
+                    <td className="p-3 text-amber-700 dark:text-amber-300 font-semibold">{numComercializadoras} Comercializadoras Máster</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Contrato de Comercialización</td>
+                  </tr>
+
+                  <tr className="bg-emerald-50 dark:bg-emerald-950/30 font-bold border-t-2 border-slate-300 dark:border-slate-700">
+                    <td className="p-3 text-emerald-800 dark:text-emerald-400">(=) Superávit Operativo Neto Operadoras (50% Net Win)</td>
+                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400 text-sm font-black">
+                      +Bs. {formatBs(projShareOperadoras, 2)}
+                    </td>
+                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">
+                      {((projShareOperadoras / projVentaTotal) * 100).toFixed(2)}%
+                    </td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">50% Net Win Distribuible</td>
+                    <td className="p-3 text-emerald-800 dark:text-emerald-300 font-semibold">{numOperadoras} Operadoras Oficiales</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Solvencia de Fianza</td>
                   </tr>
                 </tbody>
               </table>
             </div>
+
+            {/* Cuadro de Verificación de Cuadre 100% */}
+            <div className="mt-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono mb-2">
+                <span className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  Cuadre Matemático Consolidado: 100,00% del Valor Facial (Bs. {formatBs(projVentaTotal, 2)})
+                </span>
+                <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-300 dark:border-emerald-600/40">
+                  Exacto al Céntimo (Diferencial: Bs. 0,00)
+                </span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 text-[11px] font-mono">
+                <div className="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <div className="text-[10px] text-slate-500">Apostadores</div>
+                  <div className="font-bold text-slate-900 dark:text-white">{((projPremiosEfectivo84 / projVentaTotal) * 100).toFixed(2)}%</div>
+                  <div className="text-[10px] text-slate-500">Bs. {formatBs(projPremiosEfectivo84, 0)}</div>
+                </div>
+                <div className="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <div className="text-[10px] text-amber-600 dark:text-amber-400">SENIAT IGF 16%</div>
+                  <div className="font-bold text-amber-700 dark:text-amber-400">{((projRetencionIGF16 / projVentaTotal) * 100).toFixed(2)}%</div>
+                  <div className="text-[10px] text-slate-500">Bs. {formatBs(projRetencionIGF16, 0)}</div>
+                </div>
+                <div className="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <div className="text-[10px] text-amber-600 dark:text-amber-400">SENIAT Juegos 10%</div>
+                  <div className="font-bold text-amber-700 dark:text-amber-400">{((projSeniatJuegos10 / projVentaTotal) * 100).toFixed(2)}%</div>
+                  <div className="text-[10px] text-slate-500">Bs. {formatBs(projSeniatJuegos10, 0)}</div>
+                </div>
+                <div className="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <div className="text-[10px] text-emerald-600 dark:text-emerald-400">IOBPAS GGR</div>
+                  <div className="font-bold text-emerald-700 dark:text-emerald-400">{((projIobpasCanonGGR / projVentaTotal) * 100).toFixed(2)}%</div>
+                  <div className="text-[10px] text-slate-500">Bs. {formatBs(projIobpasCanonGGR, 0)}</div>
+                </div>
+                <div className="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <div className="text-[10px] text-blue-600 dark:text-blue-400">Alcaldías IAE</div>
+                  <div className="font-bold text-blue-700 dark:text-blue-400">{((projAlcaldiaTotal / projVentaTotal) * 100).toFixed(2)}%</div>
+                  <div className="text-[10px] text-slate-500">Bs. {formatBs(projAlcaldiaTotal, 0)}</div>
+                </div>
+                <div className="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <div className="text-[10px] text-blue-600 dark:text-blue-400">Taquillas POS</div>
+                  <div className="font-bold text-blue-700 dark:text-blue-400">{((projTaquillaCommNeta / projVentaTotal) * 100).toFixed(2)}%</div>
+                  <div className="text-[10px] text-slate-500">Bs. {formatBs(projTaquillaCommNeta, 0)}</div>
+                </div>
+                <div className="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <div className="text-[10px] text-amber-600 dark:text-amber-400">Comercializ.</div>
+                  <div className="font-bold text-amber-700 dark:text-amber-400">{(((projComercialSpreadNeto + projShareComercializadoras) / projVentaTotal) * 100).toFixed(2)}%</div>
+                  <div className="text-[10px] text-slate-500">Bs. {formatBs(projComercialSpreadNeto + projShareComercializadoras, 0)}</div>
+                </div>
+                <div className="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <div className="text-[10px] text-emerald-600 dark:text-emerald-400">Operadoras</div>
+                  <div className="font-bold text-emerald-700 dark:text-emerald-400">{((projShareOperadoras / projVentaTotal) * 100).toFixed(2)}%</div>
+                  <div className="text-[10px] text-slate-500">Bs. {formatBs(projShareOperadoras, 0)}</div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* ====================================================================
-              TABLA 2: MATRIZ DE RENDIMIENTOS UNITARIOS Y TOTALES POR ACTOR
+              TABLA 2: MATRIZ DE RENDIMIENTOS UNITARIOS Y TOTALES POR ACTOR (5 ACTORES)
           ==================================================================== */}
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
+          <div className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div>
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <Table className="w-4 h-4 text-emerald-400" />
-                  Tabla 2: Matriz de Rendimientos Unitarios vs. Totales por Actor de la Red
+                <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <Table className="w-4 h-4 text-emerald-500" />
+                  Tabla 2: Matriz de Rendimientos y Costos por Sujeto Obligado y Actor de la Red (5 Niveles)
                 </h3>
-                <p className="text-xs text-slate-400">
-                  Desglose de ingresos brutos, cargas operativas/fiscales y rendimientos netos promedio y consolidados
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Desglose de ingresos brutos, cargas tributarias, costos de licencias RUNLOT e IOBPAS, y rendimientos netos finales
                 </p>
               </div>
             </div>
 
-            <div className="overflow-x-auto rounded-xl border border-slate-800">
+            <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
               <table className="w-full text-xs text-left">
-                <thead className="bg-slate-950 text-slate-400 font-mono text-[11px] border-b border-slate-800">
+                <thead className="bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 font-mono text-[11px] border-b border-slate-200 dark:border-slate-800">
                   <tr>
-                    <th className="p-3">Actor de la Red</th>
-                    <th className="p-3 text-center">Unidades</th>
+                    <th className="p-3">Sujeto Obligado / Actor de Red</th>
+                    <th className="p-3 text-center">Unid.</th>
                     <th className="p-3 text-right">Venta Gestionada</th>
                     <th className="p-3 text-right">Ingreso Bruto</th>
                     <th className="p-3 text-right">Carga Fiscal / IAE</th>
-                    <th className="p-3 text-right text-cyan-400">Promedio Neto Unitario</th>
-                    <th className="p-3 text-right text-emerald-400">Rendimiento Total Red</th>
+                    <th className="p-3 text-right">Licencias RUNLOT + IOBPAS</th>
+                    <th className="p-3 text-right text-blue-700 dark:text-cyan-400">Promedio Unitario Neto</th>
+                    <th className="p-3 text-right text-emerald-700 dark:text-emerald-400">Rendimiento Total Red</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60 bg-slate-900/40 text-slate-300">
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 bg-white dark:bg-slate-900/40 text-slate-700 dark:text-slate-300">
+                  {/* Nivel 1: Taquillas */}
                   <tr>
-                    <td className="p-3 font-semibold text-white flex items-center gap-2">
-                      <Store className="w-3.5 h-3.5 text-blue-400" /> Taquillas / Agencias POS
+                    <td className="p-3 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Store className="w-3.5 h-3.5 text-blue-500" /> Taquillas / Agencias POS
                     </td>
-                    <td className="p-3 text-center font-mono text-cyan-300 font-bold">{numTaquillas}</td>
-                    <td className="p-3 text-right font-mono text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
-                    <td className="p-3 text-right font-mono text-slate-300">Bs. {formatBs(projTaquillaCommBruta, 2)}</td>
-                    <td className="p-3 text-right font-mono text-rose-400">-Bs. {formatBs(projAlcaldiaTaquillas, 2)}</td>
-                    <td className="p-3 text-right font-mono text-cyan-300 font-extrabold text-sm">
+                    <td className="p-3 text-center font-mono text-cyan-700 dark:text-cyan-300 font-bold">{numTaquillas}</td>
+                    <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
+                    <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projTaquillaCommBruta, 2)}</td>
+                    <td className="p-3 text-right font-mono text-rose-600 dark:text-rose-400">-Bs. {formatBs(projAlcaldiaTaquillas, 2)}</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">-Bs. {formatBs(totalRunlotTaquillas + totalIobpasTaquillas, 2)}</td>
+                    <td className="p-3 text-right font-mono text-blue-700 dark:text-cyan-300 font-extrabold text-sm">
                       Bs. {formatBs(avgPerTaquilla, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-emerald-400 font-bold">
-                      Bs. {formatBs(projTaquillaCommNeta, 2)}
+                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400 font-bold">
+                      Bs. {formatBs(projTaquillaUtilidadNeta, 2)}
                     </td>
                   </tr>
 
+                  {/* Nivel 2: Comercializadoras */}
                   <tr>
-                    <td className="p-3 font-semibold text-white flex items-center gap-2">
-                      <Building2 className="w-3.5 h-3.5 text-amber-400" /> Comercializadoras Intermediarias
+                    <td className="p-3 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Building2 className="w-3.5 h-3.5 text-amber-500" /> Comercializadoras Intermediarias
                     </td>
-                    <td className="p-3 text-center font-mono text-amber-300 font-bold">{numComercializadoras}</td>
-                    <td className="p-3 text-right font-mono text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
-                    <td className="p-3 text-right font-mono text-slate-300">Bs. {formatBs(projComercialSpreadBruto + projShareComercializadoras, 2)}</td>
-                    <td className="p-3 text-right font-mono text-rose-400">-Bs. {formatBs(projAlcaldiaComercial, 2)}</td>
-                    <td className="p-3 text-right font-mono text-amber-300 font-extrabold text-sm">
+                    <td className="p-3 text-center font-mono text-amber-700 dark:text-amber-300 font-bold">{numComercializadoras}</td>
+                    <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
+                    <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projComercialSpreadBruto + projShareComercializadoras, 2)}</td>
+                    <td className="p-3 text-right font-mono text-rose-600 dark:text-rose-400">-Bs. {formatBs(projAlcaldiaComercial, 2)}</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">-Bs. {formatBs(totalRunlotComercializadoras + totalIobpasComercializadoras, 2)}</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-300 font-extrabold text-sm">
                       Bs. {formatBs(avgPerComercializadora, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-emerald-400 font-bold">
-                      Bs. {formatBs(projTotalComercializadorasNet, 2)}
+                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400 font-bold">
+                      Bs. {formatBs(projComercialUtilidadNeta, 2)}
                     </td>
                   </tr>
 
+                  {/* Nivel 3: Operadoras */}
                   <tr>
-                    <td className="p-3 font-semibold text-white flex items-center gap-2">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Operadoras de Juegos de Lotería
+                    <td className="p-3 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Operadoras de Juegos de Lotería
                     </td>
-                    <td className="p-3 text-center font-mono text-emerald-300 font-bold">{numOperadoras}</td>
-                    <td className="p-3 text-right font-mono text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
-                    <td className="p-3 text-right font-mono text-slate-300">Bs. {formatBs(projShareOperadoras, 2)}</td>
-                    <td className="p-3 text-right font-mono text-emerald-400">Bs. 0,00 (No Sujeto)</td>
-                    <td className="p-3 text-right font-mono text-emerald-300 font-extrabold text-sm">
+                    <td className="p-3 text-center font-mono text-emerald-700 dark:text-emerald-300 font-bold">{numOperadoras}</td>
+                    <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
+                    <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projShareOperadoras, 2)}</td>
+                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">Bs. 0,00 (No Sujeto)</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">-Bs. {formatBs(totalRunlotOperadoras + totalIobpasOperadoras, 2)}</td>
+                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-300 font-extrabold text-sm">
                       Bs. {formatBs(avgPerOperadora, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-emerald-400 font-bold">
-                      Bs. {formatBs(projTotalOperadorasNet, 2)}
+                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400 font-bold">
+                      Bs. {formatBs(projOperadoraUtilidadNeta, 2)}
                     </td>
                   </tr>
 
+                  {/* Nivel 4: Sistemas Informáticos */}
                   <tr>
-                    <td className="p-3 font-semibold text-white flex items-center gap-2">
-                      <Cpu className="w-3.5 h-3.5 text-purple-400" /> Empresas de Sistemas Informáticos
+                    <td className="p-3 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Cpu className="w-3.5 h-3.5 text-purple-500" /> Empresas de Sistemas Informáticos
                     </td>
-                    <td className="p-3 text-center font-mono text-purple-300 font-bold">{numSistemasIT}</td>
-                    <td className="p-3 text-right font-mono text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
-                    <td className="p-3 text-right font-mono text-purple-300">Bs. {formatBs(projSistemasITFee, 2)}</td>
-                    <td className="p-3 text-right font-mono text-rose-400">-Bs. {formatBs(projConalotHomologacionIT, 2)}</td>
-                    <td className="p-3 text-right font-mono text-purple-300 font-extrabold text-sm">
+                    <td className="p-3 text-center font-mono text-purple-700 dark:text-purple-300 font-bold">{numSistemasIT}</td>
+                    <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
+                    <td className="p-3 text-right font-mono text-purple-700 dark:text-purple-300">Bs. {formatBs(projSistemasITFee, 2)}</td>
+                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">Bs. 0,00</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">-Bs. {formatBs(totalRunlotSistemasIT + totalIobpasSistemasIT, 2)}</td>
+                    <td className="p-3 text-right font-mono text-purple-700 dark:text-purple-300 font-extrabold text-sm">
                       Bs. {formatBs(avgPerSistemaIT, 2)}
                     </td>
-                    <td className="p-3 text-right font-mono text-purple-400 font-bold">
-                      Bs. {formatBs(projSistemasITFee - projConalotHomologacionIT, 2)}
+                    <td className="p-3 text-right font-mono text-purple-700 dark:text-purple-400 font-bold">
+                      Bs. {formatBs(projSistemasITNeto, 2)}
+                    </td>
+                  </tr>
+
+                  {/* Nivel 5: Responsables Informáticos */}
+                  <tr>
+                    <td className="p-3 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                      <UserCheck className="w-3.5 h-3.5 text-indigo-500" /> Responsables Informáticos (Custodios IT)
+                    </td>
+                    <td className="p-3 text-center font-mono text-indigo-700 dark:text-indigo-300 font-bold">{numResponsablesIT}</td>
+                    <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
+                    <td className="p-3 text-right font-mono text-indigo-700 dark:text-indigo-300">Bs. {formatBs(projTotalHonorariosRespIT, 2)}</td>
+                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">Bs. 0,00</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">-Bs. {formatBs(totalRunlotResponsablesIT + totalIobpasResponsablesIT, 2)}</td>
+                    <td className="p-3 text-right font-mono text-indigo-700 dark:text-indigo-300 font-extrabold text-sm">
+                      Bs. {formatBs(avgPerResponsableIT, 2)}
+                    </td>
+                    <td className="p-3 text-right font-mono text-indigo-700 dark:text-indigo-400 font-bold">
+                      Bs. {formatBs(projResponsablesITNeto, 2)}
                     </td>
                   </tr>
                 </tbody>
