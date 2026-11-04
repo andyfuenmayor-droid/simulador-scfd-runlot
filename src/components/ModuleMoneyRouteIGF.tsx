@@ -523,30 +523,30 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
 
         <div className="p-4 rounded-2xl bg-slate-900 border border-emerald-500/40 shadow-xl bg-emerald-950/10">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase font-sans text-emerald-300">
+            <span className="text-xs font-bold uppercase font-sans text-emerald-700 dark:text-emerald-300">
               2. Efectivo Pagado (84%)
             </span>
-            <TrendingDown className="w-4 h-4 text-emerald-400" />
+            <TrendingDown className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <div className="text-2xl font-black text-emerald-400 font-mono mt-2">
+          <div className="text-2xl font-black text-emerald-700 dark:text-emerald-400 font-mono mt-2">
             Bs. {formatBs(totalNetPaidToWinner, 2)}
           </div>
-          <p className="text-[11px] text-emerald-300/80 font-sans mt-1">
+          <p className="text-[11px] text-emerald-800 dark:text-emerald-300/80 font-sans mt-1">
             Desembolsado en taquilla. <strong>Único monto</strong> que reduce la caja física.
           </p>
         </div>
 
         <div className="p-4 rounded-2xl bg-slate-900 border border-red-500/40 shadow-xl bg-red-950/10">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase font-sans text-red-300">
+            <span className="text-xs font-bold uppercase font-sans text-rose-700 dark:text-red-300">
               3. Retenido 16% IGF
             </span>
-            <Lock className="w-4 h-4 text-red-400" />
+            <Lock className="w-4 h-4 text-rose-600 dark:text-red-400" />
           </div>
-          <div className="text-2xl font-black text-red-400 font-mono mt-2">
+          <div className="text-2xl font-black text-rose-700 dark:text-red-400 font-mono mt-2">
             Bs. {formatBs(totalIgf16, 2)}
           </div>
-          <p className="text-[11px] text-red-300/80 font-sans mt-1">
+          <p className="text-[11px] text-rose-800 dark:text-red-300/80 font-sans mt-1">
             Pasivo protegido en balance para enteramiento directo al SENIAT.
           </p>
         </div>
@@ -619,7 +619,7 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
               </p>
             </div>
           </div>
-          <span className="text-xs font-mono text-emerald-400 font-bold bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-500/40">
+          <span className="text-xs font-mono text-emerald-800 dark:text-emerald-400 font-bold bg-emerald-100 dark:bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-300 dark:border-emerald-500/40">
             Venta Red: Bs. {formatBs(totalSales, 2)}
           </span>
         </div>
@@ -633,7 +633,7 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
                   <Store className="w-4 h-4" />
                   Nivel 1: Taquilla
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-700 font-bold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-700 font-bold">
                   Punto de Venta
                 </span>
               </div>
@@ -682,7 +682,7 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
                   <Layers className="w-4 h-4" />
                   Nivel 2: Comercializadora
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-700 font-bold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700 font-bold">
                   Intermediaria
                 </span>
               </div>
@@ -718,7 +718,7 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
                   <span>(-) IAE 2,5% s/ Diferencial:</span>
                   <span>-Bs. {formatBs(totalComerIae, 2)}</span>
                 </div>
-                <div className="flex justify-between text-amber-200 font-bold">
+                <div className="flex justify-between text-amber-800 dark:text-amber-200 font-bold">
                   <span>Comisiones Finales (Neto):</span>
                   <span>Bs. {formatBs(totalComerFinalComm, 2)}</span>
                 </div>
@@ -753,7 +753,7 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
                   <Landmark className="w-4 h-4" />
                   Nivel 3: Operadora
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-700 font-bold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 font-bold">
                   Agente Único
                 </span>
               </div>
@@ -813,14 +813,14 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
                 Operación solvente y sostenible tras enterar tributos de juego y tasas municipales.
               </p>
               {/* LIQUIDACIÓN DEL IGF AL FINAL SIN SUMARLO EN NADA */}
-              <div className="p-2.5 rounded-lg bg-red-950/30 border border-red-500/30 text-xs font-mono">
-                <div className="flex justify-between items-center text-red-300 font-bold">
+              <div className="p-2.5 rounded-lg bg-rose-50 dark:bg-red-950/30 border border-rose-200 dark:border-red-500/30 text-xs font-mono">
+                <div className="flex justify-between items-center text-rose-800 dark:text-red-300 font-bold">
                   <span>Liquidación Retención 16% IGF:</span>
-                  <span className="text-sm font-extrabold text-red-400">Bs. {formatBs(totalIgf16, 2)}</span>
+                  <span className="text-sm font-extrabold text-rose-700 dark:text-red-400">Bs. {formatBs(totalIgf16, 2)}</span>
                 </div>
-                <div className="text-[10px] text-slate-400 font-sans mt-0.5 flex justify-between">
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 font-sans mt-0.5 flex justify-between">
                   <span>Planilla SENIAT Forma 99029 (XML)</span>
-                  <span className="text-slate-400 font-mono">(Fondos Terceros • No suma al resultado)</span>
+                  <span className="text-slate-500 dark:text-slate-400 font-mono">(Fondos Terceros • No suma al resultado)</span>
                 </div>
               </div>
             </div>

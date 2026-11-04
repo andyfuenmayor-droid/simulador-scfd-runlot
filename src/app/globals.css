@@ -107,7 +107,7 @@ html.light body {
   color: #0f172a;
 }
 
-/* Fondos principales */
+/* Fondos principales de página y headers */
 html.light .bg-slate-950 {
   background-color: #f1f5f9 !important;
 }
@@ -123,7 +123,10 @@ html.light .bg-slate-950\/80 {
 html.light .bg-slate-950\/70,
 html.light .bg-slate-950\/60,
 html.light .bg-slate-950\/50,
-html.light .bg-slate-950\/40 {
+html.light .bg-slate-950\/40,
+html.light .bg-slate-950\/30,
+html.light .bg-slate-950\/25,
+html.light .bg-slate-950\/20 {
   background-color: #f8fafc !important;
 }
 
@@ -138,7 +141,8 @@ html.light .bg-slate-900\/80,
 html.light .bg-slate-900\/70,
 html.light .bg-slate-900\/60,
 html.light .bg-slate-900\/50,
-html.light .bg-slate-900\/40 {
+html.light .bg-slate-900\/40,
+html.light .bg-slate-900\/30 {
   background-color: #ffffff !important;
 }
 
@@ -162,7 +166,7 @@ html.light .border-slate-700 {
   border-color: #e2e8f0 !important;
 }
 
-/* Tipografía en Modo Claro */
+/* Tipografía Neutral en Modo Claro */
 html.light .text-white {
   color: #0f172a !important;
 }
@@ -214,84 +218,200 @@ html.light .bg-indigo-600 * {
   color: #ffffff !important;
 }
 
-/* Botones y Badges Translúcidos (Adaptación Suave) */
+/* ====================================================================
+   FONDOS TINTADOS Y BADGES EN MODO CLARO (ALTO CONTRASTE)
+==================================================================== */
+
+/* ROJO / ROSA (Columna 1 Esquema Vigente, Retenciones, Alertas) */
+html.light .bg-red-950,
+html.light .bg-red-950\/90,
+html.light .bg-red-950\/80,
+html.light .bg-red-950\/70,
+html.light .bg-red-950\/60,
+html.light .bg-red-950\/50,
+html.light .bg-red-950\/40,
+html.light .bg-red-950\/30,
+html.light .bg-red-950\/25,
+html.light .bg-red-950\/20,
+html.light .bg-red-950\/15,
+html.light .bg-red-950\/10,
+html.light .bg-red-900,
+html.light .bg-red-900\/30,
+html.light .bg-red-900\/20,
+html.light .bg-rose-950,
+html.light .bg-rose-950\/90,
+html.light .bg-rose-950\/80,
+html.light .bg-rose-950\/40,
+html.light .bg-rose-950\/30,
+html.light .bg-rose-950\/20 {
+  background-color: #fee2e2 !important;
+}
+
+html.light .bg-red-600\/20,
+html.light .bg-red-500\/15,
+html.light .bg-red-500\/10,
+html.light .bg-rose-600\/20,
+html.light .bg-rose-500\/15,
+html.light .bg-rose-500\/10 {
+  background-color: #fee2e2 !important;
+}
+
+html.light .text-red-400,
+html.light .text-red-300,
+html.light .text-red-300\/90,
+html.light .text-red-300\/80,
+html.light .text-red-200,
+html.light .text-rose-400,
+html.light .text-rose-300 {
+  color: #b91c1c !important; /* Rojo profundo legible sobre fondos claros */
+}
+
+html.light .border-red-800,
+html.light .border-red-800\/70,
+html.light .border-red-700,
+html.light .border-red-500,
+html.light .border-red-500\/40,
+html.light .border-red-500\/30,
+html.light .border-rose-500,
+html.light .border-rose-500\/40,
+html.light .border-rose-500\/30 {
+  border-color: #fca5a5 !important;
+}
+
+/* VERDE ESMERALDA (Columna 2 Reforma GGR, Superávit, Éxito) */
+html.light .bg-emerald-950,
+html.light .bg-emerald-950\/90,
+html.light .bg-emerald-950\/80,
+html.light .bg-emerald-950\/70,
+html.light .bg-emerald-950\/60,
+html.light .bg-emerald-950\/50,
+html.light .bg-emerald-950\/40,
+html.light .bg-emerald-950\/30,
+html.light .bg-emerald-950\/25,
+html.light .bg-emerald-950\/20,
+html.light .bg-emerald-950\/15,
+html.light .bg-emerald-950\/10,
+html.light .bg-emerald-900,
+html.light .bg-emerald-900\/30 {
+  background-color: #d1fae5 !important;
+}
+
+html.light .bg-emerald-600\/20,
+html.light .bg-emerald-500\/15,
+html.light .bg-emerald-500\/10 {
+  background-color: #d1fae5 !important;
+}
+
+html.light .text-emerald-400,
+html.light .text-emerald-300,
+html.light .text-emerald-300\/90,
+html.light .text-emerald-300\/80,
+html.light .text-emerald-200 {
+  color: #047857 !important; /* Verde bosque profundo de alto contraste */
+}
+
+html.light .border-emerald-800,
+html.light .border-emerald-800\/70,
+html.light .border-emerald-800\/60,
+html.light .border-emerald-700,
+html.light .border-emerald-500,
+html.light .border-emerald-500\/40,
+html.light .border-emerald-500\/30 {
+  border-color: #6ee7b7 !important;
+}
+
+/* AZUL (Nivel 1 Taquilla, POS, Mesa Técnica) */
+html.light .bg-blue-950,
+html.light .bg-blue-950\/90,
+html.light .bg-blue-950\/80,
+html.light .bg-blue-950\/70,
+html.light .bg-blue-950\/60,
+html.light .bg-blue-950\/50,
+html.light .bg-blue-950\/40,
+html.light .bg-blue-950\/35,
+html.light .bg-blue-950\/30,
+html.light .bg-blue-950\/20,
+html.light .bg-blue-950\/10 {
+  background-color: #dbeafe !important;
+}
+
 html.light .bg-blue-600\/20,
 html.light .bg-blue-500\/15,
 html.light .bg-blue-500\/10 {
   background-color: #dbeafe !important;
 }
+
 html.light .text-blue-400,
-html.light .text-blue-300 {
-  color: #1d4ed8 !important;
-}
-html.light .border-blue-500,
-html.light .border-blue-500\/40,
-html.light .border-blue-500\/30 {
-  border-color: #3b82f6 !important;
+html.light .text-blue-300,
+html.light .text-blue-200 {
+  color: #1d4ed8 !important; /* Azul marino vivo */
 }
 
-html.light .bg-emerald-600\/20,
-html.light .bg-emerald-500\/15,
-html.light .bg-emerald-500\/10,
-html.light .bg-emerald-950\/40 {
-  background-color: #d1fae5 !important;
+html.light .border-blue-800,
+html.light .border-blue-700,
+html.light .border-blue-500,
+html.light .border-blue-500\/50,
+html.light .border-blue-500\/40,
+html.light .border-blue-500\/30 {
+  border-color: #93c5fd !important;
 }
-html.light .text-emerald-400,
-html.light .text-emerald-300 {
-  color: #047857 !important;
-}
-html.light .border-emerald-500,
-html.light .border-emerald-500\/40,
-html.light .border-emerald-500\/30 {
-  border-color: #10b981 !important;
+
+/* ÁMBAR / AMARILLO (Nivel 2 Comercializadora, Spreads, Alertas) */
+html.light .bg-amber-950,
+html.light .bg-amber-950\/90,
+html.light .bg-amber-950\/80,
+html.light .bg-amber-950\/70,
+html.light .bg-amber-950\/60,
+html.light .bg-amber-950\/50,
+html.light .bg-amber-950\/40,
+html.light .bg-amber-950\/30,
+html.light .bg-amber-950\/20,
+html.light .bg-amber-950\/10,
+html.light .bg-amber-900,
+html.light .bg-amber-900\/30 {
+  background-color: #fef3c7 !important;
 }
 
 html.light .bg-amber-600\/20,
+html.light .bg-amber-500\/20,
 html.light .bg-amber-500\/15,
-html.light .bg-amber-500\/10,
-html.light .bg-amber-950\/40 {
+html.light .bg-amber-500\/10 {
   background-color: #fef3c7 !important;
 }
+
 html.light .text-amber-400,
-html.light .text-amber-300 {
-  color: #b45309 !important;
+html.light .text-amber-300,
+html.light .text-amber-200,
+html.light .text-amber-200\/80 {
+  color: #92400e !important; /* Bronce/ámbar oscuro, NUNCA amarillo pálido */
 }
+
+html.light .border-amber-800,
+html.light .border-amber-700,
 html.light .border-amber-500,
 html.light .border-amber-500\/40,
 html.light .border-amber-500\/30 {
-  border-color: #f59e0b !important;
+  border-color: #fcd34d !important;
 }
 
-html.light .bg-rose-600\/20,
-html.light .bg-rose-500\/15,
-html.light .bg-rose-500\/10,
-html.light .bg-rose-950\/40 {
-  background-color: #ffe4e6 !important;
-}
-html.light .text-rose-400,
-html.light .text-rose-300 {
-  color: #be123c !important;
-}
-html.light .border-rose-500,
-html.light .border-rose-500\/40,
-html.light .border-rose-500\/30 {
-  border-color: #f43f5e !important;
-}
-
+/* PÚRPURA Y CIAN */
+html.light .bg-purple-950,
+html.light .bg-purple-950\/40,
 html.light .bg-purple-600\/20,
 html.light .bg-purple-500\/15,
-html.light .bg-purple-500\/10,
-html.light .bg-purple-950\/40 {
+html.light .bg-purple-500\/10 {
   background-color: #f3e8ff !important;
 }
+
 html.light .text-purple-400,
 html.light .text-purple-300 {
   color: #7e22ce !important;
 }
+
 html.light .border-purple-500,
 html.light .border-purple-500\/40,
 html.light .border-purple-500\/30 {
-  border-color: #a855f7 !important;
+  border-color: #d8b4fe !important;
 }
 
 html.light .bg-cyan-600\/20,
@@ -299,6 +419,7 @@ html.light .bg-cyan-500\/15,
 html.light .bg-cyan-500\/10 {
   background-color: #cffafe !important;
 }
+
 html.light .text-cyan-400,
 html.light .text-cyan-300 {
   color: #0e7490 !important;

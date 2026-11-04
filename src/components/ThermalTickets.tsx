@@ -81,14 +81,14 @@ export const ThermalTickets: React.FC<ThermalTicketsProps> = ({
         <div className="flex flex-col items-center">
           <div className="w-full max-w-[450px] mb-3 flex items-center justify-between px-1">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-500/20 border border-red-500/40 text-red-400 text-xs font-bold">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 dark:bg-red-500/20 border border-red-300 dark:border-red-500/40 text-red-700 dark:text-red-400 text-xs font-bold">
                 1
               </span>
-              <h3 className="text-sm font-bold text-slate-200 tracking-wide uppercase">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-200 tracking-wide uppercase">
                 Modelo 1: Ticket Actual Rígido
               </h3>
             </div>
-            <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-red-950/80 border border-red-800/70 text-red-300">
+            <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-rose-100 dark:bg-red-950/80 border border-rose-300 dark:border-red-800/70 text-rose-800 dark:text-red-300">
               SNAT/2026/00093 Art. 30.2
             </span>
           </div>
@@ -245,14 +245,14 @@ export const ThermalTickets: React.FC<ThermalTicketsProps> = ({
         <div className="flex flex-col items-center">
           <div className="w-full max-w-[450px] mb-3 flex items-center justify-between px-1">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-bold">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-300 dark:border-emerald-500/40 text-emerald-800 dark:text-emerald-400 text-xs font-bold">
                 2
               </span>
-              <h3 className="text-sm font-bold text-slate-200 tracking-wide uppercase">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-200 tracking-wide uppercase">
                 Modelo 2: Ticket Simplificado Propuesto
               </h3>
             </div>
-            <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-800/70 text-emerald-300">
+            <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-800/70 text-emerald-800 dark:text-emerald-300">
               Tabular 80mm + IGF 16%
             </span>
           </div>

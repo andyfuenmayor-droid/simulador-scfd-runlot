@@ -1054,39 +1054,38 @@ export const Module2FinancialCalculator: React.FC<
       {/* ====================================================================
           SISTEMA DE CARPETAS (PESTAÑAS) PARA LOS 3 SUBNIVELES DE LA CADENA
       ==================================================================== */}
-      <div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 px-2">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+        {/* Pestañas de Carpetas Integradas (Header sin cortes ni fondos desalineados) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 border-b border-slate-200 dark:border-slate-800 bg-slate-100/90 dark:bg-slate-950/80 p-1.5 gap-1.5">
           {/* CARPETA NIVEL 1 */}
           <button
             type="button"
             onClick={() => setActiveFolder("nivel1")}
-            className={`group relative flex items-center justify-between px-5 py-3.5 rounded-t-2xl border-t-2 border-x transition-all text-left ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left cursor-pointer ${
               activeFolder === "nivel1"
-                ? "bg-slate-900 border-t-blue-500 border-x-slate-700 text-white shadow-lg z-10 -mb-px pb-4"
-                : "bg-slate-950/80 border-t-slate-800 border-x-slate-800/80 text-slate-400 hover:bg-slate-900/50 hover:text-slate-200"
+                ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-200 dark:border-slate-700 font-extrabold"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-white/60 dark:hover:bg-slate-900/40"
             }`}
           >
-            <div className="flex items-center gap-3 min-w-0">
-              <div
-                className={`p-2 rounded-xl border shrink-0 transition-colors ${
-                  activeFolder === "nivel1"
-                    ? "bg-blue-500/20 border-blue-500/40 text-blue-400"
-                    : "bg-slate-900 border-slate-800 text-slate-500 group-hover:text-slate-300"
-                }`}
-              >
-                {activeFolder === "nivel1" ? (
-                  <FolderOpen className="w-5 h-5" />
-                ) : (
-                  <Folder className="w-5 h-5" />
-                )}
+            <div
+              className={`p-2 rounded-lg shrink-0 transition-colors ${
+                activeFolder === "nivel1"
+                  ? "bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/40"
+                  : "bg-slate-200/70 dark:bg-slate-900 text-slate-500 border border-slate-300/60 dark:border-slate-800"
+              }`}
+            >
+              {activeFolder === "nivel1" ? (
+                <FolderOpen className="w-5 h-5" />
+              ) : (
+                <Folder className="w-5 h-5" />
+              )}
+            </div>
+            <div className="min-w-0">
+              <div className="text-[10px] font-mono uppercase tracking-wider font-extrabold text-blue-600 dark:text-blue-400">
+                Carpeta Subnivel 1
               </div>
-              <div>
-                <div className="text-[10px] font-mono uppercase tracking-wider font-extrabold text-blue-400">
-                  Carpeta Subnivel 1
-                </div>
-                <div className="text-sm font-extrabold">
-                  NIVEL 1: Taquilla / Centro de Apuestas
-                </div>
+              <div className="text-sm font-extrabold truncate">
+                NIVEL 1: Taquilla / Centro de Apuestas
               </div>
             </div>
           </button>
@@ -1095,33 +1094,31 @@ export const Module2FinancialCalculator: React.FC<
           <button
             type="button"
             onClick={() => setActiveFolder("nivel2")}
-            className={`group relative flex items-center justify-between px-5 py-3.5 rounded-t-2xl border-t-2 border-x transition-all text-left ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left cursor-pointer ${
               activeFolder === "nivel2"
-                ? "bg-slate-900 border-t-amber-500 border-x-slate-700 text-white shadow-lg z-10 -mb-px pb-4"
-                : "bg-slate-950/80 border-t-slate-800 border-x-slate-800/80 text-slate-400 hover:bg-slate-900/50 hover:text-slate-200"
+                ? "bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-sm border border-slate-200 dark:border-slate-700 font-extrabold"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-white/60 dark:hover:bg-slate-900/40"
             }`}
           >
-            <div className="flex items-center gap-3 min-w-0">
-              <div
-                className={`p-2 rounded-xl border shrink-0 transition-colors ${
-                  activeFolder === "nivel2"
-                    ? "bg-amber-500/20 border-amber-500/40 text-amber-400"
-                    : "bg-slate-900 border-slate-800 text-slate-500 group-hover:text-slate-300"
-                }`}
-              >
-                {activeFolder === "nivel2" ? (
-                  <FolderOpen className="w-5 h-5" />
-                ) : (
-                  <Folder className="w-5 h-5" />
-                )}
+            <div
+              className={`p-2 rounded-lg shrink-0 transition-colors ${
+                activeFolder === "nivel2"
+                  ? "bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/40"
+                  : "bg-slate-200/70 dark:bg-slate-900 text-slate-500 border border-slate-300/60 dark:border-slate-800"
+              }`}
+            >
+              {activeFolder === "nivel2" ? (
+                <FolderOpen className="w-5 h-5" />
+              ) : (
+                <Folder className="w-5 h-5" />
+              )}
+            </div>
+            <div className="min-w-0">
+              <div className="text-[10px] font-mono uppercase tracking-wider font-extrabold text-amber-600 dark:text-amber-400">
+                Carpeta Subnivel 2
               </div>
-              <div>
-                <div className="text-[10px] font-mono uppercase tracking-wider font-extrabold text-amber-400">
-                  Carpeta Subnivel 2
-                </div>
-                <div className="text-sm font-extrabold">
-                  NIVEL 2: Comercializadora Intermediaria
-                </div>
+              <div className="text-sm font-extrabold truncate">
+                NIVEL 2: Comercializadora Intermediaria
               </div>
             </div>
           </button>
@@ -1130,40 +1127,38 @@ export const Module2FinancialCalculator: React.FC<
           <button
             type="button"
             onClick={() => setActiveFolder("nivel3")}
-            className={`group relative flex items-center justify-between px-5 py-3.5 rounded-t-2xl border-t-2 border-x transition-all text-left ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left cursor-pointer ${
               activeFolder === "nivel3"
-                ? "bg-slate-900 border-t-emerald-500 border-x-slate-700 text-white shadow-lg z-10 -mb-px pb-4"
-                : "bg-slate-950/80 border-t-slate-800 border-x-slate-800/80 text-slate-400 hover:bg-slate-900/50 hover:text-slate-200"
+                ? "bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-sm border border-slate-200 dark:border-slate-700 font-extrabold"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-white/60 dark:hover:bg-slate-900/40"
             }`}
           >
-            <div className="flex items-center gap-3 min-w-0">
-              <div
-                className={`p-2 rounded-xl border shrink-0 transition-colors ${
-                  activeFolder === "nivel3"
-                    ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-400"
-                    : "bg-slate-900 border-slate-800 text-slate-500 group-hover:text-slate-300"
-                }`}
-              >
-                {activeFolder === "nivel3" ? (
-                  <FolderOpen className="w-5 h-5" />
-                ) : (
-                  <Folder className="w-5 h-5" />
-                )}
+            <div
+              className={`p-2 rounded-lg shrink-0 transition-colors ${
+                activeFolder === "nivel3"
+                  ? "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/40"
+                  : "bg-slate-200/70 dark:bg-slate-900 text-slate-500 border border-slate-300/60 dark:border-slate-800"
+              }`}
+            >
+              {activeFolder === "nivel3" ? (
+                <FolderOpen className="w-5 h-5" />
+              ) : (
+                <Folder className="w-5 h-5" />
+              )}
+            </div>
+            <div className="min-w-0">
+              <div className="text-[10px] font-mono uppercase tracking-wider font-extrabold text-emerald-600 dark:text-emerald-400">
+                Carpeta Subnivel 3
               </div>
-              <div>
-                <div className="text-[10px] font-mono uppercase tracking-wider font-extrabold text-emerald-400">
-                  Carpeta Subnivel 3
-                </div>
-                <div className="text-sm font-extrabold">
-                  NIVEL 3: Operadora de Juegos de Lotería
-                </div>
+              <div className="text-sm font-extrabold truncate">
+                NIVEL 3: Operadora de Juegos de Lotería
               </div>
             </div>
           </button>
         </div>
 
         {/* CONTENEDOR PRINCIPAL DE LA CARPETA ACTIVA */}
-        <div className="bg-slate-900 border border-slate-700 rounded-b-2xl rounded-tr-2xl shadow-2xl overflow-hidden relative">
+        <div className="relative">
           {/* ==================================================================
               CARPETA NIVEL 1: TAQUILLA / CENTRO DE APUESTAS
           ================================================================== */}
@@ -1197,10 +1192,10 @@ export const Module2FinancialCalculator: React.FC<
                       <th className="py-3.5 px-5 font-bold w-4/12">
                         Concepto Financiero / Tributario (Exclusivo Taquilla)
                       </th>
-                      <th className="py-3.5 px-5 font-bold w-4/12 bg-red-950/20 text-red-300 border-x border-slate-800">
+                      <th className="py-3.5 px-5 font-bold w-4/12 bg-rose-100 dark:bg-red-950/20 text-rose-800 dark:text-red-300 border-x border-slate-200 dark:border-slate-800">
                         Columna 1: Esquema Vigente (Modelo 1 • s/ Valor Facial)
                       </th>
-                      <th className="py-3.5 px-5 font-bold w-4/12 bg-emerald-950/20 text-emerald-300">
+                      <th className="py-3.5 px-5 font-bold w-4/12 bg-emerald-100 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300">
                         Columna 2: Reforma Propuesta (Modelo 2 • GGR + Arts. 32-33)
                       </th>
                     </tr>
@@ -1351,10 +1346,10 @@ export const Module2FinancialCalculator: React.FC<
                       <th className="py-3.5 px-5 font-bold w-4/12">
                         Concepto Financiero / Tributario (Exclusivo Comercializadora)
                       </th>
-                      <th className="py-3.5 px-5 font-bold w-4/12 bg-red-950/20 text-red-300 border-x border-slate-800">
+                      <th className="py-3.5 px-5 font-bold w-4/12 bg-rose-100 dark:bg-red-950/20 text-rose-800 dark:text-red-300 border-x border-slate-200 dark:border-slate-800">
                         Columna 1: Esquema Vigente (Modelo 1 • s/ Valor Facial)
                       </th>
-                      <th className="py-3.5 px-5 font-bold w-4/12 bg-emerald-950/20 text-emerald-300">
+                      <th className="py-3.5 px-5 font-bold w-4/12 bg-emerald-100 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300">
                         Columna 2: Reforma Propuesta (Modelo 2 • GGR + Arts. 32-33)
                       </th>
                     </tr>
@@ -1489,28 +1484,28 @@ export const Module2FinancialCalculator: React.FC<
                     </tr>
 
                     {/* FILA 2.3: (=) DIFERENCIAL DE COMISIÓN (SPREAD PROPIO) */}
-                    <tr className="bg-amber-950/20 border-y border-amber-500/30">
-                      <td className="py-3 px-5 font-sans font-extrabold text-amber-300">
+                    <tr className="bg-amber-50 dark:bg-amber-950/20 border-y border-amber-300 dark:border-amber-500/30">
+                      <td className="py-3 px-5 font-sans font-extrabold text-amber-800 dark:text-amber-300">
                         <div>(=) DIFERENCIAL DE COMISIÓN (Spread Propio: 5% Triples / 6% Animalitos)</div>
-                        <div className="text-[11px] text-amber-200/80 font-mono mt-0.5">
+                        <div className="text-[11px] text-amber-700 dark:text-amber-200/80 font-mono mt-0.5">
                           {hasTriples && `Diferencial Triples (5%): Bs. ${formatBs(spreadTriples, 2)}`}
                           {hasTriples && hasAnimalitos && " + "}
                           {hasAnimalitos && `Diferencial Animalitos (6%): Bs. ${formatBs(spreadAnimalitos, 2)}`}
                         </div>
                       </td>
-                      <td className="py-3 px-5 bg-red-950/15 border-x border-slate-800 text-slate-200">
-                        <span className="font-extrabold text-white">
+                      <td className="py-3 px-5 bg-rose-50/50 dark:bg-red-950/15 border-x border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200">
+                        <span className="font-extrabold text-slate-900 dark:text-white">
                           Bs. {formatBs(comercializadoraSpreadAmount, 2)}
                         </span>
-                        <span className="text-[11px] text-slate-300 block font-sans">
+                        <span className="text-[11px] text-slate-500 dark:text-slate-300 block font-sans">
                           Margen bruto residual de comercialización
                         </span>
                       </td>
-                      <td className="py-3 px-5 bg-emerald-950/15 text-slate-200">
-                        <span className="font-extrabold text-amber-300">
+                      <td className="py-3 px-5 bg-emerald-50/50 dark:bg-emerald-950/15 text-slate-800 dark:text-slate-200">
+                        <span className="font-extrabold text-amber-800 dark:text-amber-300">
                           +Bs. {formatBs(comercializadoraSpreadAmount, 2)}
                         </span>
-                        <span className="text-[11px] text-emerald-300 block font-sans">
+                        <span className="text-[11px] text-emerald-700 dark:text-emerald-300 block font-sans">
                           Única base imponible propia del intermediario (Art. 29 num. 1)
                         </span>
                       </td>
@@ -1741,10 +1736,10 @@ export const Module2FinancialCalculator: React.FC<
                       <th className="py-3.5 px-5 font-bold w-4/12">
                         Concepto Financiero / Tributario (Exclusivo Operadora)
                       </th>
-                      <th className="py-3.5 px-5 font-bold w-4/12 bg-red-950/20 text-red-300 border-x border-slate-800">
+                      <th className="py-3.5 px-5 font-bold w-4/12 bg-rose-100 dark:bg-red-950/20 text-rose-800 dark:text-red-300 border-x border-slate-200 dark:border-slate-800">
                         Columna 1: Esquema Vigente (Modelo 1 • s/ Valor Facial)
                       </th>
-                      <th className="py-3.5 px-5 font-bold w-4/12 bg-emerald-950/20 text-emerald-300">
+                      <th className="py-3.5 px-5 font-bold w-4/12 bg-emerald-100 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300">
                         Columna 2: Reforma Propuesta (Modelo 2 • GGR + Arts. 32-33)
                       </th>
                     </tr>
