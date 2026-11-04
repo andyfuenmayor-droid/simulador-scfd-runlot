@@ -8,7 +8,6 @@ import {
 } from "@/types/simulator";
 import { ThermalTickets } from "./ThermalTickets";
 import { PrizeWithholdingModal } from "./PrizeWithholdingModal";
-import { GuidedTourModal, TourStep } from "./GuidedTourModal";
 import {
   buildFullTirajePlays,
   formatBs,
@@ -19,7 +18,6 @@ import {
 import {
   Award,
   Coins,
-  Compass,
   Layers,
   Plus,
   Printer,
@@ -28,84 +26,6 @@ import {
   Trash2,
   Zap,
 } from "lucide-react";
-
-const POS_TOUR_STEPS: TourStep[] = [
-  {
-    id: "step-pos-modalities",
-    targetId: "tour-pos-modalities",
-    title: "1. Selector de Modalidad (30x vs 600x)",
-    icon: "🎰",
-    badge: "Parámetros y Sincronización Total",
-    content:
-      "Permite alternar entre los sorteos de figuras ('Animalitos' a factor 30x con 38 opciones y 75% de payout estándar) y 'Triples Tradicionales' (a factor 600x con 1.000 combinaciones y 60% payout). Toda la matemática fiscal y de comisiones se recalcula automáticamente.",
-    legalCitation: "Homologación RUNLOT / Providencia SNAT/2026/00093 Art. 32",
-    actionHint: "Haz clic en 'Opción A' u 'Opción B' para cambiar la modalidad activa.",
-  },
-  {
-    id: "step-pos-tiraje",
-    targetId: "tour-pos-tiraje",
-    title: "2. Generador de Tiraje Completo",
-    icon: "📦",
-    badge: "Auditoría de Sorteo Cerrado",
-    content:
-      "Carga con un solo clic el tiraje completo de 38 animales o las 1.000 opciones (000 al 999). Permite auditar la matemática de un sorteo perfecto: exactamente 1 premio ganador garantizado, verificando la base imponible captada y el premio bruto a liquidar.",
-    legalCitation: "Estándar Técnico CIAT / Reglas de Juegos de Envite",
-    actionHint: "Coloca la apuesta unitaria (ej. Bs. 1.000) y pulsa 'Cargar Opciones'.",
-  },
-  {
-    id: "step-pos-emit",
-    targetId: "tour-pos-emit-btn",
-    title: "3. Emisión de Ticket a SCFD (API Gateway)",
-    icon: "🖨️",
-    badge: "Sello Digital HMAC-SHA256",
-    content:
-      "Al emitir el ticket, el sistema sella la transacción con firma criptográfica HMAC-SHA256, asigna el número correlativo fiscal e interconecta con el API Gateway SCFD. Este ticket pasa a la contabilidad viva de la caja sin duplicar con la pantalla.",
-    legalCitation: "Arts. 32 y 33 Providencia SNAT/2026/00093",
-    actionHint: "Al pulsar este botón, el ticket queda registrado formalmente en caja.",
-  },
-  {
-    id: "step-pos-prize",
-    targetId: "tour-pos-prize-btn",
-    title: "4. Liquidación y Retención 16% IGF (Art. 18)",
-    icon: "🏆",
-    badge: "Comprobante de Retención Modelo 3",
-    content:
-      "Abre el módulo oficial de pago de premios. Desembolsa el 84% en efectivo (único flujo que reduce la caja) y retiene el 16% de Impuesto a las Ganancias Fortuitas en custodia, generando el ARC oficial para la Planilla 99029 del SENIAT.",
-    legalCitation: "Art. 65 LISLR + Dcto. 1.808 (Concepto 077) / Art. 18 Providencia 00093",
-    actionHint: "Pulsa para simular el pago del premio y emisión del comprobante ARC.",
-  },
-  {
-    id: "step-pos-capture",
-    targetId: "tour-pos-capture",
-    title: "5. Captura de Jugadas en Taquilla POS",
-    icon: "🪙",
-    badge: "Terminal de Venta",
-    content:
-      "Permite capturar jugadas personalizadas, cambiar montos de apuesta en bolívares y agregar jugadas con un clic desde el catálogo rápido. Muestra en tiempo real la combinación apostada y el premio potencial.",
-    legalCitation: "LOCAPTEM Art. 29 num. 1 (Protección de Base Imponible Propia)",
-    actionHint: "Prueba los botones de 'Clic Rápido' para añadir jugadas instantáneamente.",
-  },
-  {
-    id: "step-pos-summary",
-    targetId: "tour-pos-summary",
-    title: "6. Resumen de Liquidación en Tiempo Real",
-    icon: "📊",
-    badge: "Desglose Financiero de Caja",
-    content:
-      "Desglosa en 4 tarjetas métricas: Total Captado (fondos de terceros en custodia), Premio Bruto 100%, Retención 16% IGF (pasivo fiscal) y Neto en Efectivo a Pagar (84%).",
-    legalCitation: "Principio de Transparencia Tributaria y No Confiscatoriedad",
-  },
-  {
-    id: "step-pos-tickets",
-    targetId: "tour-pos-tickets",
-    title: "7. Contraste Físico en Papel Térmico de 80 mm",
-    icon: "⚖️",
-    badge: "Modelo 1 Rígido vs Modelo 2 Simplificado",
-    content:
-      "Muestra la diferencia física palpable: el Modelo 1 (factura fiscal rígida del Art. 30.2, que imputa el 100% de la venta como ingreso de la taquilla provocando quiebra) frente al Modelo 2 (ticket simplificado homologado SCFD bajo Arts. 32-33 por cuenta de terceros, con QR y blindaje legal).",
-    legalCitation: "Arts. 30.2 vs Arts. 32-33 Providencia SNAT/2026/00093",
-  },
-];
 
 interface Module1POSProps {
   modalities: Record<GameModalityId, GameModalityConfig>;
@@ -154,7 +74,6 @@ export const Module1POS: React.FC<Module1POSProps> = ({
   );
   const [tirajeUnitBet, setTirajeUnitBet] = useState<number>(1000);
   const [isPrizeModalOpen, setIsPrizeModalOpen] = useState<boolean>(false);
-  const [isTourOpen, setIsTourOpen] = useState<boolean>(false);
 
   const handleModalitySwitch = (id: GameModalityId) => {
     onSelectModality(id);
@@ -245,15 +164,6 @@ export const Module1POS: React.FC<Module1POSProps> = ({
                 1. Selector de Modalidad de Juego
               </span>
               <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsTourOpen(true)}
-                  className="px-2.5 py-1 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/40 text-emerald-300 font-bold text-[11px] flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
-                  title="Iniciar Tour Demo Interactivo"
-                >
-                  <Compass className="w-3.5 h-3.5 text-emerald-400 animate-spin-slow" />
-                  <span>🎯 Tour Demo Taquilla</span>
-                </button>
                 <span className="text-[11px] px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-300 font-medium">
                   Sincronización Total
                 </span>
@@ -705,14 +615,6 @@ export const Module1POS: React.FC<Module1POSProps> = ({
         drawNumber={drawNumber}
         dateTimeStr={dateTimeStr}
         onEmitWithholdingToSCFD={onEmitWithholdingToSCFD}
-      />
-
-      {/* Modal Guiado Interactivo: Tour Demo Taquilla POS */}
-      <GuidedTourModal
-        isOpen={isTourOpen}
-        onClose={() => setIsTourOpen(false)}
-        tourTitle="Tour Demo: Terminal POS 80mm"
-        steps={POS_TOUR_STEPS}
       />
     </div>
   );

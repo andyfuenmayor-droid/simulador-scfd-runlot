@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   BetPlay,
   GameModalityConfig,
@@ -28,8 +28,10 @@ import {
   Calculator,
   CalendarClock,
   CheckCircle2,
+  Moon,
   Printer,
   ShieldCheck,
+  Sun,
   Terminal,
 } from "lucide-react";
 
@@ -78,6 +80,7 @@ type ActiveTabId =
   | "module4";
 
 export default function SimulatorDashboardPage() {
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [activeTab, setActiveTab] = useState<ActiveTabId>("module1");
   const [activeModalityId, setActiveModalityId] =
     useState<GameModalityId>("animalitos");
@@ -95,6 +98,31 @@ export default function SimulatorDashboardPage() {
 
   // Tickets o Tirajes efectivamente emitidos en caja
   const [emittedTickets, setEmittedTickets] = useState<RecordedPOSTicket[]>([]);
+
+  useEffect(() => {
+    const savedTheme = (localStorage.getItem("scfd_theme") as "dark" | "light") || "dark";
+    setTheme(savedTheme);
+    if (savedTheme === "light") {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+      document.documentElement.classList.add("dark");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    localStorage.setItem("scfd_theme", nextTheme);
+    if (nextTheme === "light") {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+      document.documentElement.classList.add("dark");
+    }
+  };
 
   const currentModality = GAME_MODALITIES[activeModalityId];
   const currentPlays = playsByModality[activeModalityId];
@@ -464,8 +492,26 @@ export default function SimulatorDashboardPage() {
               </div>
             </div>
 
-            {/* Indicadores Rápidos de Estado */}
+            {/* Indicadores Rápidos de Estado y Selector de Tema */}
             <div className="flex flex-wrap items-center gap-2.5 text-xs">
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="px-3 py-1.5 rounded-xl border flex items-center gap-2 transition-all cursor-pointer font-bold text-xs shadow-sm bg-slate-900 border-slate-700 text-slate-200 hover:border-slate-500"
+                title={theme === "dark" ? "Cambiar a Modo Claro" : "Cambiar a Modo Oscuro"}
+              >
+                {theme === "dark" ? (
+                  <>
+                    <Sun className="w-4 h-4 text-amber-400" />
+                    <span>Modo Claro</span>
+                  </>
+                ) : (
+                  <>
+                    <Moon className="w-4 h-4 text-indigo-400" />
+                    <span>Modo Oscuro</span>
+                  </>
+                )}
+              </button>
               <div className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
                 <span className="font-mono text-slate-300">

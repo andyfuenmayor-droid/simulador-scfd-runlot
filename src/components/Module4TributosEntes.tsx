@@ -33,83 +33,14 @@ import {
   AlertCircle,
   FileText,
   Mail,
-  Compass,
 } from "lucide-react";
 import { RecordedPOSTicket } from "@/types/simulator";
-import { GuidedTourModal, TourStep } from "./GuidedTourModal";
 import {
   getSupabaseConfig,
   saveSupabaseConfig,
   testSupabaseConnection,
   syncPOSTicketsToSupabase,
 } from "@/lib/supabaseClient";
-
-const SIMULATOR_TOUR_STEPS: TourStep[] = [
-  {
-    id: "step-sim-tab",
-    targetId: "tour-sim-tab",
-    title: "1. Subcarpeta: Simulador Multi-Actor",
-    icon: "🌐",
-    badge: "Módulo 4: Tributos & Proyección",
-    content:
-      "Esta subcarpeta modela la proyección económica y fiscal de la industria del juego a escala nacional, interconectando el comportamiento observado en la taquilla con los 4 entes del Estado y los 4 actores privados.",
-    legalCitation: "SCFD / RUNLOT • Reforma Tributaria Integral",
-    actionHint: "Haz clic para acceder al simulador de proyecciones.",
-  },
-  {
-    id: "step-sim-presets",
-    targetId: "tour-sim-presets",
-    title: "2. Presets Rápidos y Sincronización Real",
-    icon: "⚡",
-    badge: "Modelado Inmediato",
-    content:
-      "Permite alternar con un solo clic entre el Escenario Piloto (25 taquillas), Regional (150 taquillas) y Gran Escala Nacional (10.000 taquillas a 1 año). Además, el botón verde te permite sincronizar la venta diaria exacta que captaste en la taquilla.",
-    legalCitation: "Escalamiento Progresivo según Disposición Final Sexta",
-    actionHint: "Prueba el botón 'Gran Escala Nacional' para simular 10.000 taquillas.",
-  },
-  {
-    id: "step-sim-sliders",
-    targetId: "tour-sim-sliders",
-    title: "3. Controles Deslizantes Dinámicos (Sliders)",
-    icon: "🎛️",
-    badge: "Parámetros Flexibles de la Red",
-    content:
-      "Ajusta dinámicamente los 5 actores clave: Taquillas POS (1 a 10.000), Comercializadoras (1 a 100), Operadoras Concesionarias (1 a 20), Sistemas Informáticos Plataformas IT (1 a 20), Venta Diaria por Taquilla (hasta Bs. 2.000.000) y el Horizonte Temporal (1 día, 30 días, 1 año).",
-    legalCitation: "RUNLOT / CONALOT (Censo y Registro Obligatorio)",
-    actionHint: "Desliza cualquiera de los controles para ver el recálculo instantáneo.",
-  },
-  {
-    id: "step-sim-public-revenue",
-    targetId: "tour-sim-public-revenue",
-    title: "4. Recaudación Pública de los 4 Entes del Estado",
-    icon: "🏛️",
-    badge: "Tesoro, Municipios & Beneficencia",
-    content:
-      "Calcula y consolida el aporte fiscal total: 1) SENIAT 16% Retención IGF (Planilla 99029), 2) SENIAT Impuesto al Juego 10% s/ GGR, 3) Alcaldías IAE Municipal (2,5% armonizado LOCAPTEM s/ comisiones brutas), 4) IOBPAS Beneficencia Pública (5% Triples / 1% Animalitos s/ GGR), y 5) CONALOT Tasas telemáticas y homologación.",
-    legalCitation: "LISLR Art. 65 • Ley Juegos de Envite • LOCAPTEM Art. 29.1 • Ley Nacional de Lotería Art. 23",
-  },
-  {
-    id: "step-sim-private-yields",
-    targetId: "tour-sim-private-yields",
-    title: "5. Rendimientos Privados y Sostenibilidad",
-    icon: "🏢",
-    badge: "Salud Financiera de la Cadena",
-    content:
-      "Garantiza la bancarización y formalidad de los actores comerciales: Taquillas (retiene 97,5% neto de su comisión), Comercializadoras (spread bruto menos 2,5% IAE + 50% net win), Operadoras (50% net win solvente para provisionar fianzas), y Empresas de Sistemas Informáticos (remuneración SaaS auditada).",
-    legalCitation: "Arts. 32 y 33 Providencia 00093 / Eliminación de la Ficción Fiscal",
-  },
-  {
-    id: "step-sim-tables",
-    targetId: "tour-sim-tables",
-    title: "6. Matrices de Reparto y Exportación a Sheets / CSV",
-    icon: "📊",
-    badge: "Informes Ejecutivos",
-    content:
-      "Audita la Tabla Maestra 1 (reparto institucional por actor con promedios individuales) y la Tabla Maestra 2 (comparativa técnica de ahorro frente al esquema confiscatorio del 5% facial). Puedes exportar la proyección completa a Google Sheets o descargar el archivo CSV oficial.",
-    legalCitation: "Norma Técnica CIAT / Estándares de Auditoría Fiscal Digital",
-    actionHint: "Usa 'Copiar Tabla para Google Sheets' o 'Descargar CSV' para tus presentaciones.",
-  },
-];
 
 interface Module4TributosEntesProps {
   recordedTickets?: RecordedPOSTicket[];
@@ -248,7 +179,6 @@ export function Module4TributosEntes({
   const [copiedSummary, setCopiedSummary] = useState(false);
   const [copiedSheets, setCopiedSheets] = useState(false);
   const [selectedLoteria, setSelectedLoteria] = useState<string>("zulia");
-  const [isTourOpen, setIsTourOpen] = useState<boolean>(false);
 
   // Conexión interactiva con Supabase (PostgreSQL)
   const [supabaseUrl, setSupabaseUrl] = useState<string>("");
@@ -2899,18 +2829,8 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                 </div>
               </div>
 
-              {/* Botones de Acción: Tour Demo y Copiar Resumen */}
+              {/* Botones de Acción: Copiar Resumen */}
               <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
-                <button
-                  type="button"
-                  onClick={() => setIsTourOpen(true)}
-                  className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600/30 to-cyan-600/30 hover:from-emerald-600/50 hover:to-cyan-600/50 border border-emerald-500/50 text-xs font-bold text-emerald-300 rounded-xl flex items-center gap-2 transition-all cursor-pointer shadow-md shadow-emerald-950/40"
-                  title="Iniciar Tour Guiado del Simulador Multi-Actor"
-                >
-                  <Compass className="w-4 h-4 text-emerald-400" />
-                  <span>🎯 Tour Demo Simulador</span>
-                </button>
-
                 <button
                   type="button"
                   onClick={handleCopySummary}
@@ -3725,14 +3645,6 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
           </div>
         </div>
       )}
-
-      {/* Modal Guiado Interactivo: Tour Demo Simulador Multi-Actor */}
-      <GuidedTourModal
-        isOpen={isTourOpen}
-        onClose={() => setIsTourOpen(false)}
-        tourTitle="Tour Demo: Simulador Multi-Actor a Gran Escala"
-        steps={SIMULATOR_TOUR_STEPS}
-      />
     </div>
   );
 }
