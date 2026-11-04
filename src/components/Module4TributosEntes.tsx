@@ -345,7 +345,7 @@ export function Module4TributosEntes({
   const [timeHorizonDays, setTimeHorizonDays] = useState<number>(30); // 1, 30, 365
   const [mixTriplesPct] = useState<number>(80);
 
-  // COSTOS MENSUALES EDITABLES DE LICENCIAMIENTO IOBPAS Y RUNLOT/CONALOT (Bs./mes)
+  // COSTOS ANUALES EDITABLES DE LICENCIAMIENTO IOBPAS Y RUNLOT/CONALOT (Bs./año - 1 VEZ AL AÑO)
   const [costoRunlotTaquilla, setCostoRunlotTaquilla] = useState<number>(150);
   const [costoIobpasTaquilla, setCostoIobpasTaquilla] = useState<number>(200);
 
@@ -361,6 +361,21 @@ export function Module4TributosEntes({
   const [costoRunlotResponsableIT, setCostoRunlotResponsableIT] = useState<number>(300);
   const [costoIobpasResponsableIT, setCostoIobpasResponsableIT] = useState<number>(200);
   const [honorarioRespITPorMes, setHonorarioRespITPorMes] = useState<number>(1500);
+
+  // Modalidad de cómputo de los cargos anuales:
+  // "devengo" = proporcional al horizonte (ej: ÷12 en 30 días, ÷365 en 1 día, 100% en 1 año)
+  // "contado" = imputa la anualidad completa (100% en el período)
+  const [modoCargaAnual, setModoCargaAnual] = useState<"devengo" | "contado">("devengo");
+
+  // Factor de anualidad según el horizonte temporal y la modalidad de cómputo
+  const factorAnualidad =
+    modoCargaAnual === "contado"
+      ? 1
+      : timeHorizonDays === 365
+      ? 1
+      : timeHorizonDays === 30
+      ? 1 / 12
+      : timeHorizonDays / 365;
 
   const mesesEquivalentes = Math.max(1, timeHorizonDays / 30);
 
@@ -403,12 +418,12 @@ export function Module4TributosEntes({
 
   const projAlcaldiaTotal = projAlcaldiaTaquillas + projAlcaldiaComercial;
 
-  // Costos de Licencias RUNLOT - CONALOT por cada actor de la cadena
-  const totalRunlotTaquillas = numTaquillas * costoRunlotTaquilla * mesesEquivalentes;
-  const totalRunlotComercializadoras = numComercializadoras * costoRunlotComercializadora * mesesEquivalentes;
-  const totalRunlotOperadoras = numOperadoras * costoRunlotOperadora * mesesEquivalentes;
-  const totalRunlotSistemasIT = numSistemasIT * costoRunlotSistemaIT * mesesEquivalentes;
-  const totalRunlotResponsablesIT = numResponsablesIT * costoRunlotResponsableIT * mesesEquivalentes;
+  // Costos de Licencias RUNLOT - CONALOT por cada actor de la cadena (Tasas Anuales • 1 vez al año)
+  const totalRunlotTaquillas = numTaquillas * costoRunlotTaquilla * factorAnualidad;
+  const totalRunlotComercializadoras = numComercializadoras * costoRunlotComercializadora * factorAnualidad;
+  const totalRunlotOperadoras = numOperadoras * costoRunlotOperadora * factorAnualidad;
+  const totalRunlotSistemasIT = numSistemasIT * costoRunlotSistemaIT * factorAnualidad;
+  const totalRunlotResponsablesIT = numResponsablesIT * costoRunlotResponsableIT * factorAnualidad;
 
   const projConalotTotal =
     totalRunlotTaquillas +
@@ -417,12 +432,12 @@ export function Module4TributosEntes({
     totalRunlotSistemasIT +
     totalRunlotResponsablesIT;
 
-  // Costos de Licencias IOBPAS por cada actor de la cadena
-  const totalIobpasTaquillas = numTaquillas * costoIobpasTaquilla * mesesEquivalentes;
-  const totalIobpasComercializadoras = numComercializadoras * costoIobpasComercializadora * mesesEquivalentes;
-  const totalIobpasOperadoras = numOperadoras * costoIobpasOperadora * mesesEquivalentes;
-  const totalIobpasSistemasIT = numSistemasIT * costoIobpasSistemaIT * mesesEquivalentes;
-  const totalIobpasResponsablesIT = numResponsablesIT * costoIobpasResponsableIT * mesesEquivalentes;
+  // Costos de Licencias IOBPAS por cada actor de la cadena (Licencias Anuales • 1 vez al año)
+  const totalIobpasTaquillas = numTaquillas * costoIobpasTaquilla * factorAnualidad;
+  const totalIobpasComercializadoras = numComercializadoras * costoIobpasComercializadora * factorAnualidad;
+  const totalIobpasOperadoras = numOperadoras * costoIobpasOperadora * factorAnualidad;
+  const totalIobpasSistemasIT = numSistemasIT * costoIobpasSistemaIT * factorAnualidad;
+  const totalIobpasResponsablesIT = numResponsablesIT * costoIobpasResponsableIT * factorAnualidad;
 
   const projIobpasLicenciasTotal =
     totalIobpasTaquillas +
@@ -432,6 +447,21 @@ export function Module4TributosEntes({
     totalIobpasResponsablesIT;
 
   const projIobpasTotal = projIobpasCanonGGR + projIobpasLicenciasTotal;
+
+  // Totales anuales íntegros de la red (1 vez al año)
+  const totalAnualRunlotRed =
+    numTaquillas * costoRunlotTaquilla +
+    numComercializadoras * costoRunlotComercializadora +
+    numOperadoras * costoRunlotOperadora +
+    numSistemasIT * costoRunlotSistemaIT +
+    numResponsablesIT * costoRunlotResponsableIT;
+
+  const totalAnualIobpasRed =
+    numTaquillas * costoIobpasTaquilla +
+    numComercializadoras * costoIobpasComercializadora +
+    numOperadoras * costoIobpasOperadora +
+    numSistemasIT * costoIobpasSistemaIT +
+    numResponsablesIT * costoIobpasResponsableIT;
 
   // Software IT (1,5% SaaS) y Responsables Informáticos (Honorarios profesionales)
   const projSistemasITFee = projVentaTotal * 0.015;
@@ -500,9 +530,9 @@ GGR Consolidado de Red: Bs. ${formatBs(projTotalGGR, 2)}
 --- CAJA FISCAL Y PARAFISCAL (ESTADO VENEZOLANO) ---
 • SENIAT Impuesto s/ Juegos (10% GGR): Bs. ${formatBs(projSeniatJuegos10, 2)}
 • SENIAT IGF Retención (16% Premios): Bs. ${formatBs(projRetencionIGF16, 2)}
-• IOBPAS Beneficencia & Licencias: Bs. ${formatBs(projIobpasTotal, 2)} (Canon GGR: Bs. ${formatBs(projIobpasCanonGGR, 2)} + Licencias: Bs. ${formatBs(projIobpasLicenciasTotal, 2)})
+• IOBPAS Beneficencia & Licencias: Bs. ${formatBs(projIobpasTotal, 2)} (Canon GGR: Bs. ${formatBs(projIobpasCanonGGR, 2)} + Licencias: Bs. ${formatBs(projIobpasLicenciasTotal, 2)} [Tasas anuales ${modoCargaAnual === "devengo" && timeHorizonDays === 30 ? "devengadas/mes" : "imputadas"}])
 • Alcaldías Municipales (2,5% s/ Comisiones): Bs. ${formatBs(projAlcaldiaTotal, 2)}
-• CONALOT (Tasas Telemáticas RUNLOT 5 Actores): Bs. ${formatBs(projConalotTotal, 2)}
+• CONALOT (Tasas Telemáticas RUNLOT 5 Actores): Bs. ${formatBs(projConalotTotal, 2)} [Tasas anuales ${modoCargaAnual === "devengo" && timeHorizonDays === 30 ? "devengadas/mes" : "imputadas"}]
 TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
 
 --- RENDIMIENTO PRIVADO NETO (DEDUCIDAS LICENCIAS IOBPAS Y RUNLOT) ---
@@ -2755,25 +2785,54 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
               </div>
             </div>
 
-            {/* PANEL DE INSERCIÓN DE COSTOS DE LICENCIAS IOBPAS Y REGISTRO RUNLOT / CONALOT POR ACTOR */}
+            {/* PANEL DE INSERCIÓN DE COSTOS DE LICENCIAS IOBPAS Y REGISTRO RUNLOT / CONALOT POR ACTOR (ANUAL - 1 VEZ AL AÑO) */}
             <div className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
                     <ShieldCheck className="w-4 h-4" />
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                      Panel de Inserción de Costos: Licencias IOBPAS y Registro RUNLOT / CONALOT por Actor de la Cadena
+                      Panel de Inserción de Costos: Licencias IOBPAS y Registro RUNLOT / CONALOT (Tasas Anuales • 1 Vez al Año)
                     </h3>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                      Modifica los costos fijos mensuales por unidad para los 5 sujetos obligados de la red ({mesesEquivalentes > 1 ? `${mesesEquivalentes} meses proyectados` : "base 30 días"})
+                      Cánones de licenciamiento anual (se pagan 1 vez al año por unidad). En horizontes de 30 días puedes imputar la alícuota mensual devengada (÷12) o el desembolso anual total.
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Selector de Modalidad en Horizonte Mensual */}
+                  <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-950 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] font-mono">
+                    <button
+                      type="button"
+                      onClick={() => setModoCargaAnual("devengo")}
+                      className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                        modoCargaAnual === "devengo"
+                          ? "bg-indigo-600 text-white shadow-sm"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                      }`}
+                      title="Divide la tasa anual entre 12 meses para imputar el gasto exacto de 30 días"
+                    >
+                      📊 Alícuota Mensual (÷12)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setModoCargaAnual("contado")}
+                      className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                        modoCargaAnual === "contado"
+                          ? "bg-indigo-600 text-white shadow-sm"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                      }`}
+                      title="Imputa el 100% de la anualidad de una sola vez"
+                    >
+                      💳 100% Anual (1 vez/año)
+                    </button>
+                  </div>
+
                   <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-                    5 Sujetos Obligados de Red
+                    5 Sujetos Obligados
                   </span>
                 </div>
               </div>
@@ -2792,7 +2851,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   </div>
                   <div className="space-y-1.5">
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">RUNLOT (Bs./mes):</label>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">RUNLOT (Bs./año):</label>
                       <input
                         type="number"
                         min={0}
@@ -2803,7 +2862,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Licencia IOBPAS (Bs./mes):</label>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Licencia IOBPAS (Bs./año):</label>
                       <input
                         type="number"
                         min={0}
@@ -2814,9 +2873,15 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                   </div>
-                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-[10px] font-mono">
-                    <span className="text-slate-500">Total Actor:</span>
-                    <span className="text-blue-700 dark:text-blue-300 font-bold">Bs. {formatBs(totalRunlotTaquillas + totalIobpasTaquillas, 0)}</span>
+                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 space-y-0.5 text-[10px] font-mono">
+                    <div className="flex justify-between items-center text-slate-500">
+                      <span>Anual (1 vez/año):</span>
+                      <span className="font-bold text-slate-700 dark:text-slate-300">Bs. {formatBs(costoRunlotTaquilla + costoIobpasTaquilla, 0)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-blue-700 dark:text-blue-300 font-bold">
+                      <span>Carga Período:</span>
+                      <span>Bs. {formatBs(totalRunlotTaquillas + totalIobpasTaquillas, 2)}</span>
+                    </div>
                   </div>
                 </div>
 
@@ -2832,7 +2897,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   </div>
                   <div className="space-y-1.5">
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">RUNLOT (Bs./mes):</label>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">RUNLOT (Bs./año):</label>
                       <input
                         type="number"
                         min={0}
@@ -2843,7 +2908,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Licencia IOBPAS (Bs./mes):</label>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Licencia IOBPAS (Bs./año):</label>
                       <input
                         type="number"
                         min={0}
@@ -2854,9 +2919,15 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                   </div>
-                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-[10px] font-mono">
-                    <span className="text-slate-500">Total Actor:</span>
-                    <span className="text-amber-700 dark:text-amber-300 font-bold">Bs. {formatBs(totalRunlotComercializadoras + totalIobpasComercializadoras, 0)}</span>
+                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 space-y-0.5 text-[10px] font-mono">
+                    <div className="flex justify-between items-center text-slate-500">
+                      <span>Anual (1 vez/año):</span>
+                      <span className="font-bold text-slate-700 dark:text-slate-300">Bs. {formatBs(costoRunlotComercializadora + costoIobpasComercializadora, 0)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-amber-700 dark:text-amber-300 font-bold">
+                      <span>Carga Período:</span>
+                      <span>Bs. {formatBs(totalRunlotComercializadoras + totalIobpasComercializadoras, 2)}</span>
+                    </div>
                   </div>
                 </div>
 
@@ -2872,7 +2943,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   </div>
                   <div className="space-y-1.5">
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">RUNLOT (Bs./mes):</label>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">RUNLOT (Bs./año):</label>
                       <input
                         type="number"
                         min={0}
@@ -2883,7 +2954,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Licencia IOBPAS (Bs./mes):</label>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Licencia IOBPAS (Bs./año):</label>
                       <input
                         type="number"
                         min={0}
@@ -2894,9 +2965,15 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                   </div>
-                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-[10px] font-mono">
-                    <span className="text-slate-500">Total Actor:</span>
-                    <span className="text-emerald-700 dark:text-emerald-300 font-bold">Bs. {formatBs(totalRunlotOperadoras + totalIobpasOperadoras, 0)}</span>
+                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 space-y-0.5 text-[10px] font-mono">
+                    <div className="flex justify-between items-center text-slate-500">
+                      <span>Anual (1 vez/año):</span>
+                      <span className="font-bold text-slate-700 dark:text-slate-300">Bs. {formatBs(costoRunlotOperadora + costoIobpasOperadora, 0)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-emerald-700 dark:text-emerald-300 font-bold">
+                      <span>Carga Período:</span>
+                      <span>Bs. {formatBs(totalRunlotOperadoras + totalIobpasOperadoras, 2)}</span>
+                    </div>
                   </div>
                 </div>
 
@@ -2912,7 +2989,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   </div>
                   <div className="space-y-1.5">
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Homol. RUNLOT (Bs./mes):</label>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Homol. RUNLOT (Bs./año):</label>
                       <input
                         type="number"
                         min={0}
@@ -2923,7 +3000,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Aval IOBPAS (Bs./mes):</label>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Aval IOBPAS (Bs./año):</label>
                       <input
                         type="number"
                         min={0}
@@ -2934,9 +3011,15 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                   </div>
-                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-[10px] font-mono">
-                    <span className="text-slate-500">Total Actor:</span>
-                    <span className="text-purple-700 dark:text-purple-300 font-bold">Bs. {formatBs(totalRunlotSistemasIT + totalIobpasSistemasIT, 0)}</span>
+                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 space-y-0.5 text-[10px] font-mono">
+                    <div className="flex justify-between items-center text-slate-500">
+                      <span>Anual (1 vez/año):</span>
+                      <span className="font-bold text-slate-700 dark:text-slate-300">Bs. {formatBs(costoRunlotSistemaIT + costoIobpasSistemaIT, 0)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-purple-700 dark:text-purple-300 font-bold">
+                      <span>Carga Período:</span>
+                      <span>Bs. {formatBs(totalRunlotSistemasIT + totalIobpasSistemasIT, 2)}</span>
+                    </div>
                   </div>
                 </div>
 
@@ -2952,7 +3035,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   </div>
                   <div className="space-y-1.5">
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Registro RUNLOT (Bs./mes):</label>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Registro RUNLOT (Bs./año):</label>
                       <input
                         type="number"
                         min={0}
@@ -2963,7 +3046,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Aval IOBPAS (Bs./mes):</label>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Aval IOBPAS (Bs./año):</label>
                       <input
                         type="number"
                         min={0}
@@ -2985,26 +3068,41 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                   </div>
-                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-[10px] font-mono">
-                    <span className="text-slate-500">Total Actor:</span>
-                    <span className="text-indigo-700 dark:text-indigo-300 font-bold">Bs. {formatBs(totalRunlotResponsablesIT + totalIobpasResponsablesIT, 0)}</span>
+                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 space-y-0.5 text-[10px] font-mono">
+                    <div className="flex justify-between items-center text-slate-500">
+                      <span>Licencias (1 vez/año):</span>
+                      <span className="font-bold text-slate-700 dark:text-slate-300">Bs. {formatBs(costoRunlotResponsableIT + costoIobpasResponsableIT, 0)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-indigo-700 dark:text-indigo-300 font-bold">
+                      <span>Carga Licencias:</span>
+                      <span>Bs. {formatBs(totalRunlotResponsablesIT + totalIobpasResponsablesIT, 2)}</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Barra inferior resumen de recaudación por licencias */}
-              <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-100 dark:bg-slate-950 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800">
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-600 dark:text-slate-400">Total Tasas RUNLOT (CONALOT):</span>
-                  <span className="font-bold text-purple-700 dark:text-purple-400">Bs. {formatBs(projConalotTotal, 2)}</span>
+              {/* Barra inferior resumen de recaudación por licencias anuales vs período */}
+              <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-800 space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-3 text-slate-600 dark:text-slate-400 pb-2 border-b border-slate-200 dark:border-slate-800 text-[11px]">
+                  <span className="font-bold text-slate-800 dark:text-slate-200">
+                    🏛️ Tarifa Anual Global de la Red (1 Vez al Año):
+                  </span>
+                  <div className="flex flex-wrap items-center gap-4">
+                    <span>Tasas RUNLOT Anuales: <strong className="text-purple-700 dark:text-purple-400 font-bold">Bs. {formatBs(totalAnualRunlotRed, 2)}</strong></span>
+                    <span>Licencias IOBPAS Anuales: <strong className="text-emerald-700 dark:text-emerald-400 font-bold">Bs. {formatBs(totalAnualIobpasRed, 2)}</strong></span>
+                    <span>Total Reguladores: <strong className="text-amber-700 dark:text-amber-400 font-black">Bs. {formatBs(totalAnualRunlotRed + totalAnualIobpasRed, 2)} / año</strong></span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-600 dark:text-slate-400">Total Licencias Fijas IOBPAS:</span>
-                  <span className="font-bold text-emerald-700 dark:text-emerald-400">Bs. {formatBs(projIobpasLicenciasTotal, 2)}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-600 dark:text-slate-400">Total Recaudación de Cánones Fijos:</span>
-                  <span className="font-bold text-amber-700 dark:text-amber-400">Bs. {formatBs(projConalotTotal + projIobpasLicenciasTotal, 2)}</span>
+
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-0.5">
+                  <div className="flex items-center gap-1.5 font-bold text-slate-900 dark:text-white">
+                    <span>⚡ Carga Imputable al Período ({timeHorizonDays === 1 ? "1 Día" : timeHorizonDays === 30 ? (modoCargaAnual === "devengo" ? "30 Días • Alícuota Mensual ÷12" : "30 Días • Pago 100% Anual") : "1 Año (100%)"}):</span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-4">
+                    <span className="text-slate-600 dark:text-slate-400">RUNLOT Período: <strong className="text-purple-700 dark:text-purple-400 font-bold">Bs. {formatBs(projConalotTotal, 2)}</strong></span>
+                    <span className="text-slate-600 dark:text-slate-400">IOBPAS Período: <strong className="text-emerald-700 dark:text-emerald-400 font-bold">Bs. {formatBs(projIobpasLicenciasTotal, 2)}</strong></span>
+                    <span className="text-slate-900 dark:text-white font-black">Total Período: <strong className="text-amber-700 dark:text-amber-400 font-black text-sm">Bs. {formatBs(projConalotTotal + projIobpasLicenciasTotal, 2)}</strong></span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3081,7 +3179,11 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <div className="text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5">
                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> IOBPAS: Cánones y Licencias (5 Actores)
                     </div>
-                    <div className="text-[10px] text-slate-500">Taquillas, Comercializadoras, Operadoras, Software y Custodios IT</div>
+                    <div className="text-[10px] text-slate-500">
+                      {modoCargaAnual === "devengo" && timeHorizonDays === 30
+                        ? `Alícuota devengada 30d (÷12) • Base Anual: Bs. ${formatBs(totalAnualIobpasRed, 2)}`
+                        : `Carga período • Base Anual: Bs. ${formatBs(totalAnualIobpasRed, 2)} (1 vez/año)`}
+                    </div>
                   </div>
                   <span className="font-mono text-sm font-bold text-emerald-700 dark:text-emerald-400">
                     Bs. {formatBs(projIobpasLicenciasTotal, 2)}
@@ -3107,7 +3209,11 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <div className="text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5">
                       <Layers className="w-3.5 h-3.5 text-purple-500" /> CONALOT: Supervisión & Homologación RUNLOT
                     </div>
-                    <div className="text-[10px] text-slate-500">Cánones telemáticos SCFD en los 5 actores de la red</div>
+                    <div className="text-[10px] text-slate-500">
+                      {modoCargaAnual === "devengo" && timeHorizonDays === 30
+                        ? `Alícuota devengada 30d (÷12) • Base Anual: Bs. ${formatBs(totalAnualRunlotRed, 2)}`
+                        : `Carga período • Base Anual: Bs. ${formatBs(totalAnualRunlotRed, 2)} (1 vez/año)`}
+                    </div>
                   </div>
                   <span className="font-mono text-sm font-bold text-purple-700 dark:text-purple-400">
                     Bs. {formatBs(projConalotTotal, 2)}
@@ -3584,7 +3690,12 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <th className="p-3 text-right">Venta Gestionada</th>
                     <th className="p-3 text-right">Ingreso Bruto</th>
                     <th className="p-3 text-right">Carga Fiscal / IAE</th>
-                    <th className="p-3 text-right">Licencias RUNLOT + IOBPAS</th>
+                    <th className="p-3 text-right">
+                      Licencias RUNLOT + IOBPAS
+                      <span className="block text-[10px] font-normal text-slate-500 font-sans">
+                        ({timeHorizonDays === 365 ? "Base Anual" : modoCargaAnual === "devengo" ? "Alícuota Período (÷12)" : "Carga Anual 100%"})
+                      </span>
+                    </th>
                     <th className="p-3 text-right text-blue-700 dark:text-cyan-400">Promedio Unitario Neto</th>
                     <th className="p-3 text-right text-emerald-700 dark:text-emerald-400">Rendimiento Total Red</th>
                   </tr>
@@ -3599,7 +3710,12 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
                     <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projTaquillaCommBruta, 2)}</td>
                     <td className="p-3 text-right font-mono text-rose-600 dark:text-rose-400">-Bs. {formatBs(projAlcaldiaTaquillas, 2)}</td>
-                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">-Bs. {formatBs(totalRunlotTaquillas + totalIobpasTaquillas, 2)}</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">
+                      <div>-Bs. {formatBs(totalRunlotTaquillas + totalIobpasTaquillas, 2)}</div>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-sans">
+                        (Anual: Bs. {formatBs((costoRunlotTaquilla + costoIobpasTaquilla) * numTaquillas, 2)}/año)
+                      </span>
+                    </td>
                     <td className="p-3 text-right font-mono text-blue-700 dark:text-cyan-300 font-extrabold text-sm">
                       Bs. {formatBs(avgPerTaquilla, 2)}
                     </td>
@@ -3617,7 +3733,12 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
                     <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projComercialSpreadBruto + projShareComercializadoras, 2)}</td>
                     <td className="p-3 text-right font-mono text-rose-600 dark:text-rose-400">-Bs. {formatBs(projAlcaldiaComercial, 2)}</td>
-                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">-Bs. {formatBs(totalRunlotComercializadoras + totalIobpasComercializadoras, 2)}</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">
+                      <div>-Bs. {formatBs(totalRunlotComercializadoras + totalIobpasComercializadoras, 2)}</div>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-sans">
+                        (Anual: Bs. {formatBs((costoRunlotComercializadora + costoIobpasComercializadora) * numComercializadoras, 2)}/año)
+                      </span>
+                    </td>
                     <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-300 font-extrabold text-sm">
                       Bs. {formatBs(avgPerComercializadora, 2)}
                     </td>
@@ -3635,7 +3756,12 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
                     <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projShareOperadoras, 2)}</td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">Bs. 0,00 (No Sujeto)</td>
-                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">-Bs. {formatBs(totalRunlotOperadoras + totalIobpasOperadoras, 2)}</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">
+                      <div>-Bs. {formatBs(totalRunlotOperadoras + totalIobpasOperadoras, 2)}</div>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-sans">
+                        (Anual: Bs. {formatBs((costoRunlotOperadora + costoIobpasOperadora) * numOperadoras, 2)}/año)
+                      </span>
+                    </td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-300 font-extrabold text-sm">
                       Bs. {formatBs(avgPerOperadora, 2)}
                     </td>
@@ -3653,7 +3779,12 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
                     <td className="p-3 text-right font-mono text-purple-700 dark:text-purple-300">Bs. {formatBs(projSistemasITFee, 2)}</td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">Bs. 0,00</td>
-                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">-Bs. {formatBs(totalRunlotSistemasIT + totalIobpasSistemasIT, 2)}</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">
+                      <div>-Bs. {formatBs(totalRunlotSistemasIT + totalIobpasSistemasIT, 2)}</div>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-sans">
+                        (Anual: Bs. {formatBs((costoRunlotSistemaIT + costoIobpasSistemaIT) * numSistemasIT, 2)}/año)
+                      </span>
+                    </td>
                     <td className="p-3 text-right font-mono text-purple-700 dark:text-purple-300 font-extrabold text-sm">
                       Bs. {formatBs(avgPerSistemaIT, 2)}
                     </td>
@@ -3671,7 +3802,12 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
                     <td className="p-3 text-right font-mono text-indigo-700 dark:text-indigo-300">Bs. {formatBs(projTotalHonorariosRespIT, 2)}</td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">Bs. 0,00</td>
-                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">-Bs. {formatBs(totalRunlotResponsablesIT + totalIobpasResponsablesIT, 2)}</td>
+                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">
+                      <div>-Bs. {formatBs(totalRunlotResponsablesIT + totalIobpasResponsablesIT, 2)}</div>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-sans">
+                        (Anual: Bs. {formatBs((costoRunlotResponsableIT + costoIobpasResponsableIT) * numResponsablesIT, 2)}/año)
+                      </span>
+                    </td>
                     <td className="p-3 text-right font-mono text-indigo-700 dark:text-indigo-300 font-extrabold text-sm">
                       Bs. {formatBs(avgPerResponsableIT, 2)}
                     </td>
