@@ -360,6 +360,7 @@ export function Module4TributosEntes({
 
   const [costoRunlotResponsableIT, setCostoRunlotResponsableIT] = useState<number>(1000000);
   const [costoIobpasResponsableIT, setCostoIobpasResponsableIT] = useState<number>(0);
+  const [honorarioRespITPorMes, setHonorarioRespITPorMes] = useState<number>(0);
 
   // Modalidad de cómputo de los cargos anuales:
   // "devengo" = proporcional al horizonte (ej: ÷12 en 30 días, ÷365 en 1 día, 100% en 1 año)
@@ -466,6 +467,8 @@ export function Module4TributosEntes({
 
   // Gasto Operativo de Plataforma IT (1% sobre Venta Bruta Facial, asumido exclusivamente como gasto de la Operadora)
   const projGastoITOperadora = projVentaTotal * (pctGastoITOperadora / 100);
+  const mesesEquivalentes = Math.max(1, timeHorizonDays / 30);
+  const projTotalHonorariosRespIT = numResponsablesIT * honorarioRespITPorMes * mesesEquivalentes;
 
   // Net Win del Juego y Reparto 50% / 50%
   const projNetWinJuego =
@@ -2997,7 +3000,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       <span>Bs. {formatBs(totalRunlotOperadoras + totalIobpasOperadoras, 2)}</span>
                     </div>
                     <div className="flex justify-between items-center text-purple-600 dark:text-purple-400 font-semibold pt-0.5">
-                      <span>Gasto IT ({pctGastoITOperadora}% Venta):</span>
+                      <span>Canon IT ({pctGastoITOperadora}% Venta):</span>
                       <span>-Bs. {formatBs(projGastoITOperadora, 2)}</span>
                     </div>
                   </div>
@@ -3082,14 +3085,25 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                         className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-indigo-300 focus:outline-none focus:border-indigo-500"
                       />
                     </div>
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Honorarios IT (Bs./mes):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={50}
+                        value={honorarioRespITPorMes}
+                        onChange={(e) => setHonorarioRespITPorMes(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-indigo-300 focus:outline-none focus:border-indigo-500"
+                      />
+                    </div>
                   </div>
                   <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 space-y-0.5 text-[10px] font-mono">
                     <div className="flex justify-between items-center text-slate-500">
-                      <span>Anual (1 vez/año):</span>
+                      <span>Licencias (1 vez/año):</span>
                       <span className="font-bold text-slate-700 dark:text-slate-300">Bs. {formatBs(costoRunlotResponsableIT + costoIobpasResponsableIT, 0)}</span>
                     </div>
                     <div className="flex justify-between items-center text-indigo-700 dark:text-indigo-300 font-bold">
-                      <span>Carga Período:</span>
+                      <span>Carga Licencias:</span>
                       <span>Bs. {formatBs(totalRunlotResponsablesIT + totalIobpasResponsablesIT, 2)}</span>
                     </div>
                   </div>
@@ -3797,9 +3811,9 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <td className="p-3 text-center font-mono text-indigo-700 dark:text-indigo-300 font-bold">{numResponsablesIT}</td>
                     <td className="p-3 text-right font-mono text-slate-400 dark:text-slate-500">—</td>
                     <td className="p-3 text-right font-mono text-slate-500 dark:text-slate-400">
-                      <div>Bs. 0,00</div>
+                      <div>Bs. {formatBs(projTotalHonorariosRespIT, 2)}</div>
                       <span className="text-[10px] text-slate-400 dark:text-slate-500 font-sans block">
-                        (No participa del Facial)
+                        (Base Cero por defecto)
                       </span>
                     </td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">Bs. 0,00</td>
@@ -3810,10 +3824,10 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       </span>
                     </td>
                     <td className="p-3 text-right font-mono text-slate-500 dark:text-slate-400 font-bold">
-                      -Bs. {formatBs((totalRunlotResponsablesIT + totalIobpasResponsablesIT) / Math.max(1, numResponsablesIT), 2)}
+                      Bs. {formatBs((projTotalHonorariosRespIT - (totalRunlotResponsablesIT + totalIobpasResponsablesIT)) / Math.max(1, numResponsablesIT), 2)}
                     </td>
                     <td className="p-3 text-right font-mono text-slate-500 dark:text-slate-400 font-bold">
-                      -Bs. {formatBs(totalRunlotResponsablesIT + totalIobpasResponsablesIT, 2)}
+                      Bs. {formatBs(projTotalHonorariosRespIT - (totalRunlotResponsablesIT + totalIobpasResponsablesIT), 2)}
                     </td>
                   </tr>
                 </tbody>
