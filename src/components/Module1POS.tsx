@@ -259,14 +259,14 @@ export const Module1POS: React.FC<Module1POSProps> = ({
             {/* ==============================================================
                 GENERADOR DE TIRAJE COMPLETO DEL SORTEO (01-38 / 000-999)
             ============================================================== */}
-            <div id="tour-pos-tiraje" className="mt-4 p-3.5 rounded-xl bg-blue-950/25 border border-blue-500/40 space-y-2.5">
+            <div id="tour-pos-tiraje" className="mt-4 p-3.5 rounded-xl bg-blue-50/90 dark:bg-blue-950/25 border border-blue-200 dark:border-blue-500/40 space-y-2.5 shadow-sm">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-blue-300 flex items-center gap-1.5">
-                  <Layers className="w-3.5 h-3.5 text-blue-400" />
+                <span className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-blue-700 dark:text-blue-300 flex items-center gap-1.5">
+                  <Layers className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                   Simular Tiraje Completo ({modality.tirajeRangeLabel})
                 </span>
                 {fullTirajeActive && (
-                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/40">
                     TIRAJE ACTIVO
                   </span>
                 )}
@@ -274,7 +274,7 @@ export const Module1POS: React.FC<Module1POSProps> = ({
 
               <div className="flex flex-wrap items-center gap-2">
                 <div className="flex items-center gap-1.5 flex-1 min-w-[140px]">
-                  <span className="text-[11px] text-slate-300 font-mono">
+                  <span className="text-[11px] text-slate-700 dark:text-slate-300 font-mono font-semibold">
                     Apuesta c/u Bs.:
                   </span>
                   <input
@@ -287,22 +287,22 @@ export const Module1POS: React.FC<Module1POSProps> = ({
                         Math.max(1, parseFloat(e.target.value) || 0)
                       )
                     }
-                    className="w-24 px-2 py-1 rounded-lg bg-slate-950 border border-slate-700 text-emerald-400 font-mono text-xs font-extrabold"
+                    className="w-24 px-2 py-1 rounded-lg bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-emerald-700 dark:text-emerald-400 font-mono text-xs font-extrabold shadow-sm"
                   />
                 </div>
                 <button
                   type="button"
                   onClick={() => handleLoadFullTiraje()}
-                  className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-all"
+                  className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-all shadow-sm cursor-pointer"
                 >
                   Cargar {modality.tirajeTotalOptions} Opciones
                 </button>
               </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-1 text-[10.5px] font-mono text-slate-400">
+              <div className="flex flex-wrap items-center justify-between gap-1 text-[10.5px] font-mono text-slate-600 dark:text-slate-400">
                 <span>
                   Venta Tiraje: Bs.{" "}
-                  <strong className="text-white">
+                  <strong className="text-slate-900 dark:text-white font-bold">
                     {formatBs(
                       tirajeUnitBet * modality.tirajeTotalOptions,
                       0
@@ -311,7 +311,7 @@ export const Module1POS: React.FC<Module1POSProps> = ({
                 </span>
                 <span>
                   1 Ganador ({modality.multiplier}x): Bs.{" "}
-                  <strong className="text-emerald-400">
+                  <strong className="text-emerald-600 dark:text-emerald-400 font-bold">
                     {formatBs(tirajeUnitBet * modality.multiplier, 0)}
                   </strong>
                 </span>

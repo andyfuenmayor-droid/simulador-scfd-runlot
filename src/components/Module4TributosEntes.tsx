@@ -531,16 +531,6 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
               escalables multi-red con exportación directa a Google Sheets.
             </p>
           </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setActiveSubTab("proyecciones")}
-              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-900/30 flex items-center gap-2 transition-all cursor-pointer"
-            >
-              <Sliders className="w-4 h-4" />
-              Simulador Multi-Actor
-            </button>
-          </div>
         </div>
 
         {/* ====================================================================
@@ -1261,112 +1251,121 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
             </div>
 
             {/* 3 Tarjetas de los 3 Niveles frente al Municipio con datos reales de taquilla */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 items-stretch">
               {/* Nivel 1: Taquilla */}
-              <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-4">
-                <div className="flex items-center justify-between text-xs mb-2">
-                  <span className="text-slate-400 font-bold flex items-center gap-1.5">
-                    <Store className="w-3.5 h-3.5 text-blue-400" /> Nivel 1: Taquilla / Centro Apuestas
-                  </span>
-                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
-                    2,5% s/ Comisión Bruta
-                  </span>
+              <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-4 flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-2">
+                    <span className="text-slate-400 font-bold flex items-center gap-1.5">
+                      <Store className="w-3.5 h-3.5 text-blue-400" /> Nivel 1: Taquilla / Centro Apuestas
+                    </span>
+                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
+                      2,5% s/ Comisión Bruta
+                    </span>
+                  </div>
+                  <div className="text-xs text-slate-400 space-y-1.5 mt-3">
+                    <div className="flex justify-between">
+                      <span>Base Gravable (Comisión Ganada):</span>
+                      <span className="font-mono text-white font-bold">
+                        Bs. {formatBs(totalTaquillaComm, 2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-rose-400">
+                      <span>(−) IAE Municipal (2,50%):</span>
+                      <span className="font-mono font-bold">
+                        -Bs. {formatBs(totalTaquillaIae, 2)}
+                      </span>
+                    </div>
+                    <div className="pt-2 border-t border-slate-800 flex justify-between font-bold text-emerald-400">
+                      <span>(=) Margen Neto Libre:</span>
+                      <span className="font-mono">
+                        +Bs. {formatBs(totalTaquillaNetMargin, 2)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-xs text-slate-400 space-y-1.5 mt-3">
-                  <div className="flex justify-between">
-                    <span>Base Gravable (Comisión Ganada):</span>
-                    <span className="font-mono text-white font-bold">
-                      Bs. {formatBs(totalTaquillaComm, 2)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-rose-400">
-                    <span>(−) IAE Municipal (2,50%):</span>
-                    <span className="font-mono font-bold">
-                      -Bs. {formatBs(totalTaquillaIae, 2)}
-                    </span>
-                  </div>
-                  <div className="pt-2 border-t border-slate-800 flex justify-between font-bold text-emerald-400">
-                    <span>(=) Margen Neto Libre:</span>
-                    <span className="font-mono">
-                      +Bs. {formatBs(totalTaquillaNetMargin, 2)}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-3 text-[11px] text-slate-500 bg-slate-900/50 p-2 rounded border border-slate-800">
+                <div className="mt-3 text-[11px] text-slate-600 dark:text-slate-400 bg-blue-50/70 dark:bg-slate-900/50 p-2.5 rounded-lg border border-blue-200/80 dark:border-slate-800 leading-relaxed">
                   💡 <strong>Blindaje Art. 29 num. 1:</strong> La taquilla no tributa sobre los Bs. {formatBs(totalSales, 2)} del ticket facial, sino únicamente sobre los Bs. {formatBs(totalTaquillaComm, 2)} de su comisión mercantil ganada.
                 </div>
               </div>
 
               {/* Nivel 2: Comercializadora */}
-              <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-4">
-                <div className="flex items-center justify-between text-xs mb-2">
-                  <span className="text-slate-400 font-bold flex items-center gap-1.5">
-                    <Building2 className="w-3.5 h-3.5 text-amber-400" /> Nivel 2: Comercializadora
-                  </span>
-                  <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">
-                    2,5% s/ Spread Propio
-                  </span>
+              <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-4 flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-2">
+                    <span className="text-slate-400 font-bold flex items-center gap-1.5">
+                      <Building2 className="w-3.5 h-3.5 text-amber-400" /> Nivel 2: Comercializadora
+                    </span>
+                    <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">
+                      2,5% s/ Spread Propio
+                    </span>
+                  </div>
+                  <div className="text-xs text-slate-400 space-y-1.5 mt-3">
+                    <div className="flex justify-between">
+                      <span>Comisión Asignada por Operadora:</span>
+                      <span className="font-mono text-white">
+                        Bs. {formatBs(totalOperAssignedComm, 2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-slate-400">
+                      <span>(−) Cedida a Taquilla:</span>
+                      <span className="font-mono text-slate-300">
+                        -Bs. {formatBs(totalTaquillaComm, 2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-amber-300 font-bold">
+                      <span>(=) Spread Propio Gravable:</span>
+                      <span className="font-mono">
+                        Bs. {formatBs(totalSpreadAmount, 2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-rose-400">
+                      <span>(−) IAE Municipal (2,50%):</span>
+                      <span className="font-mono font-bold">
+                        -Bs. {formatBs(totalComerIae, 2)}
+                      </span>
+                    </div>
+                    <div className="pt-2 border-t border-slate-800 flex justify-between font-bold text-emerald-400">
+                      <span>(=) Spread Neto Libre:</span>
+                      <span className="font-mono">
+                        +Bs. {formatBs(totalComerFinalComm, 2)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-xs text-slate-400 space-y-1.5 mt-3">
-                  <div className="flex justify-between">
-                    <span>Comisión Asignada por Operadora:</span>
-                    <span className="font-mono text-white">
-                      Bs. {formatBs(totalOperAssignedComm, 2)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-slate-400">
-                    <span>(−) Cedida a Taquilla:</span>
-                    <span className="font-mono text-slate-300">
-                      -Bs. {formatBs(totalTaquillaComm, 2)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-amber-300 font-bold">
-                    <span>(=) Spread Propio Gravable:</span>
-                    <span className="font-mono">
-                      Bs. {formatBs(totalSpreadAmount, 2)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-rose-400">
-                    <span>(−) IAE Municipal (2,50%):</span>
-                    <span className="font-mono font-bold">
-                      -Bs. {formatBs(totalComerIae, 2)}
-                    </span>
-                  </div>
-                  <div className="pt-2 border-t border-slate-800 flex justify-between font-bold text-emerald-400">
-                    <span>(=) Spread Neto Libre:</span>
-                    <span className="font-mono">
-                      +Bs. {formatBs(totalComerFinalComm, 2)}
-                    </span>
-                  </div>
+                <div className="mt-3 text-[11px] text-slate-600 dark:text-slate-400 bg-amber-50/70 dark:bg-slate-900/50 p-2.5 rounded-lg border border-amber-200/80 dark:border-slate-800 leading-relaxed">
+                  💡 <strong>Blindaje Art. 29 num. 1:</strong> La comercializadora tributa el 2,5% exclusivamente sobre su margen diferencial (spread propio), garantizando que no se compute el valor facial de la red.
                 </div>
               </div>
 
               {/* Nivel 3: Operadora */}
-              <div className="bg-slate-950/70 border border-emerald-500/30 rounded-xl p-4 relative overflow-hidden">
-                <div className="flex items-center justify-between text-xs mb-2">
-                  <span className="text-slate-400 font-bold flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Nivel 3: Operadora
-                  </span>
-                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded font-bold border border-emerald-500/30">
-                    0,00% No Sujeto
-                  </span>
+              <div className="bg-slate-950/70 border border-emerald-500/30 rounded-xl p-4 flex flex-col justify-between h-full relative overflow-hidden">
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-2">
+                    <span className="text-slate-400 font-bold flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Nivel 3: Operadora
+                    </span>
+                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded font-bold border border-emerald-500/30">
+                      0,00% No Sujeto
+                    </span>
+                  </div>
+                  <div className="text-xs text-slate-400 space-y-2 mt-3">
+                    <div className="flex justify-between">
+                      <span>Naturaleza de la Operadora:</span>
+                      <span className="font-semibold text-slate-200">Ente Concesionario</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Comisión Mercantil Percibida:</span>
+                      <span className="font-mono text-slate-200">Bs. 0,00 (Ninguna)</span>
+                    </div>
+                    <div className="flex justify-between text-emerald-300 font-bold pt-1">
+                      <span>Pago IAE Municipal:</span>
+                      <span className="font-mono text-emerald-400 font-black">Bs. 0,00</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-xs text-slate-400 space-y-2 mt-3">
-                  <div className="flex justify-between">
-                    <span>Naturaleza de la Operadora:</span>
-                    <span className="font-semibold text-slate-200">Ente Concesionario</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Comisión Mercantil Percibida:</span>
-                    <span className="font-mono text-slate-200">Bs. 0,00 (Ninguna)</span>
-                  </div>
-                  <div className="flex justify-between text-emerald-300 font-bold pt-1">
-                    <span>Pago IAE Municipal:</span>
-                    <span className="font-mono text-emerald-400 font-black">Bs. 0,00</span>
-                  </div>
-                </div>
-                <div className="mt-4 text-[11px] text-amber-300/90 bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/30 leading-relaxed">
-                  ⚠️ <strong>Prohibición Constitucional de Doble Tributación:</strong> Gravar el remanente de la Operadora violaría los Arts. 180 y 183 de la CRBV, ya que el GGR puede ser negativo por siniestralidad.
+                <div className="mt-3 text-[11px] text-amber-900 dark:text-amber-300 bg-amber-100/70 dark:bg-amber-500/10 p-2.5 rounded-lg border border-amber-300 dark:border-amber-500/30 leading-relaxed font-medium">
+                  ⚠️ <strong>Prohibición Constitucional:</strong> Gravar el remanente de la Operadora violaría los Arts. 180 y 183 de la CRBV, ya que el GGR puede ser negativo por siniestralidad.
                 </div>
               </div>
             </div>
@@ -1783,15 +1782,15 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
             </div>
 
             {/* Recaudación Total Tesoro Nacional */}
-            <div className="mt-6 bg-gradient-to-r from-amber-950/30 via-slate-900 to-emerald-950/30 border border-amber-500/30 rounded-xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="mt-6 bg-gradient-to-r from-amber-50 via-slate-50 to-emerald-50 dark:bg-gradient-to-r dark:from-amber-950/30 dark:via-slate-900 dark:to-emerald-950/30 border border-amber-200 dark:border-amber-500/30 rounded-xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
               <div>
-                <div className="text-xs font-mono uppercase text-amber-400 font-bold">
+                <div className="text-xs font-mono uppercase text-amber-800 dark:text-amber-400 font-bold">
                   Total Caja Fiscal Tesoro Nacional (SENIAT)
                 </div>
-                <div className="text-2xl font-black text-white font-mono mt-1">
+                <div className="text-2xl font-black text-slate-900 dark:text-white font-mono mt-1">
                   Bs. {formatBs(totalSeniatFiscal, 2)}
                 </div>
-                <div className="text-xs text-slate-400 mt-1">
+                <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">
                   Representa el {totalSales > 0 ? ((totalSeniatFiscal / totalSales) * 100).toFixed(2) : "0,00"}% de la venta bruta captada en la taquilla.
                 </div>
               </div>
@@ -1819,9 +1818,9 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     a.download = `SENIAT_Planilla_99029_Taquilla_${activeTickets[0]?.ticketNumber || "00012345"}.xml`;
                     a.click();
                   }}
-                  className="px-3.5 py-2 bg-slate-950 hover:bg-slate-800 border border-slate-700 text-xs font-bold text-white rounded-lg flex items-center gap-2 transition-all cursor-pointer"
+                  className="px-3.5 py-2 bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 shadow-sm dark:bg-slate-950 dark:hover:bg-slate-800 dark:border-slate-700 dark:text-white text-xs font-bold rounded-lg flex items-center gap-2 transition-all cursor-pointer"
                 >
-                  <Download className="w-4 h-4 text-amber-400" />
+                  <Download className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                   Descargar XML Planilla 99029
                 </button>
               </div>
@@ -2839,20 +2838,20 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
           {/* ====================================================================
               BARRA DE INTEGRACIÓN CON GOOGLE SHEETS & EXCEL
           ==================================================================== */}
-          <div id="tour-sim-tables" className="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-emerald-950/40 border border-emerald-500/30 rounded-2xl p-5 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
+          <div id="tour-sim-tables" className="bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-200 shadow-sm dark:bg-gradient-to-r dark:from-emerald-950/40 dark:via-slate-900 dark:to-emerald-950/40 dark:border-emerald-500/30 rounded-2xl p-5 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-700 dark:bg-emerald-500/10 dark:border-emerald-500/30 dark:text-emerald-400 flex items-center justify-center shrink-0">
                 <FileSpreadsheet className="w-6 h-6" />
               </div>
               <div>
-                <div className="text-sm font-bold text-white flex items-center gap-2">
+                <div className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   <span>Exportación Directa a Google Sheets & Microsoft Excel</span>
-                  <span className="text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">
+                  <span className="text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30 px-2 py-0.5 rounded">
                     Formato Tabular TSV / CSV
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Copia los datos estructurados con un clic para pegarlos directamente con <code>Ctrl + V</code> en una hoja de Google Sheets, o descarga el archivo CSV compatible.
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                  Copia los datos estructurados con un clic para pegarlos directamente con <code className="bg-white/90 dark:bg-slate-800 px-1 py-0.5 rounded text-emerald-700 dark:text-cyan-300 font-bold border border-slate-200 dark:border-slate-700">Ctrl + V</code> en una hoja de Google Sheets, o descarga el archivo CSV compatible.
                 </p>
               </div>
             </div>
@@ -2883,9 +2882,9 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
               <button
                 type="button"
                 onClick={handleDownloadCSV}
-                className="flex-1 sm:flex-none px-3.5 py-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-700 text-xs font-bold text-slate-200 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 sm:flex-none px-3.5 py-2.5 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 shadow-sm dark:bg-slate-950 dark:hover:bg-slate-800 dark:border-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Download className="w-4 h-4 text-emerald-400" />
+                <Download className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 <span>Descargar CSV</span>
               </button>
 
@@ -2893,7 +2892,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                 href="https://sheets.new"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 sm:flex-none px-3.5 py-2.5 bg-slate-900 hover:bg-slate-800 border border-emerald-500/40 text-xs font-bold text-emerald-300 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                className="flex-1 sm:flex-none px-3.5 py-2.5 bg-white hover:bg-slate-100 border border-emerald-300 text-emerald-700 shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-emerald-500/40 dark:text-emerald-300 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 <span>Abrir Google Sheets</span>
