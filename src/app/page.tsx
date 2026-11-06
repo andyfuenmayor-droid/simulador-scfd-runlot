@@ -22,6 +22,7 @@ import { Module2FinancialCalculator } from "@/components/Module2FinancialCalcula
 import { ModuleMoneyRouteIGF } from "@/components/ModuleMoneyRouteIGF";
 import { Module4TributosEntes } from "@/components/Module4TributosEntes";
 import { Module3TelemetryConsole } from "@/components/Module3TelemetryConsole";
+import { Module5TransactionalHub } from "@/components/Module5TransactionalHub";
 import { Module4Roadmap } from "@/components/Module4Roadmap";
 import {
   Building2,
@@ -29,6 +30,7 @@ import {
   CalendarClock,
   CheckCircle2,
   Moon,
+  Network,
   Printer,
   ShieldCheck,
   Sun,
@@ -430,6 +432,17 @@ export default function SimulatorDashboardPage() {
     setTelemetryLogs((prev) => [newLog, ...prev]);
   };
 
+  const handleTriggerPrizeFromHub = () => {
+    handleEmitWithholdingToSCFD({
+      winnerId: "V-18.945.120",
+      winningPlay: { id: "p-win", option: "748 Zulia", amount: 1000 },
+      grossPrize: 600000,
+      igfWithheld: 96000,
+      netPaid: 504000,
+      certificateHash: "7F83B1657FF1FC53B92DC18148A1D65DFC2D4B1FA3D677284ADDD200126D9069",
+    });
+  };
+
   const handleSimulateClandestinePlay = () => {
     const nowInfo = getFormattedNow();
     const errHash = generateDeterministicSha256(`CLANDESTINE::${nowInfo.ms}`);
@@ -661,24 +674,24 @@ export default function SimulatorDashboardPage() {
               onClick={() => setActiveTab("module3")}
               className={`p-3 rounded-xl border text-left transition-all flex items-center gap-2.5 cursor-pointer ${
                 activeTab === "module3"
-                  ? "bg-blue-600/20 border-blue-500 text-white shadow-md shadow-blue-950/50"
+                  ? "bg-indigo-600/20 border-indigo-500 text-white shadow-md shadow-indigo-950/50"
                   : "bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700"
               }`}
             >
-              <Terminal
+              <Network
                 className={`w-4 h-4 shrink-0 ${
-                  activeTab === "module3" ? "text-blue-400" : "text-slate-500"
+                  activeTab === "module3" ? "text-indigo-400" : "text-slate-500"
                 }`}
               />
               <div className="flex-1 min-w-0">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-blue-400 font-bold flex items-center justify-between">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-indigo-400 font-bold flex items-center justify-between">
                   <span>Módulo 5</span>
-                  <span className="px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 text-[8px]">
-                    {telemetryLogs.length} logs
+                  <span className="px-1 py-0.2 rounded bg-indigo-500/20 text-indigo-300 text-[8px]">
+                    Switch
                   </span>
                 </div>
                 <div className="text-xs font-extrabold leading-tight truncate">
-                  Consola API SCFD
+                  Switch Transaccional
                 </div>
               </div>
             </button>
@@ -765,11 +778,10 @@ export default function SimulatorDashboardPage() {
         )}
 
         {activeTab === "module3" && (
-          <Module3TelemetryConsole
-            currentPayload={currentSCFDPayload}
-            logs={telemetryLogs}
-            onSimulateValidTransaction={handleEmitNewTicket}
-            onSimulateClandestinePlay={handleSimulateClandestinePlay}
+          <Module5TransactionalHub
+            recordedTickets={recordedTicketsForCalc}
+            onEmitValidTicket={handleEmitNewTicket}
+            onEmitWithholdingPrize={handleTriggerPrizeFromHub}
           />
         )}
 
