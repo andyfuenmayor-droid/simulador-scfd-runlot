@@ -331,6 +331,7 @@ export function Module4TributosEntes({
   const [numTaquillas, setNumTaquillas] = useState<number>(1);
   const [numComercializadoras, setNumComercializadoras] = useState<number>(1);
   const [numOperadoras, setNumOperadoras] = useState<number>(1);
+  const [numJuegos, setNumJuegos] = useState<number>(1);
   const [numSistemasIT, setNumSistemasIT] = useState<number>(1);
   const [numResponsablesIT, setNumResponsablesIT] = useState<number>(1);
   const [dailySalesPerTaquilla, setDailySalesPerTaquilla] = useState<number>(
@@ -353,6 +354,9 @@ export function Module4TributosEntes({
   const [costoRunlotOperadora, setCostoRunlotOperadora] = useState<number>(1000000);
   const [costoRunlotJuegoOperadora, setCostoRunlotJuegoOperadora] = useState<number>(500000);
   const [costoIobpasOperadora, setCostoIobpasOperadora] = useState<number>(400000);
+  const [costoSencamerSistemaPremiador, setCostoSencamerSistemaPremiador] = useState<number>(350000);
+  const [costoSencamerMaquinasAire, setCostoSencamerMaquinasAire] = useState<number>(250000);
+  const [costoSencamerEsferas, setCostoSencamerEsferas] = useState<number>(200000);
   const [pctGastoITOperadora] = useState<number>(1);
 
   const [costoRunlotSistemaIT, setCostoRunlotSistemaIT] = useState<number>(1200000);
@@ -422,8 +426,9 @@ export function Module4TributosEntes({
   const totalRunlotTaquillas = numTaquillas * costoRunlotTaquilla * factorAnualidad;
   const totalRunlotComercializadoras = numComercializadoras * costoRunlotComercializadora * factorAnualidad;
   const totalRunlotOperadoraEntidad = numOperadoras * costoRunlotOperadora * factorAnualidad;
-  const totalRunlotJuegoOperadora = numOperadoras * costoRunlotJuegoOperadora * factorAnualidad;
-  const totalRunlotOperadoras = totalRunlotOperadoraEntidad + totalRunlotJuegoOperadora;
+  // RUNLOT por Juego: Cada juego homologado paga su registro en Categoría 7
+  const totalRunlotJuegosHomologados = numJuegos * costoRunlotJuegoOperadora * factorAnualidad;
+  const totalRunlotOperadoras = totalRunlotOperadoraEntidad + totalRunlotJuegosHomologados;
   const totalRunlotSistemasIT = numSistemasIT * costoRunlotSistemaIT * factorAnualidad;
   const totalRunlotResponsablesIT = numResponsablesIT * costoRunlotResponsableIT * factorAnualidad;
 
@@ -450,11 +455,19 @@ export function Module4TributosEntes({
 
   const projIobpasTotal = projIobpasCanonGGR + projIobpasLicenciasTotal;
 
+  // Costos de Certificaciones Metrológicas SENCAMER (Sistema Premiador, Máquinas de Aire y Esferas)
+  const totalSencamerSistemaPremiador = numOperadoras * costoSencamerSistemaPremiador * factorAnualidad;
+  const totalSencamerMaquinasAire = numOperadoras * costoSencamerMaquinasAire * factorAnualidad;
+  const totalSencamerEsferas = numOperadoras * costoSencamerEsferas * factorAnualidad;
+  const totalSencamerOperadoras =
+    totalSencamerSistemaPremiador + totalSencamerMaquinasAire + totalSencamerEsferas;
+
   // Totales anuales íntegros de la red (1 vez al año)
   const totalAnualRunlotRed =
     numTaquillas * costoRunlotTaquilla +
     numComercializadoras * costoRunlotComercializadora +
-    numOperadoras * (costoRunlotOperadora + costoRunlotJuegoOperadora) +
+    numOperadoras * costoRunlotOperadora +
+    numJuegos * costoRunlotJuegoOperadora +
     numSistemasIT * costoRunlotSistemaIT +
     numResponsablesIT * costoRunlotResponsableIT;
 
@@ -464,6 +477,17 @@ export function Module4TributosEntes({
     numOperadoras * costoIobpasOperadora +
     numSistemasIT * costoIobpasSistemaIT +
     numResponsablesIT * costoIobpasResponsableIT;
+
+  const totalAnualSencamerRed =
+    numOperadoras *
+    (costoSencamerSistemaPremiador + costoSencamerMaquinasAire + costoSencamerEsferas);
+
+  const totalAnualCargasOperadoras =
+    numOperadoras * (costoRunlotOperadora + costoIobpasOperadora + costoSencamerSistemaPremiador + costoSencamerMaquinasAire + costoSencamerEsferas) +
+    numJuegos * costoRunlotJuegoOperadora;
+
+  const totalCargasRegulatoriasOperadoras =
+    totalRunlotOperadoras + totalIobpasOperadoras + totalSencamerOperadoras;
 
   // Gasto Operativo de Plataforma IT (1% sobre Venta Bruta Facial, asumido exclusivamente como gasto de la Operadora)
   const projGastoITOperadora = projVentaTotal * (pctGastoITOperadora / 100);
@@ -497,12 +521,12 @@ export function Module4TributosEntes({
       projShareComercializadoras -
       (totalRunlotComercializadoras + totalIobpasComercializadoras)
   );
-  // Operadora asume el Gasto IT (1% s/ Venta Facial) y sus licencias RUNLOT (Operadora + Juego) e IOBPAS
+  // Operadora asume el Gasto IT (1% s/ Venta Facial) y sus licencias RUNLOT (Operadora + Juegos), IOBPAS y SENCAMER
   const projOperadoraUtilidadNeta = Math.max(
     0,
     projShareOperadorasBruto -
       projGastoITOperadora -
-      (totalRunlotOperadoras + totalIobpasOperadoras)
+      totalCargasRegulatoriasOperadoras
   );
 
   // Promedios Unitarios
@@ -516,13 +540,14 @@ export function Module4TributosEntes({
     projRetencionIGF16 +
     projIobpasTotal +
     projAlcaldiaTotal +
-    projConalotTotal;
+    projConalotTotal +
+    totalSencamerOperadoras;
 
   // Copiar resumen ejecutivo en texto plano
   const handleCopySummary = () => {
     const text = `=== PROYECCIÓN MULTI-ACTOR CDAPUESTAS / RUNLOT ===
 (Alimentado con base de venta taquilla actual: Bs. ${formatBs(totalSales, 2)})
-Horizonte: ${timeHorizonDays} días | Red: ${numTaquillas} Taquillas, ${numComercializadoras} Comercializadoras, ${numOperadoras} Operadoras, ${numSistemasIT} Sistemas IT, ${numResponsablesIT} Responsables IT.
+Horizonte: ${timeHorizonDays} días | Red: ${numTaquillas} Taquillas, ${numComercializadoras} Comercializadoras, ${numOperadoras} Operadoras (${numJuegos} Juegos), ${numSistemasIT} Sistemas IT, ${numResponsablesIT} Responsables IT.
 Venta Bruta Total: Bs. ${formatBs(projVentaTotal, 2)}
 Premios Pagados (84% Efectivo): Bs. ${formatBs(projPremiosEfectivo84, 2)}
 16% IGF Retenido SENIAT (Planilla 99029): Bs. ${formatBs(projRetencionIGF16, 2)}
@@ -533,13 +558,14 @@ GGR Consolidado de Red: Bs. ${formatBs(projTotalGGR, 2)}
 • SENIAT IGF Retención (16% Premios): Bs. ${formatBs(projRetencionIGF16, 2)}
 • IOBPAS Beneficencia & Licencias: Bs. ${formatBs(projIobpasTotal, 2)} (Canon GGR: Bs. ${formatBs(projIobpasCanonGGR, 2)} + Licencias: Bs. ${formatBs(projIobpasLicenciasTotal, 2)} [Tasas anuales ${modoCargaAnual === "devengo" && timeHorizonDays === 30 ? "devengadas/mes" : "imputadas"}])
 • Alcaldías Municipales (2,5% s/ Comisiones): Bs. ${formatBs(projAlcaldiaTotal, 2)}
-• CONALOT (Tasas Telemáticas RUNLOT 5 Actores): Bs. ${formatBs(projConalotTotal, 2)} [Tasas anuales ${modoCargaAnual === "devengo" && timeHorizonDays === 30 ? "devengadas/mes" : "imputadas"}]
+• CONALOT (Tasas Telemáticas RUNLOT 5 Actores + Juegos): Bs. ${formatBs(projConalotTotal, 2)} [Tasas anuales ${modoCargaAnual === "devengo" && timeHorizonDays === 30 ? "devengadas/mes" : "imputadas"}]
+• SENCAMER (Certificación Metrológica Sistema Premiador + Máquinas de Aire y Esferas): Bs. ${formatBs(totalSencamerOperadoras, 2)} [Tasas anuales ${modoCargaAnual === "devengo" && timeHorizonDays === 30 ? "devengadas/mes" : "imputadas"}]
 TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
 
---- RENDIMIENTO PRIVADO NETO (DEDUCIDAS LICENCIAS IOBPAS Y RUNLOT) ---
+--- RENDIMIENTO PRIVADO NETO (DEDUCIDAS LICENCIAS IOBPAS, RUNLOT Y SENCAMER) ---
 • Taquillas / Agencias (${numTaquillas}): Bs. ${formatBs(projTaquillaUtilidadNeta, 2)} (Promedio: Bs. ${formatBs(avgPerTaquilla, 2)})
 • Comercializadoras (${numComercializadoras}): Bs. ${formatBs(projComercialUtilidadNeta, 2)} (Promedio: Bs. ${formatBs(avgPerComercializadora, 2)})
-• Operadoras Concesionarias (${numOperadoras}): Bs. ${formatBs(projOperadoraUtilidadNeta, 2)} (Promedio: Bs. ${formatBs(avgPerOperadora, 2)}) [Net Win: Bs. ${formatBs(projShareOperadorasBruto, 2)} menos Gasto IT (${pctGastoITOperadora}%): -Bs. ${formatBs(projGastoITOperadora, 2)} y Licencias: -Bs. ${formatBs(totalRunlotOperadoras + totalIobpasOperadoras, 2)}]
+• Operadoras Concesionarias (${numOperadoras} • ${numJuegos} Juegos): Bs. ${formatBs(projOperadoraUtilidadNeta, 2)} (Promedio: Bs. ${formatBs(avgPerOperadora, 2)}) [Net Win: Bs. ${formatBs(projShareOperadorasBruto, 2)} menos Gasto IT (${pctGastoITOperadora}%): -Bs. ${formatBs(projGastoITOperadora, 2)} y Cargas Regulatorias (RUNLOT/IOBPAS/SENCAMER): -Bs. ${formatBs(totalCargasRegulatoriasOperadoras, 2)}]
 • Sistemas IT (${numSistemasIT}) — Carga Licencias Período: -Bs. ${formatBs(totalRunlotSistemasIT + totalIobpasSistemasIT, 2)}
 • Responsables IT (${numResponsablesIT}) — Carga Licencias Período: -Bs. ${formatBs(totalRunlotResponsablesIT + totalIobpasResponsablesIT, 2)}
 `;
@@ -562,14 +588,15 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
       ["(-) Impuesto s/ Juegos SENIAT (10% GGR)", (-projSeniatJuegos10).toFixed(2), `${pctFacial(projSeniatJuegos10)}%`, "10% s/ GGR del Neto", "SENIAT (Tesoro Nacional)", "Ley de Juegos de Envite"],
       ["(-) Canon IOBPAS Beneficencia Pública", (-projIobpasCanonGGR).toFixed(2), `${pctFacial(projIobpasCanonGGR)}%`, "5% Triples / 1% Anim s/ GGR", "Lotería Oficial (Hospitales)", "Ley Nacional Lotería Art 23"],
       ["(-) Licencias y Avales IOBPAS (5 Actores)", (-projIobpasLicenciasTotal).toFixed(2), `${pctFacial(projIobpasLicenciasTotal)}%`, "Cánones Fijos de Licencia", "IOBPAS (Lotería Oficial)", "Reglamento IOBPAS"],
-      ["(-) Tasas y Homologación RUNLOT / CONALOT", (-projConalotTotal).toFixed(2), `${pctFacial(projConalotTotal)}%`, "Cánones SCFD por Actor", "CONALOT (Ente Regulador)", "Resolución 002-2026"],
+      ["(-) Tasas y Homologación RUNLOT / CONALOT", (-projConalotTotal).toFixed(2), `${pctFacial(projConalotTotal)}%`, "Cánones SCFD por Actor + Juegos", "CONALOT (Ente Regulador)", "Resolución 002-2026"],
+      ["(-) Certificación Metrológica SENCAMER", (-totalSencamerOperadoras).toFixed(2), `${pctFacial(totalSencamerOperadoras)}%`, "Sistema Premiador + Máquinas de Aire + Esferas", "SENCAMER (Ministerio Comercio)", "Ley de Metrología Legal"],
       [`(-) Gasto Operativo IT de la Operadora (${pctGastoITOperadora}% s/ Facial Bruto)`, (-projGastoITOperadora).toFixed(2), `${pctFacial(projGastoITOperadora)}%`, `${pctGastoITOperadora}% s/ Venta Bruta Facial (Gasto de Operadora)`, "Costo Operativo Tecnológico", "Certificación ISO 27001"],
-      ["(=) Superávit Operativo Neto Operadoras", projOperadoraUtilidadNeta.toFixed(2), `${pctFacial(projOperadoraUtilidadNeta)}%`, `Net Win tras Licencias y Gasto IT (${pctGastoITOperadora}%)`, "Operadoras Concesionarias", "Solvencia Patrimonial"],
+      ["(=) Superávit Operativo Neto Operadoras", projOperadoraUtilidadNeta.toFixed(2), `${pctFacial(projOperadoraUtilidadNeta)}%`, `Net Win tras Licencias, SENCAMER y Gasto IT (${pctGastoITOperadora}%)`, "Operadoras Concesionarias", "Solvencia Patrimonial"],
       ["", "", "", "", "", ""],
-      ["DISTRIBUCIÓN POR ACTOR DE LA RED", "CANTIDAD", "VENTA GESTIONADA", "INGRESO BRUTO", "CARGA FISCAL / GASTO IT", "COSTOS RUNLOT + IOBPAS", "PROMEDIO UNITARIO NETO", "TOTAL RED NETO"],
+      ["DISTRIBUCIÓN POR ACTOR DE LA RED", "CANTIDAD", "VENTA GESTIONADA", "INGRESO BRUTO", "CARGA FISCAL / GASTO IT", "COSTOS RUNLOT + IOBPAS + SENCAMER", "PROMEDIO UNITARIO NETO", "TOTAL RED NETO"],
       ["Taquillas / Centros de Apuestas", numTaquillas.toString(), projVentaTotal.toFixed(2), projTaquillaCommBruta.toFixed(2), (-projAlcaldiaTaquillas).toFixed(2), (-(totalRunlotTaquillas + totalIobpasTaquillas)).toFixed(2), avgPerTaquilla.toFixed(2), projTaquillaUtilidadNeta.toFixed(2)],
       ["Comercializadoras Intermediarias", numComercializadoras.toString(), projVentaTotal.toFixed(2), (projComercialSpreadBruto + projShareComercializadoras).toFixed(2), (-projAlcaldiaComercial).toFixed(2), (-(totalRunlotComercializadoras + totalIobpasComercializadoras)).toFixed(2), avgPerComercializadora.toFixed(2), projComercialUtilidadNeta.toFixed(2)],
-      ["Operadoras de Juegos de Lotería", numOperadoras.toString(), projVentaTotal.toFixed(2), projShareOperadorasBruto.toFixed(2), `Gasto IT (${pctGastoITOperadora}%): -${projGastoITOperadora.toFixed(2)}`, (-(totalRunlotOperadoras + totalIobpasOperadoras)).toFixed(2), avgPerOperadora.toFixed(2), projOperadoraUtilidadNeta.toFixed(2)],
+      ["Operadoras de Juegos de Lotería", `${numOperadoras} (${numJuegos} jgs)`, projVentaTotal.toFixed(2), projShareOperadorasBruto.toFixed(2), `Gasto IT (${pctGastoITOperadora}%): -${projGastoITOperadora.toFixed(2)}`, (-(totalCargasRegulatoriasOperadoras)).toFixed(2), avgPerOperadora.toFixed(2), projOperadoraUtilidadNeta.toFixed(2)],
       ["Empresas de Sistemas Informáticos", numSistemasIT.toString(), "0.00", "0.00 (No participa del Facial)", "0.00", (-(totalRunlotSistemasIT + totalIobpasSistemasIT)).toFixed(2), (-(totalRunlotSistemasIT + totalIobpasSistemasIT) / Math.max(1, numSistemasIT)).toFixed(2), (-(totalRunlotSistemasIT + totalIobpasSistemasIT)).toFixed(2)],
       ["Responsables Informáticos", numResponsablesIT.toString(), "0.00", "0.00 (No participa del Facial)", "0.00", (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT)).toFixed(2), (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT) / Math.max(1, numResponsablesIT)).toFixed(2), (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT)).toFixed(2)]
     ];
@@ -594,14 +621,15 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
       ["(-) Impuesto s/ Juegos SENIAT (10% GGR)", (-projSeniatJuegos10).toFixed(2), `${pctFacial(projSeniatJuegos10)}%`, "10% s/ GGR del Neto", "SENIAT (Tesoro Nacional)", "Ley de Juegos de Envite"],
       ["(-) Canon IOBPAS Beneficencia Publica", (-projIobpasCanonGGR).toFixed(2), `${pctFacial(projIobpasCanonGGR)}%`, "5% Triples / 1% Anim s/ GGR", "Loteria Oficial (Hospitales)", "Ley Nacional Loteria Art 23"],
       ["(-) Licencias y Avales IOBPAS (5 Actores)", (-projIobpasLicenciasTotal).toFixed(2), `${pctFacial(projIobpasLicenciasTotal)}%`, "Canones Fijos de Licencia", "IOBPAS (Loteria Oficial)", "Reglamento IOBPAS"],
-      ["(-) Tasas y Homologacion RUNLOT / CONALOT", (-projConalotTotal).toFixed(2), `${pctFacial(projConalotTotal)}%`, "Canones SCFD por Actor", "CONALOT (Ente Regulador)", "Resolucion 002-2026"],
+      ["(-) Tasas y Homologacion RUNLOT / CONALOT", (-projConalotTotal).toFixed(2), `${pctFacial(projConalotTotal)}%`, "Canones SCFD por Actor + Juegos", "CONALOT (Ente Regulador)", "Resolucion 002-2026"],
+      ["(-) Certificacion Metrologica SENCAMER", (-totalSencamerOperadoras).toFixed(2), `${pctFacial(totalSencamerOperadoras)}%`, "Sistema Premiador + Maquinas de Aire + Esferas", "SENCAMER (Ministerio Comercio)", "Ley de Metrologia Legal"],
       [`(-) Gasto Operativo IT de la Operadora (${pctGastoITOperadora}% s/ Facial Bruto)`, (-projGastoITOperadora).toFixed(2), `${pctFacial(projGastoITOperadora)}%`, `${pctGastoITOperadora}% s/ Venta Bruta Facial (Gasto de Operadora)`, "Costo Operativo Tecnologico", "Certificacion ISO 27001"],
-      ["(=) Superavit Operativo Neto Operadoras", projOperadoraUtilidadNeta.toFixed(2), `${pctFacial(projOperadoraUtilidadNeta)}%`, `Net Win tras Licencias y Gasto IT (${pctGastoITOperadora}%)`, "Operadoras Concesionarias", "Solvencia Patrimonial"],
+      ["(=) Superavit Operativo Neto Operadoras", projOperadoraUtilidadNeta.toFixed(2), `${pctFacial(projOperadoraUtilidadNeta)}%`, `Net Win tras Licencias, SENCAMER y Gasto IT (${pctGastoITOperadora}%)`, "Operadoras Concesionarias", "Solvencia Patrimonial"],
       ["", "", "", "", "", ""],
-      ["DISTRIBUCION POR ACTOR DE LA RED", "CANTIDAD", "VENTA GESTIONADA", "INGRESO BRUTO", "CARGA FISCAL / GASTO IT", "COSTOS RUNLOT + IOBPAS", "PROMEDIO UNITARIO NETO", "TOTAL RED NETO"],
+      ["DISTRIBUCION POR ACTOR DE LA RED", "CANTIDAD", "VENTA GESTIONADA", "INGRESO BRUTO", "CARGA FISCAL / GASTO IT", "COSTOS RUNLOT + IOBPAS + SENCAMER", "PROMEDIO UNITARIO NETO", "TOTAL RED NETO"],
       ["Taquillas / Centros de Apuestas", numTaquillas.toString(), projVentaTotal.toFixed(2), projTaquillaCommBruta.toFixed(2), (-projAlcaldiaTaquillas).toFixed(2), (-(totalRunlotTaquillas + totalIobpasTaquillas)).toFixed(2), avgPerTaquilla.toFixed(2), projTaquillaUtilidadNeta.toFixed(2)],
       ["Comercializadoras Intermediarias", numComercializadoras.toString(), projVentaTotal.toFixed(2), (projComercialSpreadBruto + projShareComercializadoras).toFixed(2), (-projAlcaldiaComercial).toFixed(2), (-(totalRunlotComercializadoras + totalIobpasComercializadoras)).toFixed(2), avgPerComercializadora.toFixed(2), projComercialUtilidadNeta.toFixed(2)],
-      ["Operadoras de Juegos de Loteria", numOperadoras.toString(), projVentaTotal.toFixed(2), projShareOperadorasBruto.toFixed(2), `Gasto IT (${pctGastoITOperadora}%): -${projGastoITOperadora.toFixed(2)}`, (-(totalRunlotOperadoras + totalIobpasOperadoras)).toFixed(2), avgPerOperadora.toFixed(2), projOperadoraUtilidadNeta.toFixed(2)],
+      ["Operadoras de Juegos de Loteria", `${numOperadoras} (${numJuegos} jgs)`, projVentaTotal.toFixed(2), projShareOperadorasBruto.toFixed(2), `Gasto IT (${pctGastoITOperadora}%): -${projGastoITOperadora.toFixed(2)}`, (-(totalCargasRegulatoriasOperadoras)).toFixed(2), avgPerOperadora.toFixed(2), projOperadoraUtilidadNeta.toFixed(2)],
       ["Empresas de Sistemas Informaticos", numSistemasIT.toString(), "0.00", "0.00 (No participa del Facial)", "0.00", (-(totalRunlotSistemasIT + totalIobpasSistemasIT)).toFixed(2), (-(totalRunlotSistemasIT + totalIobpasSistemasIT) / Math.max(1, numSistemasIT)).toFixed(2), (-(totalRunlotSistemasIT + totalIobpasSistemasIT)).toFixed(2)],
       ["Responsables Informaticos", numResponsablesIT.toString(), "0.00", "0.00 (No participa del Facial)", "0.00", (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT)).toFixed(2), (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT) / Math.max(1, numResponsablesIT)).toFixed(2), (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT)).toFixed(2)]
     ];
@@ -2537,6 +2565,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     setNumTaquillas(1);
                     setNumComercializadoras(1);
                     setNumOperadoras(1);
+                    setNumJuegos(1);
                     setNumSistemasIT(1);
                     setNumResponsablesIT(1);
                     setDailySalesPerTaquilla(10000);
@@ -2552,6 +2581,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     setNumTaquillas(25);
                     setNumComercializadoras(1);
                     setNumOperadoras(1);
+                    setNumJuegos(2);
                     setNumSistemasIT(1);
                     setNumResponsablesIT(1);
                     setDailySalesPerTaquilla(20000);
@@ -2567,6 +2597,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     setNumTaquillas(150);
                     setNumComercializadoras(3);
                     setNumOperadoras(2);
+                    setNumJuegos(6);
                     setNumSistemasIT(2);
                     setNumResponsablesIT(2);
                     setDailySalesPerTaquilla(40000);
@@ -2582,6 +2613,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     setNumTaquillas(10000);
                     setNumComercializadoras(50);
                     setNumOperadoras(10);
+                    setNumJuegos(30);
                     setNumSistemasIT(10);
                     setNumResponsablesIT(10);
                     setDailySalesPerTaquilla(50000);
@@ -2681,6 +2713,32 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   <span>1</span>
                   <span>10</span>
                   <span>20</span>
+                </div>
+              </div>
+
+              {/* Slider 3b: Juegos Homologados */}
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs">
+                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                    <Dices className="w-3.5 h-3.5 text-rose-500" /> Juegos Homologados (RUNLOT Cat. 7)
+                  </span>
+                  <span className="font-mono text-rose-700 dark:text-rose-400 font-extrabold bg-rose-50 dark:bg-rose-500/10 px-2 py-0.5 rounded border border-rose-200 dark:border-transparent">
+                    {numJuegos} juegos activos
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={1}
+                  max={50}
+                  step={1}
+                  value={numJuegos}
+                  onChange={(e) => setNumJuegos(Number(e.target.value))}
+                  className="w-full accent-rose-400 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                />
+                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                  <span>1</span>
+                  <span>25</span>
+                  <span>50</span>
                 </div>
               </div>
 
@@ -2952,7 +3010,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       <ShieldCheck className="w-3.5 h-3.5" /> 3. Operadoras
                     </span>
                     <span className="text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 px-1.5 py-0.5 rounded font-bold">
-                      {numOperadoras} unid.
+                      {numOperadoras} unid. • {numJuegos} jgs
                     </span>
                   </div>
                   <div className="space-y-1.5">
@@ -2968,7 +3026,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">RUNLOT Juego (Bs./año):</label>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">RUNLOT Juego ({numJuegos} jgs • Bs./año c/u):</label>
                       <input
                         type="number"
                         min={0}
@@ -2989,15 +3047,48 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                         className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-emerald-300 focus:outline-none focus:border-emerald-500"
                       />
                     </div>
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Certif. SENCAMER Sistema Premiador (Bs./año):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={100}
+                        value={costoSencamerSistemaPremiador}
+                        onChange={(e) => setCostoSencamerSistemaPremiador(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-cyan-300 focus:outline-none focus:border-cyan-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Certif. SENCAMER Máquinas de Aire (Bs./año):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={100}
+                        value={costoSencamerMaquinasAire}
+                        onChange={(e) => setCostoSencamerMaquinasAire(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-cyan-300 focus:outline-none focus:border-cyan-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Certif. SENCAMER Esferas / Balotas (Bs./año):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={100}
+                        value={costoSencamerEsferas}
+                        onChange={(e) => setCostoSencamerEsferas(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-cyan-300 focus:outline-none focus:border-cyan-500"
+                      />
+                    </div>
                   </div>
                   <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 space-y-0.5 text-[10px] font-mono">
                     <div className="flex justify-between items-center text-slate-500">
                       <span>Anual (1 vez/año):</span>
-                      <span className="font-bold text-slate-700 dark:text-slate-300">Bs. {formatBs(costoRunlotOperadora + costoRunlotJuegoOperadora + costoIobpasOperadora, 0)}</span>
+                      <span className="font-bold text-slate-700 dark:text-slate-300">Bs. {formatBs(totalAnualCargasOperadoras, 0)}</span>
                     </div>
                     <div className="flex justify-between items-center text-emerald-700 dark:text-emerald-300 font-bold">
                       <span>Carga Período:</span>
-                      <span>Bs. {formatBs(totalRunlotOperadoras + totalIobpasOperadoras, 2)}</span>
+                      <span>Bs. {formatBs(totalCargasRegulatoriasOperadoras, 2)}</span>
                     </div>
                     <div className="flex justify-between items-center text-purple-600 dark:text-purple-400 font-semibold pt-0.5">
                       <span>Canon IT ({pctGastoITOperadora}% Venta):</span>
@@ -3119,7 +3210,8 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   <div className="flex flex-wrap items-center gap-4">
                     <span>Tasas RUNLOT Anuales: <strong className="text-purple-700 dark:text-purple-400 font-bold">Bs. {formatBs(totalAnualRunlotRed, 2)}</strong></span>
                     <span>Licencias IOBPAS Anuales: <strong className="text-emerald-700 dark:text-emerald-400 font-bold">Bs. {formatBs(totalAnualIobpasRed, 2)}</strong></span>
-                    <span>Total Reguladores: <strong className="text-amber-700 dark:text-amber-400 font-black">Bs. {formatBs(totalAnualRunlotRed + totalAnualIobpasRed, 2)} / año</strong></span>
+                    <span>SENCAMER Metrología: <strong className="text-cyan-700 dark:text-cyan-400 font-bold">Bs. {formatBs(totalAnualSencamerRed, 2)}</strong></span>
+                    <span>Total Reguladores & Calidad: <strong className="text-amber-700 dark:text-amber-400 font-black">Bs. {formatBs(totalAnualRunlotRed + totalAnualIobpasRed + totalAnualSencamerRed, 2)} / año</strong></span>
                   </div>
                 </div>
 
@@ -3130,7 +3222,8 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   <div className="flex flex-wrap items-center gap-4">
                     <span className="text-slate-600 dark:text-slate-400">RUNLOT Período: <strong className="text-purple-700 dark:text-purple-400 font-bold">Bs. {formatBs(projConalotTotal, 2)}</strong></span>
                     <span className="text-slate-600 dark:text-slate-400">IOBPAS Período: <strong className="text-emerald-700 dark:text-emerald-400 font-bold">Bs. {formatBs(projIobpasLicenciasTotal, 2)}</strong></span>
-                    <span className="text-slate-900 dark:text-white font-black">Total Período: <strong className="text-amber-700 dark:text-amber-400 font-black text-sm">Bs. {formatBs(projConalotTotal + projIobpasLicenciasTotal, 2)}</strong></span>
+                    <span className="text-slate-600 dark:text-slate-400">SENCAMER Período: <strong className="text-cyan-700 dark:text-cyan-400 font-bold">Bs. {formatBs(totalSencamerOperadoras, 2)}</strong></span>
+                    <span className="text-slate-900 dark:text-white font-black">Total Período: <strong className="text-amber-700 dark:text-amber-400 font-black text-sm">Bs. {formatBs(projConalotTotal + projIobpasLicenciasTotal + totalSencamerOperadoras, 2)}</strong></span>
                   </div>
                 </div>
               </div>
@@ -3249,6 +3342,26 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   </span>
                 </div>
 
+                {/* SENCAMER Certificación Metrológica */}
+                <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
+                  <div>
+                    <div className="text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-cyan-500" /> SENCAMER: Metrología Legal & Certificación Anual
+                    </div>
+                    <div className="text-[10px] text-slate-500">
+                      {modoCargaAnual === "devengo" && timeHorizonDays === 30
+                        ? `Alícuota devengada 30d (÷12) • Base Anual: Bs. ${formatBs(totalAnualSencamerRed, 2)}`
+                        : `Carga período • Base Anual: Bs. ${formatBs(totalAnualSencamerRed, 2)} (1 vez/año)`}
+                      <span className="block text-[9px] text-cyan-600 dark:text-cyan-400">
+                        (Sistema Premiador RNG + Máquinas de Aire + Calibración y Pesaje de Esferas)
+                      </span>
+                    </div>
+                  </div>
+                  <span className="font-mono text-sm font-bold text-cyan-700 dark:text-cyan-400">
+                    Bs. {formatBs(totalSencamerOperadoras, 2)}
+                  </span>
+                </div>
+
                 {/* TOTAL ESTADO */}
                 <div className="pt-2 border-t-2 border-slate-300 dark:border-slate-700 flex justify-between items-center text-sm font-black">
                   <span className="text-slate-900 dark:text-white">TOTAL APORTE AL ESTADO VENEZOLANO:</span>
@@ -3321,7 +3434,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     </span>
                   </div>
                   <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                    <span>Superávit Neto (deducido -{pctGastoITOperadora}% Gasto IT: -Bs. {formatBs(projGastoITOperadora, 2)} y Licencias):</span>
+                    <span>Superávit Neto (deducido -{pctGastoITOperadora}% IT, RUNLOT/IOBPAS y SENCAMER):</span>
                     <span className="font-mono text-emerald-700 dark:text-emerald-300 font-bold">
                       Bs. {formatBs(avgPerOperadora, 2)}
                     </span>
@@ -3752,7 +3865,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <td className="p-3 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Operadoras de Juegos de Lotería
                     </td>
-                    <td className="p-3 text-center font-mono text-emerald-700 dark:text-emerald-300 font-bold">{numOperadoras}</td>
+                    <td className="p-3 text-center font-mono text-emerald-700 dark:text-emerald-300 font-bold">{numOperadoras} ({numJuegos} jgs)</td>
                     <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">Bs. {formatBs(projVentaTotal, 2)}</td>
                     <td className="p-3 text-right font-mono text-slate-600 dark:text-slate-300">
                       <div>Bs. {formatBs(projShareOperadorasBruto, 2)}</div>
@@ -3762,9 +3875,9 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     </td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">Bs. 0,00 (No Sujeto)</td>
                     <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">
-                      <div>-Bs. {formatBs(totalRunlotOperadoras + totalIobpasOperadoras, 2)}</div>
+                      <div>-Bs. {formatBs(totalCargasRegulatoriasOperadoras, 2)}</div>
                       <span className="text-[10px] text-slate-400 dark:text-slate-500 font-sans">
-                        (Anual: Bs. {formatBs((costoRunlotOperadora + costoRunlotJuegoOperadora + costoIobpasOperadora) * numOperadoras, 2)}/año)
+                        (Anual: Bs. {formatBs(totalAnualCargasOperadoras, 2)}/año [RUNLOT + IOBPAS + SENCAMER])
                       </span>
                     </td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-300 font-extrabold text-sm">
