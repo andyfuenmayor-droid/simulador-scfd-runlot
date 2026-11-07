@@ -10,6 +10,7 @@ import { ThermalTickets } from "./ThermalTickets";
 import { PrizeWithholdingModal } from "./PrizeWithholdingModal";
 import {
   buildFullTirajePlays,
+  buildSCFDPayload,
   formatBs,
   formatIntBs,
   getTotalCombinationsCount,
@@ -32,6 +33,8 @@ interface Module1POSProps {
   activeModalityId: GameModalityId;
   onSelectModality: (id: GameModalityId) => void;
   plays: BetPlay[];
+  playsByModality?: Record<GameModalityId, BetPlay[]>;
+  timestampMs?: number;
   onUpdatePlays: (plays: BetPlay[]) => void;
   ticketNumber: string;
   drawNumber: string;
@@ -55,6 +58,8 @@ export const Module1POS: React.FC<Module1POSProps> = ({
   activeModalityId,
   onSelectModality,
   plays,
+  playsByModality,
+  timestampMs,
   onUpdatePlays,
   ticketNumber,
   drawNumber,
@@ -74,6 +79,53 @@ export const Module1POS: React.FC<Module1POSProps> = ({
   );
   const [tirajeUnitBet, setTirajeUnitBet] = useState<number>(1000);
   const [isPrizeModalOpen, setIsPrizeModalOpen] = useState<boolean>(false);
+  const [forceShowBoth, setForceShowBoth] = useState<boolean>(false);
+
+  // Jugadas activas por modalidad para permitir visualizar ambos tickets separados si existen jugadas en ambos
+  const animalitosPlays =
+    playsByModality?.animalitos && playsByModality.animalitos.length > 0
+      ? playsByModality.animalitos
+      : activeModalityId === "animalitos"
+      ? plays
+      : [];
+
+  const triplesPlays =
+    playsByModality?.triples && playsByModality.triples.length > 0
+      ? playsByModality.triples
+      : activeModalityId === "triples"
+      ? plays
+      : [];
+
+  const hasAnimalitosPlays = animalitosPlays.length > 0;
+  const hasTriplesPlays = triplesPlays.length > 0;
+  const showBoth = (hasAnimalitosPlays && hasTriplesPlays) || forceShowBoth;
+
+  // Secuencia e identificación SCFD para tickets separados e independientes
+  const animalitosTicketNumber = ticketNumber;
+  const nextTicketSeq = (Number(ticketNumber) || 12345) + 1;
+  const triplesTicketNumber = String(nextTicketSeq).padStart(8, "0");
+
+  const animalitosPayload = buildSCFDPayload({
+    ticketNumber: animalitosTicketNumber,
+    drawNumber,
+    modality: "animalitos",
+    modalityName: modalities.animalitos.name,
+    multiplier: modalities.animalitos.multiplier,
+    plays: animalitosPlays,
+    timestampMs: timestampMs || Date.now(),
+  });
+  const animalitosHash = String(animalitosPayload.hmac_sha256_signature || sha256Hash);
+
+  const triplesPayload = buildSCFDPayload({
+    ticketNumber: triplesTicketNumber,
+    drawNumber,
+    modality: "triples",
+    modalityName: modalities.triples.name,
+    multiplier: modalities.triples.multiplier,
+    plays: triplesPlays,
+    timestampMs: (timestampMs || Date.now()) + 1500,
+  });
+  const triplesHash = String(triplesPayload.hmac_sha256_signature || sha256Hash);
 
   const handleModalitySwitch = (id: GameModalityId) => {
     onSelectModality(id);
@@ -594,24 +646,162 @@ export const Module1POS: React.FC<Module1POSProps> = ({
               Comparativa en Vivo: Factura Rígida (Art. 30.2) vs. Ticket Simplificado Cuenta de Terceros (Arts. 32-33)
             </h2>
           </div>
-          <button
-            type="button"
-            onClick={() => setIsPrizeModalOpen(true)}
-            className="px-4 py-2.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/50 text-emerald-300 font-bold text-xs flex items-center gap-2 self-start md:self-auto transition-all"
-          >
-            <Award className="w-4 h-4 text-emerald-400" />
-            Abrir Modelo 3: Comprobante de Retención (Art. 18)
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setForceShowBoth(!forceShowBoth)}
+              className={`px-3 py-2 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                showBoth
+                  ? "bg-blue-600/20 text-blue-300 border-blue-500/50 shadow-sm"
+                  : "bg-slate-800 text-slate-300 border-slate-700 hover:text-white"
+              }`}
+              title="Alternar entre ver ambos tickets (Triples y Animalitos) o solo el activo"
+            >
+              <Layers className="w-4 h-4" />
+              {showBoth ? "Mostrando Ambos Tickets (Separados)" : "Ver Ambos Tickets (Triples + Animalitos)"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsPrizeModalOpen(true)}
+              className="px-4 py-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/50 text-emerald-300 font-bold text-xs flex items-center gap-2 self-start md:self-auto transition-all"
+            >
+              <Award className="w-4 h-4 text-emerald-400" />
+              Abrir Modelo 3: Comprobante (Art. 18)
+            </button>
+          </div>
         </div>
 
-        <ThermalTickets
-          modality={modality}
-          plays={plays}
-          ticketNumber={ticketNumber}
-          drawNumber={drawNumber}
-          dateTimeStr={dateTimeStr}
-          sha256Hash={sha256Hash}
-        />
+        {showBoth ? (
+          <div className="space-y-12">
+            {/* TICKET 1: TRIPLES Y TERMINALES TRADICIONALES */}
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 shadow-sm">
+                <div className="flex items-center gap-2.5">
+                  <span className="p-2 rounded-lg bg-amber-500/20 text-amber-400 font-bold text-sm">
+                    🎲
+                  </span>
+                  <div>
+                    <h3 className="font-extrabold text-sm text-white flex items-center gap-2">
+                      Ticket de Triples y Terminales Tradicionales
+                      {activeModalityId === "triples" ? (
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+                          En Edición Activa
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-medium border border-slate-700">
+                          Cargado en Taquilla
+                        </span>
+                      )}
+                    </h3>
+                    <p className="text-xs text-slate-400">
+                      Sorteo #{drawNumber} • Modalidad: 3 Cifras (Multiplicador {modalities.triples.multiplier}x / Payout {modalities.triples.standardPayoutPct}%)
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <span className="text-[10px] text-slate-400 uppercase block font-medium">Total Facial Apostado:</span>
+                    <span className="font-mono font-extrabold text-sm text-amber-400">
+                      Bs. {formatBs(triplesPlays.reduce((a, b) => a + (Number(b.amount) || 0), 0), 2)}
+                    </span>
+                  </div>
+                  {activeModalityId !== "triples" && (
+                    <button
+                      type="button"
+                      onClick={() => onSelectModality("triples")}
+                      className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all border border-slate-700 cursor-pointer"
+                    >
+                      Editar en Taquilla
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <ThermalTickets
+                modality={modalities.triples}
+                plays={triplesPlays}
+                ticketNumber={triplesTicketNumber}
+                drawNumber={drawNumber}
+                dateTimeStr={dateTimeStr}
+                sha256Hash={triplesHash}
+              />
+            </div>
+
+            {/* SEPARADOR VISUAL DE CORTE DE ROLLO TÉRMICO */}
+            <div className="relative flex py-4 items-center">
+              <div className="flex-grow border-t-2 border-dashed border-slate-700/80"></div>
+              <span className="flex-shrink mx-4 font-mono text-xs text-slate-400 bg-slate-950 px-4 py-1.5 rounded-full border border-slate-800 flex items-center gap-2 shadow-md">
+                <span className="text-amber-400 text-sm">✂</span>
+                <span className="font-bold text-slate-300">Línea de Separación e Impresión Térmica Independiente (80 mm)</span>
+                <span className="text-amber-400 text-sm">✂</span>
+              </span>
+              <div className="flex-grow border-t-2 border-dashed border-slate-700/80"></div>
+            </div>
+
+            {/* TICKET 2: SORTEOS DE FIGURAS ANIMALITOS */}
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/30 shadow-sm">
+                <div className="flex items-center gap-2.5">
+                  <span className="p-2 rounded-lg bg-blue-500/20 text-blue-400 font-bold text-sm">
+                    🐾
+                  </span>
+                  <div>
+                    <h3 className="font-extrabold text-sm text-white flex items-center gap-2">
+                      Ticket de Sorteos de Figuras &ldquo;Animalitos&rdquo;
+                      {activeModalityId === "animalitos" ? (
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+                          En Edición Activa
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-medium border border-slate-700">
+                          Cargado en Taquilla
+                        </span>
+                      )}
+                    </h3>
+                    <p className="text-xs text-slate-400">
+                      Sorteo #{drawNumber} • Modalidad: 38 Figuras (Multiplicador {modalities.animalitos.multiplier}x / Payout {modalities.animalitos.standardPayoutPct}%)
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <span className="text-[10px] text-slate-400 uppercase block font-medium">Total Facial Apostado:</span>
+                    <span className="font-mono font-extrabold text-sm text-blue-400">
+                      Bs. {formatBs(animalitosPlays.reduce((a, b) => a + (Number(b.amount) || 0), 0), 2)}
+                    </span>
+                  </div>
+                  {activeModalityId !== "animalitos" && (
+                    <button
+                      type="button"
+                      onClick={() => onSelectModality("animalitos")}
+                      className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all border border-slate-700 cursor-pointer"
+                    >
+                      Editar en Taquilla
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <ThermalTickets
+                modality={modalities.animalitos}
+                plays={animalitosPlays}
+                ticketNumber={animalitosTicketNumber}
+                drawNumber={drawNumber}
+                dateTimeStr={dateTimeStr}
+                sha256Hash={animalitosHash}
+              />
+            </div>
+          </div>
+        ) : (
+          <ThermalTickets
+            modality={modality}
+            plays={plays}
+            ticketNumber={ticketNumber}
+            drawNumber={drawNumber}
+            dateTimeStr={dateTimeStr}
+            sha256Hash={sha256Hash}
+          />
+        )}
       </div>
 
       {/* Modal Modelo 3: Liquidación y Retención de Premios (Art. 18) */}

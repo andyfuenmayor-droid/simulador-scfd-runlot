@@ -735,6 +735,8 @@ export default function SimulatorDashboardPage() {
             activeModalityId={activeModalityId}
             onSelectModality={handleSelectModality}
             plays={currentPlays}
+            playsByModality={playsByModality}
+            timestampMs={timestampMs}
             onUpdatePlays={handleUpdatePlays}
             ticketNumber={ticketNumberStr}
             drawNumber={drawNumber}
