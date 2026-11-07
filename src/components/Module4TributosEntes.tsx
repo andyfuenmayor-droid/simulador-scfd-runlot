@@ -355,7 +355,6 @@ export function Module4TributosEntes({
   const [costoRunlotJuegoOperadora, setCostoRunlotJuegoOperadora] = useState<number>(500000);
   const [costoIobpasOperadora, setCostoIobpasOperadora] = useState<number>(400000);
   const [costoSencamerSistemaPremiador, setCostoSencamerSistemaPremiador] = useState<number>(350000);
-  const [costoSencamerMaquinasAire, setCostoSencamerMaquinasAire] = useState<number>(250000);
   const [costoSencamerEsferas, setCostoSencamerEsferas] = useState<number>(200000);
   const [pctGastoITOperadora] = useState<number>(1);
 
@@ -455,12 +454,11 @@ export function Module4TributosEntes({
 
   const projIobpasTotal = projIobpasCanonGGR + projIobpasLicenciasTotal;
 
-  // Costos de Certificaciones Metrológicas SENCAMER (Sistema Premiador, Máquinas de Aire y Esferas)
+  // Costos de Certificaciones Metrológicas SENCAMER (Sistema Premiador y Calibración de Esferas)
   const totalSencamerSistemaPremiador = numOperadoras * costoSencamerSistemaPremiador * factorAnualidad;
-  const totalSencamerMaquinasAire = numOperadoras * costoSencamerMaquinasAire * factorAnualidad;
   const totalSencamerEsferas = numOperadoras * costoSencamerEsferas * factorAnualidad;
   const totalSencamerOperadoras =
-    totalSencamerSistemaPremiador + totalSencamerMaquinasAire + totalSencamerEsferas;
+    totalSencamerSistemaPremiador + totalSencamerEsferas;
 
   // Totales anuales íntegros de la red (1 vez al año)
   const totalAnualRunlotRed =
@@ -480,10 +478,10 @@ export function Module4TributosEntes({
 
   const totalAnualSencamerRed =
     numOperadoras *
-    (costoSencamerSistemaPremiador + costoSencamerMaquinasAire + costoSencamerEsferas);
+    (costoSencamerSistemaPremiador + costoSencamerEsferas);
 
   const totalAnualCargasOperadoras =
-    numOperadoras * (costoRunlotOperadora + costoIobpasOperadora + costoSencamerSistemaPremiador + costoSencamerMaquinasAire + costoSencamerEsferas) +
+    numOperadoras * (costoRunlotOperadora + costoIobpasOperadora + costoSencamerSistemaPremiador + costoSencamerEsferas) +
     numJuegos * costoRunlotJuegoOperadora;
 
   const totalCargasRegulatoriasOperadoras =
@@ -559,7 +557,7 @@ GGR Consolidado de Red: Bs. ${formatBs(projTotalGGR, 2)}
 • IOBPAS Beneficencia & Licencias: Bs. ${formatBs(projIobpasTotal, 2)} (Canon GGR: Bs. ${formatBs(projIobpasCanonGGR, 2)} + Licencias: Bs. ${formatBs(projIobpasLicenciasTotal, 2)} [Tasas anuales ${modoCargaAnual === "devengo" && timeHorizonDays === 30 ? "devengadas/mes" : "imputadas"}])
 • Alcaldías Municipales (2,5% s/ Comisiones): Bs. ${formatBs(projAlcaldiaTotal, 2)}
 • CONALOT (Tasas Telemáticas RUNLOT 5 Actores + Juegos): Bs. ${formatBs(projConalotTotal, 2)} [Tasas anuales ${modoCargaAnual === "devengo" && timeHorizonDays === 30 ? "devengadas/mes" : "imputadas"}]
-• SENCAMER (Certificación Metrológica Sistema Premiador + Máquinas de Aire y Esferas): Bs. ${formatBs(totalSencamerOperadoras, 2)} [Tasas anuales ${modoCargaAnual === "devengo" && timeHorizonDays === 30 ? "devengadas/mes" : "imputadas"}]
+• SENCAMER (Certificación Metrológica Sistema Premiador + Calibración de Esferas): Bs. ${formatBs(totalSencamerOperadoras, 2)} [Tasas anuales ${modoCargaAnual === "devengo" && timeHorizonDays === 30 ? "devengadas/mes" : "imputadas"}]
 TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
 
 --- RENDIMIENTO PRIVADO NETO (DEDUCIDAS LICENCIAS IOBPAS, RUNLOT Y SENCAMER) ---
@@ -589,7 +587,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
       ["(-) Canon IOBPAS Beneficencia Pública", (-projIobpasCanonGGR).toFixed(2), `${pctFacial(projIobpasCanonGGR)}%`, "5% Triples / 1% Anim s/ GGR", "Lotería Oficial (Hospitales)", "Ley Nacional Lotería Art 23"],
       ["(-) Licencias y Avales IOBPAS (5 Actores)", (-projIobpasLicenciasTotal).toFixed(2), `${pctFacial(projIobpasLicenciasTotal)}%`, "Cánones Fijos de Licencia", "IOBPAS (Lotería Oficial)", "Reglamento IOBPAS"],
       ["(-) Tasas y Homologación RUNLOT / CONALOT", (-projConalotTotal).toFixed(2), `${pctFacial(projConalotTotal)}%`, "Cánones SCFD por Actor + Juegos", "CONALOT (Ente Regulador)", "Resolución 002-2026"],
-      ["(-) Certificación Metrológica SENCAMER", (-totalSencamerOperadoras).toFixed(2), `${pctFacial(totalSencamerOperadoras)}%`, "Sistema Premiador + Máquinas de Aire + Esferas", "SENCAMER (Ministerio Comercio)", "Ley de Metrología Legal"],
+      ["(-) Certificación Metrológica SENCAMER", (-totalSencamerOperadoras).toFixed(2), `${pctFacial(totalSencamerOperadoras)}%`, "Sistema Premiador RNG + Calibración de Esferas", "SENCAMER (Ministerio Comercio)", "Ley de Metrología Legal"],
       [`(-) Gasto Operativo IT de la Operadora (${pctGastoITOperadora}% s/ Facial Bruto)`, (-projGastoITOperadora).toFixed(2), `${pctFacial(projGastoITOperadora)}%`, `${pctGastoITOperadora}% s/ Venta Bruta Facial (Gasto de Operadora)`, "Costo Operativo Tecnológico", "Certificación ISO 27001"],
       ["(=) Superávit Operativo Neto Operadoras", projOperadoraUtilidadNeta.toFixed(2), `${pctFacial(projOperadoraUtilidadNeta)}%`, `Net Win tras Licencias, SENCAMER y Gasto IT (${pctGastoITOperadora}%)`, "Operadoras Concesionarias", "Solvencia Patrimonial"],
       ["", "", "", "", "", ""],
@@ -622,7 +620,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
       ["(-) Canon IOBPAS Beneficencia Publica", (-projIobpasCanonGGR).toFixed(2), `${pctFacial(projIobpasCanonGGR)}%`, "5% Triples / 1% Anim s/ GGR", "Loteria Oficial (Hospitales)", "Ley Nacional Loteria Art 23"],
       ["(-) Licencias y Avales IOBPAS (5 Actores)", (-projIobpasLicenciasTotal).toFixed(2), `${pctFacial(projIobpasLicenciasTotal)}%`, "Canones Fijos de Licencia", "IOBPAS (Loteria Oficial)", "Reglamento IOBPAS"],
       ["(-) Tasas y Homologacion RUNLOT / CONALOT", (-projConalotTotal).toFixed(2), `${pctFacial(projConalotTotal)}%`, "Canones SCFD por Actor + Juegos", "CONALOT (Ente Regulador)", "Resolucion 002-2026"],
-      ["(-) Certificacion Metrologica SENCAMER", (-totalSencamerOperadoras).toFixed(2), `${pctFacial(totalSencamerOperadoras)}%`, "Sistema Premiador + Maquinas de Aire + Esferas", "SENCAMER (Ministerio Comercio)", "Ley de Metrologia Legal"],
+      ["(-) Certificacion Metrologica SENCAMER", (-totalSencamerOperadoras).toFixed(2), `${pctFacial(totalSencamerOperadoras)}%`, "Sistema Premiador RNG + Calibracion de Esferas", "SENCAMER (Ministerio Comercio)", "Ley de Metrologia Legal"],
       [`(-) Gasto Operativo IT de la Operadora (${pctGastoITOperadora}% s/ Facial Bruto)`, (-projGastoITOperadora).toFixed(2), `${pctFacial(projGastoITOperadora)}%`, `${pctGastoITOperadora}% s/ Venta Bruta Facial (Gasto de Operadora)`, "Costo Operativo Tecnologico", "Certificacion ISO 27001"],
       ["(=) Superavit Operativo Neto Operadoras", projOperadoraUtilidadNeta.toFixed(2), `${pctFacial(projOperadoraUtilidadNeta)}%`, `Net Win tras Licencias, SENCAMER y Gasto IT (${pctGastoITOperadora}%)`, "Operadoras Concesionarias", "Solvencia Patrimonial"],
       ["", "", "", "", "", ""],
@@ -3059,17 +3057,6 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Certif. SENCAMER Máquinas de Aire (Bs./año):</label>
-                      <input
-                        type="number"
-                        min={0}
-                        step={100}
-                        value={costoSencamerMaquinasAire}
-                        onChange={(e) => setCostoSencamerMaquinasAire(Math.max(0, Number(e.target.value)))}
-                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-cyan-300 focus:outline-none focus:border-cyan-500"
-                      />
-                    </div>
-                    <div>
                       <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Certif. SENCAMER Esferas / Balotas (Bs./año):</label>
                       <input
                         type="number"
@@ -3353,7 +3340,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                         ? `Alícuota devengada 30d (÷12) • Base Anual: Bs. ${formatBs(totalAnualSencamerRed, 2)}`
                         : `Carga período • Base Anual: Bs. ${formatBs(totalAnualSencamerRed, 2)} (1 vez/año)`}
                       <span className="block text-[9px] text-cyan-600 dark:text-cyan-400">
-                        (Sistema Premiador RNG + Máquinas de Aire + Calibración y Pesaje de Esferas)
+                        (Sistema Premiador RNG + Calibración y Pesaje Metrológico de Esferas)
                       </span>
                     </div>
                   </div>
