@@ -332,8 +332,8 @@ export function Module4TributosEntes({
   const [numComercializadoras, setNumComercializadoras] = useState<number>(1);
   const [numOperadoras, setNumOperadoras] = useState<number>(1);
   const [numJuegos, setNumJuegos] = useState<number>(1);
-  const [numSistemasIT, setNumSistemasIT] = useState<number>(1);
-  const [numResponsablesIT, setNumResponsablesIT] = useState<number>(1);
+  const numSistemasIT = numOperadoras;
+  const numResponsablesIT = numOperadoras;
   const [dailySalesPerTaquilla, setDailySalesPerTaquilla] = useState<number>(
     totalSales > 0 ? Math.round(totalSales) : 0
   );
@@ -481,11 +481,26 @@ export function Module4TributosEntes({
     (costoSencamerSistemaPremiador + costoSencamerEsferas);
 
   const totalAnualCargasOperadoras =
-    numOperadoras * (costoRunlotOperadora + costoIobpasOperadora + costoSencamerSistemaPremiador + costoSencamerEsferas) +
+    numOperadoras * (
+      costoRunlotOperadora +
+      costoIobpasOperadora +
+      costoRunlotSistemaIT +
+      costoIobpasSistemaIT +
+      costoRunlotResponsableIT +
+      costoIobpasResponsableIT +
+      costoSencamerSistemaPremiador +
+      costoSencamerEsferas
+    ) +
     numJuegos * costoRunlotJuegoOperadora;
 
   const totalCargasRegulatoriasOperadoras =
-    totalRunlotOperadoras + totalIobpasOperadoras + totalSencamerOperadoras;
+    totalRunlotOperadoras +
+    totalIobpasOperadoras +
+    totalRunlotSistemasIT +
+    totalIobpasSistemasIT +
+    totalRunlotResponsablesIT +
+    totalIobpasResponsablesIT +
+    totalSencamerOperadoras;
 
   // Gasto Operativo de Plataforma IT (1% sobre Venta Bruta Facial, asumido exclusivamente como gasto de la Operadora)
   const projGastoITOperadora = projVentaTotal * (pctGastoITOperadora / 100);
@@ -563,9 +578,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
 --- RENDIMIENTO PRIVADO NETO (DEDUCIDAS LICENCIAS IOBPAS, RUNLOT Y SENCAMER) ---
 • Taquillas / Agencias (${numTaquillas}): Bs. ${formatBs(projTaquillaUtilidadNeta, 2)} (Promedio: Bs. ${formatBs(avgPerTaquilla, 2)})
 • Comercializadoras (${numComercializadoras}): Bs. ${formatBs(projComercialUtilidadNeta, 2)} (Promedio: Bs. ${formatBs(avgPerComercializadora, 2)})
-• Operadoras Concesionarias (${numOperadoras} • ${numJuegos} Juegos): Bs. ${formatBs(projOperadoraUtilidadNeta, 2)} (Promedio: Bs. ${formatBs(avgPerOperadora, 2)}) [Net Win: Bs. ${formatBs(projShareOperadorasBruto, 2)} menos Gasto IT (${pctGastoITOperadora}%): -Bs. ${formatBs(projGastoITOperadora, 2)} y Cargas Regulatorias (RUNLOT/IOBPAS/SENCAMER): -Bs. ${formatBs(totalCargasRegulatoriasOperadoras, 2)}]
-• Sistemas IT (${numSistemasIT}) — Carga Licencias Período: -Bs. ${formatBs(totalRunlotSistemasIT + totalIobpasSistemasIT, 2)}
-• Responsables IT (${numResponsablesIT}) — Carga Licencias Período: -Bs. ${formatBs(totalRunlotResponsablesIT + totalIobpasResponsablesIT, 2)}
+• Operadoras Concesionarias (${numOperadoras} • ${numJuegos} Juegos): Bs. ${formatBs(projOperadoraUtilidadNeta, 2)} (Promedio: Bs. ${formatBs(avgPerOperadora, 2)}) [Net Win: Bs. ${formatBs(projShareOperadorasBruto, 2)} menos Gasto IT (${pctGastoITOperadora}%): -Bs. ${formatBs(projGastoITOperadora, 2)} y Cargas Regulatorias / IT / SENCAMER: -Bs. ${formatBs(totalCargasRegulatoriasOperadoras, 2)}]
 `;
     navigator.clipboard.writeText(text);
     setCopiedSummary(true);
@@ -591,12 +604,10 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
       [`(-) Gasto Operativo IT de la Operadora (${pctGastoITOperadora}% s/ Facial Bruto)`, (-projGastoITOperadora).toFixed(2), `${pctFacial(projGastoITOperadora)}%`, `${pctGastoITOperadora}% s/ Venta Bruta Facial (Gasto de Operadora)`, "Costo Operativo Tecnológico", "Certificación ISO 27001"],
       ["(=) Superávit Operativo Neto Operadoras", projOperadoraUtilidadNeta.toFixed(2), `${pctFacial(projOperadoraUtilidadNeta)}%`, `Net Win tras Licencias, SENCAMER y Gasto IT (${pctGastoITOperadora}%)`, "Operadoras Concesionarias", "Solvencia Patrimonial"],
       ["", "", "", "", "", ""],
-      ["DISTRIBUCIÓN POR ACTOR DE LA RED", "CANTIDAD", "VENTA GESTIONADA", "INGRESO BRUTO", "CARGA FISCAL / GASTO IT", "COSTOS RUNLOT + IOBPAS + SENCAMER", "PROMEDIO UNITARIO NETO", "TOTAL RED NETO"],
+      ["DISTRIBUCIÓN POR ACTOR DE LA RED", "CANTIDAD", "VENTA GESTIONADA", "INGRESO BRUTO", "CARGA FISCAL / GASTO IT", "COSTOS RUNLOT + IOBPAS + SENCAMER + IT", "PROMEDIO UNITARIO NETO", "TOTAL RED NETO"],
       ["Taquillas / Centros de Apuestas", numTaquillas.toString(), projVentaTotal.toFixed(2), projTaquillaCommBruta.toFixed(2), (-projAlcaldiaTaquillas).toFixed(2), (-(totalRunlotTaquillas + totalIobpasTaquillas)).toFixed(2), avgPerTaquilla.toFixed(2), projTaquillaUtilidadNeta.toFixed(2)],
       ["Comercializadoras Intermediarias", numComercializadoras.toString(), projVentaTotal.toFixed(2), (projComercialSpreadBruto + projShareComercializadoras).toFixed(2), (-projAlcaldiaComercial).toFixed(2), (-(totalRunlotComercializadoras + totalIobpasComercializadoras)).toFixed(2), avgPerComercializadora.toFixed(2), projComercialUtilidadNeta.toFixed(2)],
-      ["Operadoras de Juegos de Lotería", `${numOperadoras} (${numJuegos} jgs)`, projVentaTotal.toFixed(2), projShareOperadorasBruto.toFixed(2), `Gasto IT (${pctGastoITOperadora}%): -${projGastoITOperadora.toFixed(2)}`, (-(totalCargasRegulatoriasOperadoras)).toFixed(2), avgPerOperadora.toFixed(2), projOperadoraUtilidadNeta.toFixed(2)],
-      ["Empresas de Sistemas Informáticos", numSistemasIT.toString(), "0.00", "0.00 (No participa del Facial)", "0.00", (-(totalRunlotSistemasIT + totalIobpasSistemasIT)).toFixed(2), (-(totalRunlotSistemasIT + totalIobpasSistemasIT) / Math.max(1, numSistemasIT)).toFixed(2), (-(totalRunlotSistemasIT + totalIobpasSistemasIT)).toFixed(2)],
-      ["Responsables Informáticos", numResponsablesIT.toString(), "0.00", "0.00 (No participa del Facial)", "0.00", (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT)).toFixed(2), (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT) / Math.max(1, numResponsablesIT)).toFixed(2), (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT)).toFixed(2)]
+      ["Operadoras de Juegos de Lotería", `${numOperadoras} (${numJuegos} jgs)`, projVentaTotal.toFixed(2), projShareOperadorasBruto.toFixed(2), `Gasto IT (${pctGastoITOperadora}%): -${projGastoITOperadora.toFixed(2)}`, (-(totalCargasRegulatoriasOperadoras)).toFixed(2), avgPerOperadora.toFixed(2), projOperadoraUtilidadNeta.toFixed(2)]
     ];
 
     const tsv = rows.map((r) => r.join("\t")).join("\n");
@@ -624,12 +635,10 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
       [`(-) Gasto Operativo IT de la Operadora (${pctGastoITOperadora}% s/ Facial Bruto)`, (-projGastoITOperadora).toFixed(2), `${pctFacial(projGastoITOperadora)}%`, `${pctGastoITOperadora}% s/ Venta Bruta Facial (Gasto de Operadora)`, "Costo Operativo Tecnologico", "Certificacion ISO 27001"],
       ["(=) Superavit Operativo Neto Operadoras", projOperadoraUtilidadNeta.toFixed(2), `${pctFacial(projOperadoraUtilidadNeta)}%`, `Net Win tras Licencias, SENCAMER y Gasto IT (${pctGastoITOperadora}%)`, "Operadoras Concesionarias", "Solvencia Patrimonial"],
       ["", "", "", "", "", ""],
-      ["DISTRIBUCION POR ACTOR DE LA RED", "CANTIDAD", "VENTA GESTIONADA", "INGRESO BRUTO", "CARGA FISCAL / GASTO IT", "COSTOS RUNLOT + IOBPAS + SENCAMER", "PROMEDIO UNITARIO NETO", "TOTAL RED NETO"],
+      ["DISTRIBUCION POR ACTOR DE LA RED", "CANTIDAD", "VENTA GESTIONADA", "INGRESO BRUTO", "CARGA FISCAL / GASTO IT", "COSTOS RUNLOT + IOBPAS + SENCAMER + IT", "PROMEDIO UNITARIO NETO", "TOTAL RED NETO"],
       ["Taquillas / Centros de Apuestas", numTaquillas.toString(), projVentaTotal.toFixed(2), projTaquillaCommBruta.toFixed(2), (-projAlcaldiaTaquillas).toFixed(2), (-(totalRunlotTaquillas + totalIobpasTaquillas)).toFixed(2), avgPerTaquilla.toFixed(2), projTaquillaUtilidadNeta.toFixed(2)],
       ["Comercializadoras Intermediarias", numComercializadoras.toString(), projVentaTotal.toFixed(2), (projComercialSpreadBruto + projShareComercializadoras).toFixed(2), (-projAlcaldiaComercial).toFixed(2), (-(totalRunlotComercializadoras + totalIobpasComercializadoras)).toFixed(2), avgPerComercializadora.toFixed(2), projComercialUtilidadNeta.toFixed(2)],
-      ["Operadoras de Juegos de Loteria", `${numOperadoras} (${numJuegos} jgs)`, projVentaTotal.toFixed(2), projShareOperadorasBruto.toFixed(2), `Gasto IT (${pctGastoITOperadora}%): -${projGastoITOperadora.toFixed(2)}`, (-(totalCargasRegulatoriasOperadoras)).toFixed(2), avgPerOperadora.toFixed(2), projOperadoraUtilidadNeta.toFixed(2)],
-      ["Empresas de Sistemas Informaticos", numSistemasIT.toString(), "0.00", "0.00 (No participa del Facial)", "0.00", (-(totalRunlotSistemasIT + totalIobpasSistemasIT)).toFixed(2), (-(totalRunlotSistemasIT + totalIobpasSistemasIT) / Math.max(1, numSistemasIT)).toFixed(2), (-(totalRunlotSistemasIT + totalIobpasSistemasIT)).toFixed(2)],
-      ["Responsables Informaticos", numResponsablesIT.toString(), "0.00", "0.00 (No participa del Facial)", "0.00", (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT)).toFixed(2), (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT) / Math.max(1, numResponsablesIT)).toFixed(2), (-(totalRunlotResponsablesIT + totalIobpasResponsablesIT)).toFixed(2)]
+      ["Operadoras de Juegos de Loteria", `${numOperadoras} (${numJuegos} jgs)`, projVentaTotal.toFixed(2), projShareOperadorasBruto.toFixed(2), `Gasto IT (${pctGastoITOperadora}%): -${projGastoITOperadora.toFixed(2)}`, (-(totalCargasRegulatoriasOperadoras)).toFixed(2), avgPerOperadora.toFixed(2), projOperadoraUtilidadNeta.toFixed(2)]
     ];
 
     const csvContent = "\uFEFF" + rows.map((r) => r.map((c) => `"${c}"`).join(",")).join("\n");
@@ -2548,8 +2557,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     setNumTaquillas(1);
                     setNumComercializadoras(1);
                     setNumOperadoras(1);
-                    setNumSistemasIT(1);
-                    setNumResponsablesIT(1);
+                    setNumJuegos(1);
                     setDailySalesPerTaquilla(0);
                     setTimeHorizonDays(30);
                   }}
@@ -2564,8 +2572,6 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     setNumComercializadoras(1);
                     setNumOperadoras(1);
                     setNumJuegos(1);
-                    setNumSistemasIT(1);
-                    setNumResponsablesIT(1);
                     setDailySalesPerTaquilla(10000);
                     setTimeHorizonDays(30);
                   }}
@@ -2580,8 +2586,6 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     setNumComercializadoras(1);
                     setNumOperadoras(1);
                     setNumJuegos(2);
-                    setNumSistemasIT(1);
-                    setNumResponsablesIT(1);
                     setDailySalesPerTaquilla(20000);
                     setTimeHorizonDays(30);
                   }}
@@ -2596,8 +2600,6 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     setNumComercializadoras(3);
                     setNumOperadoras(2);
                     setNumJuegos(6);
-                    setNumSistemasIT(2);
-                    setNumResponsablesIT(2);
                     setDailySalesPerTaquilla(40000);
                     setTimeHorizonDays(30);
                   }}
@@ -2612,8 +2614,6 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     setNumComercializadoras(50);
                     setNumOperadoras(10);
                     setNumJuegos(30);
-                    setNumSistemasIT(10);
-                    setNumResponsablesIT(10);
                     setDailySalesPerTaquilla(50000);
                     setTimeHorizonDays(365);
                   }}
@@ -2634,8 +2634,8 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
               </button>
             </div>
 
-            {/* PARRILLA DE SLIDERS DE CONFIGURACIÓN (5 ACTORES + VARIABLES ECONÓMICAS) */}
-            <div id="tour-sim-sliders" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6 bg-slate-50 dark:bg-slate-950/70 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            {/* PARRILLA DE SLIDERS DE CONFIGURACIÓN (ACTORES COMERCIALES + JUEGOS + VARIABLES) */}
+            <div id="tour-sim-sliders" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 mt-6 bg-slate-50 dark:bg-slate-950/70 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
               {/* Slider 1: Taquillas */}
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
@@ -2740,59 +2740,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                 </div>
               </div>
 
-              {/* Slider 4: Sistemas Informáticos */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs">
-                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                    <Cpu className="w-3.5 h-3.5 text-purple-500" /> 4. Sistemas Informáticos (Plataformas)
-                  </span>
-                  <span className="font-mono text-purple-700 dark:text-purple-400 font-extrabold bg-purple-50 dark:bg-purple-500/10 px-2 py-0.5 rounded border border-purple-200 dark:border-transparent">
-                    {numSistemasIT} plataformas IT
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={1}
-                  max={20}
-                  step={1}
-                  value={numSistemasIT}
-                  onChange={(e) => setNumSistemasIT(Number(e.target.value))}
-                  className="w-full accent-purple-400 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
-                />
-                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                  <span>1</span>
-                  <span>10</span>
-                  <span>20</span>
-                </div>
-              </div>
-
-              {/* Slider 5: Responsables Informáticos */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs">
-                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                    <UserCheck className="w-3.5 h-3.5 text-indigo-500" /> 5. Responsables Informáticos (Custodios)
-                  </span>
-                  <span className="font-mono text-indigo-700 dark:text-indigo-400 font-extrabold bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-200 dark:border-transparent">
-                    {numResponsablesIT} responsables IT
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={1}
-                  max={50}
-                  step={1}
-                  value={numResponsablesIT}
-                  onChange={(e) => setNumResponsablesIT(Number(e.target.value))}
-                  className="w-full accent-indigo-400 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
-                />
-                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                  <span>1</span>
-                  <span>25</span>
-                  <span>50</span>
-                </div>
-              </div>
-
-              {/* Slider 6: Venta Promedio Diaria */}
+              {/* Slider 4: Venta Promedio Diaria */}
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
                   <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
@@ -2818,8 +2766,8 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                 </div>
               </div>
 
-              {/* Selector 7: Horizonte Temporal */}
-              <div className="space-y-2 md:col-span-2 lg:col-span-3">
+              {/* Selector Horizonte Temporal */}
+              <div className="space-y-2 sm:col-span-2 lg:col-span-3 xl:col-span-5">
                 <div className="flex justify-between text-xs">
                   <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5 text-blue-500" /> Horizonte Temporal de la Simulación
@@ -2902,15 +2850,15 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   </div>
 
                   <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-                    5 Sujetos Obligados
+                    Actores Comerciales • Cargas IT & SENCAMER en Operadora
                   </span>
                 </div>
               </div>
 
-              {/* Grid de los 5 Actores con sus inputs editables */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+              {/* Grid de los 3 Actores Comerciales con sus inputs editables */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Actor 1: Taquilla / Agencia POS */}
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-blue-200 dark:border-blue-900/40 space-y-2.5 shadow-sm">
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-blue-200 dark:border-blue-900/40 space-y-2.5 shadow-sm">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-xs text-blue-700 dark:text-blue-300 flex items-center gap-1.5">
                       <Store className="w-3.5 h-3.5" /> 1. Taquillas POS
@@ -2943,7 +2891,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                   </div>
-                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 space-y-0.5 text-[10px] font-mono">
+                  <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-1 text-[10px] font-mono">
                     <div className="flex justify-between items-center text-slate-500">
                       <span>Anual (1 vez/año):</span>
                       <span className="font-bold text-slate-700 dark:text-slate-300">Bs. {formatBs(costoRunlotTaquilla + costoIobpasTaquilla, 0)}</span>
@@ -2956,7 +2904,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                 </div>
 
                 {/* Actor 2: Comercializadoras */}
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-amber-200 dark:border-amber-900/40 space-y-2.5 shadow-sm">
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-amber-200 dark:border-amber-900/40 space-y-2.5 shadow-sm">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-xs text-amber-700 dark:text-amber-300 flex items-center gap-1.5">
                       <Building2 className="w-3.5 h-3.5" /> 2. Comercializadora
@@ -2989,7 +2937,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                   </div>
-                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 space-y-0.5 text-[10px] font-mono">
+                  <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-1 text-[10px] font-mono">
                     <div className="flex justify-between items-center text-slate-500">
                       <span>Anual (1 vez/año):</span>
                       <span className="font-bold text-slate-700 dark:text-slate-300">Bs. {formatBs(costoRunlotComercializadora + costoIobpasComercializadora, 0)}</span>
@@ -3001,19 +2949,20 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   </div>
                 </div>
 
-                {/* Actor 3: Operadoras de Lotería */}
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-emerald-200 dark:border-emerald-900/40 space-y-2.5 shadow-sm">
+                {/* Actor 3: Operadoras de Lotería (Consolidado Concesión, Juegos, IT y Calidad) */}
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-emerald-200 dark:border-emerald-900/40 space-y-2.5 shadow-sm">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-xs text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5" /> 3. Operadoras
+                      <ShieldCheck className="w-4 h-4" /> 3. Operadoras (Cargas Concesión, IT & Calidad)
                     </span>
                     <span className="text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 px-1.5 py-0.5 rounded font-bold">
                       {numOperadoras} unid. • {numJuegos} jgs
                     </span>
                   </div>
-                  <div className="space-y-1.5">
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px]">
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">RUNLOT Operadora (Bs./año):</label>
+                      <label className="text-slate-600 dark:text-slate-400 block font-medium">RUNLOT Operadora (Bs./año):</label>
                       <input
                         type="number"
                         min={0}
@@ -3024,7 +2973,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">RUNLOT Juego ({numJuegos} jgs • Bs./año c/u):</label>
+                      <label className="text-slate-600 dark:text-slate-400 block font-medium">RUNLOT Juegos ({numJuegos} jgs • Bs./año c/u):</label>
                       <input
                         type="number"
                         min={0}
@@ -3035,7 +2984,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Licencia IOBPAS (Bs./año):</label>
+                      <label className="text-slate-600 dark:text-slate-400 block font-medium">Licencia IOBPAS (Bs./año):</label>
                       <input
                         type="number"
                         min={0}
@@ -3046,7 +2995,29 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Certif. SENCAMER Sistema Premiador (Bs./año):</label>
+                      <label className="text-slate-600 dark:text-slate-400 block font-medium">Homol. RUNLOT Sist. IT (Bs./año):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={100}
+                        value={costoRunlotSistemaIT}
+                        onChange={(e) => setCostoRunlotSistemaIT(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-purple-300 focus:outline-none focus:border-purple-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-slate-600 dark:text-slate-400 block font-medium">Reg. RUNLOT Resp. IT (Bs./año):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={100}
+                        value={costoRunlotResponsableIT}
+                        onChange={(e) => setCostoRunlotResponsableIT(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-indigo-300 focus:outline-none focus:border-indigo-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-slate-600 dark:text-slate-400 block font-medium">Certif. SENCAMER Premiador (Bs./año):</label>
                       <input
                         type="number"
                         min={0}
@@ -3056,8 +3027,8 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                         className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-cyan-300 focus:outline-none focus:border-cyan-500"
                       />
                     </div>
-                    <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Certif. SENCAMER Esferas / Balotas (Bs./año):</label>
+                    <div className="sm:col-span-2">
+                      <label className="text-slate-600 dark:text-slate-400 block font-medium">Certif. SENCAMER Esferas / Balotas (Bs./año):</label>
                       <input
                         type="number"
                         min={0}
@@ -3068,121 +3039,19 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                   </div>
-                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 space-y-0.5 text-[10px] font-mono">
+
+                  <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-1 text-[10px] font-mono">
                     <div className="flex justify-between items-center text-slate-500">
-                      <span>Anual (1 vez/año):</span>
+                      <span>Anual Consolidado (1 vez/año):</span>
                       <span className="font-bold text-slate-700 dark:text-slate-300">Bs. {formatBs(totalAnualCargasOperadoras, 0)}</span>
                     </div>
                     <div className="flex justify-between items-center text-emerald-700 dark:text-emerald-300 font-bold">
-                      <span>Carga Período:</span>
+                      <span>Carga Período (RUNLOT + IOBPAS + SENCAMER + IT):</span>
                       <span>Bs. {formatBs(totalCargasRegulatoriasOperadoras, 2)}</span>
                     </div>
                     <div className="flex justify-between items-center text-purple-600 dark:text-purple-400 font-semibold pt-0.5">
-                      <span>Canon IT ({pctGastoITOperadora}% Venta):</span>
+                      <span>Canon IT ({pctGastoITOperadora}% s/ Venta):</span>
                       <span>-Bs. {formatBs(projGastoITOperadora, 2)}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Actor 4: Empresas de Sistemas IT */}
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-purple-200 dark:border-purple-900/40 space-y-2.5 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-xs text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
-                      <Cpu className="w-3.5 h-3.5" /> 4. Sistemas IT
-                    </span>
-                    <span className="text-[10px] font-mono bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 px-1.5 py-0.5 rounded font-bold">
-                      {numSistemasIT} unid.
-                    </span>
-                  </div>
-                  <div className="space-y-1.5">
-                    <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Homol. RUNLOT (Bs./año):</label>
-                      <input
-                        type="number"
-                        min={0}
-                        step={50}
-                        value={costoRunlotSistemaIT}
-                        onChange={(e) => setCostoRunlotSistemaIT(Math.max(0, Number(e.target.value)))}
-                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-purple-300 focus:outline-none focus:border-purple-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Aval IOBPAS (Bs./año):</label>
-                      <input
-                        type="number"
-                        min={0}
-                        step={50}
-                        value={costoIobpasSistemaIT}
-                        onChange={(e) => setCostoIobpasSistemaIT(Math.max(0, Number(e.target.value)))}
-                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-purple-300 focus:outline-none focus:border-purple-500"
-                      />
-                    </div>
-                  </div>
-                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 space-y-0.5 text-[10px] font-mono">
-                    <div className="flex justify-between items-center text-slate-500">
-                      <span>Anual (1 vez/año):</span>
-                      <span className="font-bold text-slate-700 dark:text-slate-300">Bs. {formatBs(costoRunlotSistemaIT + costoIobpasSistemaIT, 0)}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-purple-700 dark:text-purple-300 font-bold">
-                      <span>Carga Período:</span>
-                      <span>Bs. {formatBs(totalRunlotSistemasIT + totalIobpasSistemasIT, 2)}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Actor 5: Responsables Informáticos */}
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-indigo-200 dark:border-indigo-900/40 space-y-2.5 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-xs text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
-                      <UserCheck className="w-3.5 h-3.5" /> 5. Responsables IT
-                    </span>
-                    <span className="text-[10px] font-mono bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 px-1.5 py-0.5 rounded font-bold">
-                      {numResponsablesIT} unid.
-                    </span>
-                  </div>
-                  <div className="space-y-1.5">
-                    <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Registro RUNLOT (Bs./año):</label>
-                      <input
-                        type="number"
-                        min={0}
-                        step={25}
-                        value={costoRunlotResponsableIT}
-                        onChange={(e) => setCostoRunlotResponsableIT(Math.max(0, Number(e.target.value)))}
-                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-indigo-300 focus:outline-none focus:border-indigo-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Aval IOBPAS (Bs./año):</label>
-                      <input
-                        type="number"
-                        min={0}
-                        step={25}
-                        value={costoIobpasResponsableIT}
-                        onChange={(e) => setCostoIobpasResponsableIT(Math.max(0, Number(e.target.value)))}
-                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-indigo-300 focus:outline-none focus:border-indigo-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[10px] text-slate-600 dark:text-slate-400 block font-medium">Honorarios IT (Bs./mes):</label>
-                      <input
-                        type="number"
-                        min={0}
-                        step={50}
-                        value={honorarioRespITPorMes}
-                        onChange={(e) => setHonorarioRespITPorMes(Math.max(0, Number(e.target.value)))}
-                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-indigo-300 focus:outline-none focus:border-indigo-500"
-                      />
-                    </div>
-                  </div>
-                  <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800 space-y-0.5 text-[10px] font-mono">
-                    <div className="flex justify-between items-center text-slate-500">
-                      <span>Licencias (1 vez/año):</span>
-                      <span className="font-bold text-slate-700 dark:text-slate-300">Bs. {formatBs(costoRunlotResponsableIT + costoIobpasResponsableIT, 0)}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-indigo-700 dark:text-indigo-300 font-bold">
-                      <span>Carga Licencias:</span>
-                      <span>Bs. {formatBs(totalRunlotResponsablesIT + totalIobpasResponsablesIT, 2)}</span>
                     </div>
                   </div>
                 </div>
@@ -3864,7 +3733,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">
                       <div>-Bs. {formatBs(totalCargasRegulatoriasOperadoras, 2)}</div>
                       <span className="text-[10px] text-slate-400 dark:text-slate-500 font-sans">
-                        (Anual: Bs. {formatBs(totalAnualCargasOperadoras, 2)}/año [RUNLOT + IOBPAS + SENCAMER])
+                        (Anual: Bs. {formatBs(totalAnualCargasOperadoras, 2)}/año [RUNLOT + IOBPAS + SENCAMER + IT])
                       </span>
                     </td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-300 font-extrabold text-sm">
@@ -3872,62 +3741,6 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     </td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400 font-bold">
                       Bs. {formatBs(projOperadoraUtilidadNeta, 2)}
-                    </td>
-                  </tr>
-
-                  {/* Nivel 4: Sistemas Informáticos */}
-                  <tr>
-                    <td className="p-3 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                      <Cpu className="w-3.5 h-3.5 text-purple-500" /> Empresas de Sistemas Informáticos
-                    </td>
-                    <td className="p-3 text-center font-mono text-purple-700 dark:text-purple-300 font-bold">{numSistemasIT}</td>
-                    <td className="p-3 text-right font-mono text-slate-400 dark:text-slate-500">—</td>
-                    <td className="p-3 text-right font-mono text-slate-500 dark:text-slate-400">
-                      <div>Bs. 0,00</div>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-sans block">
-                        (No participa del Facial)
-                      </span>
-                    </td>
-                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">Bs. 0,00</td>
-                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">
-                      <div>-Bs. {formatBs(totalRunlotSistemasIT + totalIobpasSistemasIT, 2)}</div>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-sans">
-                        (Anual: Bs. {formatBs((costoRunlotSistemaIT + costoIobpasSistemaIT) * numSistemasIT, 2)}/año)
-                      </span>
-                    </td>
-                    <td className="p-3 text-right font-mono text-slate-500 dark:text-slate-400 font-bold">
-                      -Bs. {formatBs((totalRunlotSistemasIT + totalIobpasSistemasIT) / Math.max(1, numSistemasIT), 2)}
-                    </td>
-                    <td className="p-3 text-right font-mono text-slate-500 dark:text-slate-400 font-bold">
-                      -Bs. {formatBs(totalRunlotSistemasIT + totalIobpasSistemasIT, 2)}
-                    </td>
-                  </tr>
-
-                  {/* Nivel 5: Responsables Informáticos */}
-                  <tr>
-                    <td className="p-3 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                      <UserCheck className="w-3.5 h-3.5 text-indigo-500" /> Responsables Informáticos (Custodios IT)
-                    </td>
-                    <td className="p-3 text-center font-mono text-indigo-700 dark:text-indigo-300 font-bold">{numResponsablesIT}</td>
-                    <td className="p-3 text-right font-mono text-slate-400 dark:text-slate-500">—</td>
-                    <td className="p-3 text-right font-mono text-slate-500 dark:text-slate-400">
-                      <div>Bs. {formatBs(projTotalHonorariosRespIT, 2)}</div>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-sans block">
-                        (Base Cero por defecto)
-                      </span>
-                    </td>
-                    <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">Bs. 0,00</td>
-                    <td className="p-3 text-right font-mono text-amber-700 dark:text-amber-400">
-                      <div>-Bs. {formatBs(totalRunlotResponsablesIT + totalIobpasResponsablesIT, 2)}</div>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-sans">
-                        (Anual: Bs. {formatBs((costoRunlotResponsableIT + costoIobpasResponsableIT) * numResponsablesIT, 2)}/año)
-                      </span>
-                    </td>
-                    <td className="p-3 text-right font-mono text-slate-500 dark:text-slate-400 font-bold">
-                      Bs. {formatBs((projTotalHonorariosRespIT - (totalRunlotResponsablesIT + totalIobpasResponsablesIT)) / Math.max(1, numResponsablesIT), 2)}
-                    </td>
-                    <td className="p-3 text-right font-mono text-slate-500 dark:text-slate-400 font-bold">
-                      Bs. {formatBs(projTotalHonorariosRespIT - (totalRunlotResponsablesIT + totalIobpasResponsablesIT), 2)}
                     </td>
                   </tr>
                 </tbody>
