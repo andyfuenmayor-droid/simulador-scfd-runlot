@@ -275,7 +275,7 @@ export const ThermalTickets: React.FC<ThermalTicketsProps> = ({
                 CENTRO DE APUESTAS LA FAVORITA | RIF: J-12345678-9 | RUNLOT: RUN-0089
               </div>
               <div className="text-center font-bold text-[9.5px] !text-emerald-800 mb-1.5 font-mono">
-                Sistema: CDAPUESTAS | RUNLOT: SYS-RUN-009 (POS & Kiosco Autoservicio "Anúnciate")
+                Sistema: CDAPUESTAS | RUNLOT: SYS-RUN-009
               </div>
 
               {/* Badge Verde Esmeralda Legible */}

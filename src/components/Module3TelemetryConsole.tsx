@@ -170,7 +170,7 @@ export const Module3TelemetryConsole: React.FC<
                   Sistema: CDAPUESTAS | RUNLOT: SYS-RUN-009
                 </p>
                 <p className="text-[10px] font-mono text-emerald-400 mt-0.5">
-                  POS & Kioscos Autoservicio ("Anúnciate") • Homologado
+                  Terminales POS & Dispositivos de Apuestas • Homologado
                 </p>
               </div>
             </div>

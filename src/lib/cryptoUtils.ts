@@ -217,11 +217,11 @@ export function buildSCFDPayload(params: {
     transaction_uuid: transactionUuid,
     timestamp_ms: params.timestampMs,
     platform_name:
-      "Plataforma CDAPUESTAS (Ecosistema POS & Kioscos Autoservicio Homologado RUNLOT)",
+      "Plataforma CDAPUESTAS (Ecosistema Transaccional Homologado RUNLOT)",
     platform_id: "CDAPUESTAS_ECOSYSTEM",
     runlot_system_id: "SYS-RUN-009",
     terminal_infrastructure:
-      "Terminal Taquilla POS Tradicional & Kioscos Autoservicio (Módulo 'Anúnciate')",
+      "Terminal Taquilla POS Tradicional & Dispositivos de Captura Homologados",
     runlot_operator_id: "RUN-OP-0089 (Lotería Oficial C.A. J-98765432-1)",
     runlot_agency_id: "RUN-AG-0412 (Centro de Apuestas La Favorita J-12345678-9)",
     runlot_code: "RUN-0089",
