@@ -2514,21 +2514,21 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   <Sliders className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     Simulador de Proyecciones Multi-Actor a Gran Escala
                   </h2>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     Modela la red nacional proyectada en base al comportamiento observado en la taquilla
                   </p>
                 </div>
               </div>
 
               {/* Botones de Acción: Copiar Resumen */}
-              <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+              <div className="flex items-center gap-2 self-start sm:self-auto">
                 <button
                   type="button"
                   onClick={handleCopySummary}
-                  className="px-3.5 py-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-700 text-xs font-bold text-white rounded-xl flex items-center gap-2 transition-all cursor-pointer"
+                  className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-xs font-bold text-white rounded-xl flex items-center gap-2 transition-all cursor-pointer shadow-sm"
                 >
                   {copiedSummary ? (
                     <>
@@ -2545,260 +2545,180 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
               </div>
             </div>
 
-            {/* PRESETS DE ESCENARIOS RÁPIDOS + BOTÓN DE SINCRONIZACIÓN CON TAQUILLA */}
-            <div id="tour-sim-presets" className="flex flex-wrap items-center justify-between gap-2 mt-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-mono text-slate-500 dark:text-slate-400 mr-1 flex items-center gap-1">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Presets:
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setNumTaquillas(1);
-                    setNumComercializadoras(1);
-                    setNumOperadoras(1);
-                    setNumJuegos(1);
-                    setDailySalesPerTaquilla(0);
-                    setTimeHorizonDays(30);
-                  }}
-                  className="px-3 py-1 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-slate-700 text-[11px] font-bold dark:text-slate-200 rounded-lg transition-all cursor-pointer flex items-center gap-1 shadow-sm"
-                >
-                  ⚪ Base 0 (Taquilla en Blanco • Bs. 0)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setNumTaquillas(1);
-                    setNumComercializadoras(1);
-                    setNumOperadoras(1);
-                    setNumJuegos(1);
-                    setDailySalesPerTaquilla(10000);
-                    setTimeHorizonDays(30);
-                  }}
-                  className="px-3 py-1 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 dark:border-emerald-600/50 text-[11px] font-bold dark:text-emerald-300 rounded-lg transition-all cursor-pointer flex items-center gap-1 shadow-sm"
-                >
-                  🎯 Base Unitaria (1 Taquilla • 30d • Bs. 300.000)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setNumTaquillas(25);
-                    setNumComercializadoras(1);
-                    setNumOperadoras(1);
-                    setNumJuegos(2);
-                    setDailySalesPerTaquilla(20000);
-                    setTimeHorizonDays(30);
-                  }}
-                  className="px-3 py-1 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 dark:bg-slate-950 dark:hover:bg-slate-800 dark:border-slate-700 text-[11px] font-bold dark:text-slate-300 rounded-lg transition-all cursor-pointer shadow-sm"
-                >
-                  🟢 Piloto (25 Taquillas)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setNumTaquillas(150);
-                    setNumComercializadoras(3);
-                    setNumOperadoras(2);
-                    setNumJuegos(6);
-                    setDailySalesPerTaquilla(40000);
-                    setTimeHorizonDays(30);
-                  }}
-                  className="px-3 py-1 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 dark:bg-slate-950 dark:hover:bg-slate-800 dark:border-slate-700 text-[11px] font-bold dark:text-slate-300 rounded-lg transition-all cursor-pointer shadow-sm"
-                >
-                  🔵 Regional (150 Taquillas)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setNumTaquillas(10000);
-                    setNumComercializadoras(50);
-                    setNumOperadoras(10);
-                    setNumJuegos(30);
-                    setDailySalesPerTaquilla(50000);
-                    setTimeHorizonDays(365);
-                  }}
-                  className="px-3 py-1 bg-white hover:bg-slate-100 border border-slate-300 text-cyan-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:border-slate-700 text-[11px] font-bold dark:text-cyan-300 rounded-lg transition-all cursor-pointer shadow-sm"
-                >
-                  🟣 Gran Escala Nacional (10.000 Taquillas - 1 Año)
-                </button>
-              </div>
-
-              {/* Botón sincronizar con la venta real de taquilla */}
-              <button
-                type="button"
-                onClick={() => setDailySalesPerTaquilla(totalSales > 0 ? Math.round(totalSales) : 0)}
-                className="px-3 py-1 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 dark:bg-emerald-600/20 dark:hover:bg-emerald-600/30 dark:border-emerald-500/40 text-[11px] font-bold dark:text-emerald-300 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
-              >
-                <Store className="w-3.5 h-3.5" />
-                Sincronizar con Taquilla: Bs. {formatBs(totalSales, 0)}
-              </button>
-            </div>
-
-            {/* PARRILLA DE SLIDERS DE CONFIGURACIÓN (ACTORES COMERCIALES + JUEGOS + VARIABLES) */}
-            <div id="tour-sim-sliders" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 mt-6 bg-slate-50 dark:bg-slate-950/70 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-              {/* Slider 1: Taquillas */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs">
-                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                    <Store className="w-3.5 h-3.5 text-blue-500" /> 1. Taquillas / Agencias POS
-                  </span>
-                  <span className="font-mono text-cyan-700 dark:text-cyan-400 font-extrabold bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded border border-blue-200 dark:border-transparent">
-                    {numTaquillas.toLocaleString("es-VE")} taquillas
-                  </span>
+            {/* PANEL DE CONFIGURACIÓN DE RED Y HORIZONTE */}
+            <div id="tour-sim-sliders" className="mt-5 bg-slate-50 dark:bg-slate-950/70 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+              {/* FILA 1: Estructura de la Red y Catálogo de Juegos (4 Columnas Equilibradas) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Slider 1: Taquillas */}
+                <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5 truncate">
+                      <Store className="w-3.5 h-3.5 text-blue-500 shrink-0" /> 1. Taquillas POS
+                    </span>
+                    <span className="font-mono text-cyan-700 dark:text-cyan-400 font-extrabold bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded border border-blue-200 dark:border-transparent text-[11px] shrink-0">
+                      {numTaquillas.toLocaleString("es-VE")} taq.
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={10000}
+                    step={numTaquillas <= 10 ? 1 : 25}
+                    value={numTaquillas}
+                    onChange={(e) => setNumTaquillas(Number(e.target.value))}
+                    className="w-full accent-cyan-500 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                  />
+                  <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                    <span>1</span>
+                    <span>5.000</span>
+                    <span>10.000</span>
+                  </div>
                 </div>
-                <input
-                  type="range"
-                  min={1}
-                  max={10000}
-                  step={numTaquillas <= 10 ? 1 : 25}
-                  value={numTaquillas}
-                  onChange={(e) => setNumTaquillas(Number(e.target.value))}
-                  className="w-full accent-cyan-400 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
-                />
-                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                  <span>1</span>
-                  <span>5.000</span>
-                  <span>10.000</span>
+
+                {/* Slider 2: Comercializadoras */}
+                <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5 truncate">
+                      <Building2 className="w-3.5 h-3.5 text-amber-500 shrink-0" /> 2. Comercializadoras
+                    </span>
+                    <span className="font-mono text-amber-700 dark:text-amber-400 font-extrabold bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 rounded border border-amber-200 dark:border-transparent text-[11px] shrink-0">
+                      {numComercializadoras} com.
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={100}
+                    step={1}
+                    value={numComercializadoras}
+                    onChange={(e) => setNumComercializadoras(Number(e.target.value))}
+                    className="w-full accent-amber-500 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                  />
+                  <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                    <span>1</span>
+                    <span>50</span>
+                    <span>100</span>
+                  </div>
+                </div>
+
+                {/* Slider 3: Operadoras */}
+                <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5 truncate">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" /> 3. Operadoras de Lotería
+                    </span>
+                    <span className="font-mono text-emerald-700 dark:text-emerald-400 font-extrabold bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-200 dark:border-transparent text-[11px] shrink-0">
+                      {numOperadoras} oper.
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={20}
+                    step={1}
+                    value={numOperadoras}
+                    onChange={(e) => setNumOperadoras(Number(e.target.value))}
+                    className="w-full accent-emerald-500 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                  />
+                  <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                    <span>1</span>
+                    <span>10</span>
+                    <span>20</span>
+                  </div>
+                </div>
+
+                {/* Slider 4: Juegos Homologados */}
+                <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5 truncate">
+                      <Dices className="w-3.5 h-3.5 text-rose-500 shrink-0" /> Juegos Homologados (Cat. 7)
+                    </span>
+                    <span className="font-mono text-rose-700 dark:text-rose-400 font-extrabold bg-rose-50 dark:bg-rose-500/10 px-2 py-0.5 rounded border border-rose-200 dark:border-transparent text-[11px] shrink-0">
+                      {numJuegos} juegos
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={50}
+                    step={1}
+                    value={numJuegos}
+                    onChange={(e) => setNumJuegos(Number(e.target.value))}
+                    className="w-full accent-rose-500 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                  />
+                  <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                    <span>1</span>
+                    <span>25</span>
+                    <span>50</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Slider 2: Comercializadoras */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs">
-                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                    <Building2 className="w-3.5 h-3.5 text-amber-500" /> 2. Comercializadoras Intermediarias
-                  </span>
-                  <span className="font-mono text-amber-700 dark:text-amber-400 font-extrabold bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 rounded border border-amber-200 dark:border-transparent">
-                    {numComercializadoras} comercializadoras
-                  </span>
+              {/* FILA 2: Venta Diaria por Taquilla & Horizonte Temporal (2 Columnas Amplias) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                {/* Venta Promedio Diaria */}
+                <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm flex flex-col justify-between">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                      <Coins className="w-4 h-4 text-emerald-500" /> Venta Diaria Promedio por Taquilla:
+                    </span>
+                    <span className="font-mono text-emerald-700 dark:text-emerald-400 font-extrabold bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-200 dark:border-transparent text-xs">
+                      Bs. {formatBs(dailySalesPerTaquilla, 0)}
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={2000000}
+                    step={dailySalesPerTaquilla <= 10000 ? 500 : 5000}
+                    value={dailySalesPerTaquilla}
+                    onChange={(e) => setDailySalesPerTaquilla(Number(e.target.value))}
+                    className="w-full accent-emerald-500 cursor-pointer h-2 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                  />
+                  <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                    <span>Bs. 0</span>
+                    <span>Bs. 1.000.000</span>
+                    <span>Bs. 2.000.000</span>
+                  </div>
                 </div>
-                <input
-                  type="range"
-                  min={1}
-                  max={100}
-                  step={1}
-                  value={numComercializadoras}
-                  onChange={(e) => setNumComercializadoras(Number(e.target.value))}
-                  className="w-full accent-amber-400 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
-                />
-                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                  <span>1</span>
-                  <span>50</span>
-                  <span>100</span>
-                </div>
-              </div>
 
-              {/* Slider 3: Operadoras */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs">
-                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> 3. Operadoras de Lotería
-                  </span>
-                  <span className="font-mono text-emerald-700 dark:text-emerald-400 font-extrabold bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-200 dark:border-transparent">
-                    {numOperadoras} operadoras
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={1}
-                  max={20}
-                  step={1}
-                  value={numOperadoras}
-                  onChange={(e) => setNumOperadoras(Number(e.target.value))}
-                  className="w-full accent-emerald-400 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
-                />
-                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                  <span>1</span>
-                  <span>10</span>
-                  <span>20</span>
-                </div>
-              </div>
-
-              {/* Slider 3b: Juegos Homologados */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs">
-                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                    <Dices className="w-3.5 h-3.5 text-rose-500" /> Juegos Homologados (RUNLOT Cat. 7)
-                  </span>
-                  <span className="font-mono text-rose-700 dark:text-rose-400 font-extrabold bg-rose-50 dark:bg-rose-500/10 px-2 py-0.5 rounded border border-rose-200 dark:border-transparent">
-                    {numJuegos} juegos activos
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={1}
-                  max={50}
-                  step={1}
-                  value={numJuegos}
-                  onChange={(e) => setNumJuegos(Number(e.target.value))}
-                  className="w-full accent-rose-400 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
-                />
-                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                  <span>1</span>
-                  <span>25</span>
-                  <span>50</span>
-                </div>
-              </div>
-
-              {/* Slider 4: Venta Promedio Diaria */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs">
-                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                    <Coins className="w-3.5 h-3.5 text-emerald-500" /> Venta Diaria por Taquilla
-                  </span>
-                  <span className="font-mono text-emerald-700 dark:text-emerald-400 font-extrabold bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-200 dark:border-transparent">
-                    Bs. {formatBs(dailySalesPerTaquilla, 0)}
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={2000000}
-                  step={dailySalesPerTaquilla <= 10000 ? 500 : 5000}
-                  value={dailySalesPerTaquilla}
-                  onChange={(e) => setDailySalesPerTaquilla(Number(e.target.value))}
-                  className="w-full accent-emerald-400 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
-                />
-                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                  <span>Bs. 0</span>
-                  <span>Bs. 1.000.000</span>
-                  <span>Bs. 2.000.000</span>
-                </div>
-              </div>
-
-              {/* Selector Horizonte Temporal */}
-              <div className="space-y-2 sm:col-span-2 lg:col-span-3 xl:col-span-5">
-                <div className="flex justify-between text-xs">
-                  <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-blue-500" /> Horizonte Temporal de la Simulación
-                  </span>
-                  <span className="font-mono text-blue-700 dark:text-blue-400 font-extrabold">
-                    {timeHorizonDays === 1
-                      ? "1 Día"
-                      : timeHorizonDays === 30
-                      ? "1 Mes (30 días)"
-                      : "1 Año (365 días)"}
-                  </span>
-                </div>
-                <div className="grid grid-cols-3 gap-2 pt-1">
-                  {[
-                    { label: "1 Día", days: 1 },
-                    { label: "1 Mes (30d)", days: 30 },
-                    { label: "1 Año (365d)", days: 365 },
-                  ].map((h) => (
-                    <button
-                      key={h.days}
-                      type="button"
-                      onClick={() => setTimeHorizonDays(h.days)}
-                      className={`py-2 px-3 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
-                        timeHorizonDays === h.days
-                          ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
-                          : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-300 dark:border-slate-800 shadow-sm"
-                      }`}
-                    >
-                      {h.label}
-                    </button>
-                  ))}
+                {/* Selector de Horizonte Temporal */}
+                <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm flex flex-col justify-between">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                      <Calendar className="w-4 h-4 text-blue-500" /> Horizonte Temporal de la Simulación:
+                    </span>
+                    <span className="font-mono text-blue-700 dark:text-blue-400 font-extrabold bg-blue-50 dark:bg-blue-500/10 px-2.5 py-0.5 rounded border border-blue-200 dark:border-transparent text-xs">
+                      {timeHorizonDays === 1
+                        ? "1 Día"
+                        : timeHorizonDays === 30
+                        ? "1 Mes (30 días)"
+                        : "1 Año (365 días)"}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { label: "1 Día", days: 1, desc: "Cierre Diario" },
+                      { label: "1 Mes (30d)", days: 30, desc: "Ciclo Mensual" },
+                      { label: "1 Año (365d)", days: 365, desc: "Ejercicio Fiscal" },
+                    ].map((h) => (
+                      <button
+                        key={h.days}
+                        type="button"
+                        onClick={() => setTimeHorizonDays(h.days)}
+                        className={`py-2 px-3 rounded-lg font-bold text-xs transition-all flex flex-col items-center justify-center cursor-pointer border ${
+                          timeHorizonDays === h.days
+                            ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+                            : "bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        }`}
+                      >
+                        <span>{h.label}</span>
+                        <span className={`text-[9px] font-normal ${timeHorizonDays === h.days ? "text-blue-100" : "text-slate-400"}`}>
+                          {h.desc}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
