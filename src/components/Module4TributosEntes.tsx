@@ -359,7 +359,7 @@ export function Module4TributosEntes({
   const [costoIobpasOperadora, setCostoIobpasOperadora] = useState<number>(400000);
   const [costoSencamerSistemaPremiador, setCostoSencamerSistemaPremiador] = useState<number>(350000);
   const [costoSencamerEsferas, setCostoSencamerEsferas] = useState<number>(200000);
-  const [pctGastoITOperadora] = useState<number>(1);
+  const [pctGastoITOperadora, setPctGastoITOperadora] = useState<number>(1);
 
   const [costoRunlotSistemaIT, setCostoRunlotSistemaIT] = useState<number>(1200000);
   const [costoIobpasSistemaIT, setCostoIobpasSistemaIT] = useState<number>(0);
@@ -3006,6 +3006,21 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                         className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-indigo-300 focus:outline-none focus:border-indigo-500"
                       />
                     </div>
+                    <div>
+                      <label className="text-purple-700 dark:text-purple-300 block font-bold">Canon IT (% s/ Venta):</label>
+                      <div className="relative flex items-center">
+                        <input
+                          type="number"
+                          min={0}
+                          max={25}
+                          step={0.1}
+                          value={pctGastoITOperadora}
+                          onChange={(e) => setPctGastoITOperadora(Math.max(0, Number(e.target.value)))}
+                          className="w-full px-2 py-1 pr-6 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-purple-300 dark:border-purple-700 rounded text-purple-700 dark:text-purple-300 focus:outline-none focus:border-purple-500"
+                        />
+                        <span className="absolute right-2 text-[10px] font-mono font-bold text-purple-500">%</span>
+                      </div>
+                    </div>
 
                     {/* Certificaciones SENCAMER por Tipo de Juego */}
                     <div className="sm:col-span-2 p-2.5 rounded-lg bg-cyan-50/60 dark:bg-cyan-950/30 border border-cyan-200/70 dark:border-cyan-800/50 space-y-2">
@@ -3057,9 +3072,21 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       <span>Carga Período (RUNLOT + IOBPAS + SENCAMER + IT):</span>
                       <span>Bs. {formatBs(totalCargasRegulatoriasOperadoras, 2)}</span>
                     </div>
-                    <div className="flex justify-between items-center text-purple-600 dark:text-purple-400 font-semibold pt-0.5">
-                      <span>Canon IT ({pctGastoITOperadora}% s/ Venta):</span>
-                      <span>-Bs. {formatBs(projGastoITOperadora, 2)}</span>
+                    <div className="flex justify-between items-center text-purple-600 dark:text-purple-400 font-semibold pt-1">
+                      <div className="flex items-center gap-1.5">
+                        <span>Canon IT (</span>
+                        <input
+                          type="number"
+                          min={0}
+                          max={25}
+                          step={0.1}
+                          value={pctGastoITOperadora}
+                          onChange={(e) => setPctGastoITOperadora(Math.max(0, Number(e.target.value)))}
+                          className="w-14 px-1.5 py-0.5 text-[10px] font-mono font-bold bg-white dark:bg-slate-900 border border-purple-300 dark:border-purple-700 rounded text-purple-700 dark:text-purple-300 text-center focus:outline-none focus:border-purple-500"
+                        />
+                        <span>% s/ Venta):</span>
+                      </div>
+                      <span className="font-bold">-Bs. {formatBs(projGastoITOperadora, 2)}</span>
                     </div>
                   </div>
                 </div>
