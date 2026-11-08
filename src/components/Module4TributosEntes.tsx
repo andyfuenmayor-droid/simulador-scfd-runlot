@@ -2569,7 +2569,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <input
                       type="range"
                       min={1}
-                      max={10000}
+                      max={20000}
                       step={numTaquillas <= 10 ? 1 : 25}
                       value={numTaquillas}
                       onChange={(e) => setNumTaquillas(Number(e.target.value))}
@@ -2577,8 +2577,8 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     />
                     <div className="flex justify-between text-[11px] text-slate-500 font-mono">
                       <span>1</span>
-                      <span>5.000</span>
                       <span>10.000</span>
+                      <span>20.000</span>
                     </div>
                   </div>
 
@@ -2595,7 +2595,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <input
                       type="range"
                       min={1}
-                      max={100}
+                      max={150}
                       step={1}
                       value={numComercializadoras}
                       onChange={(e) => setNumComercializadoras(Number(e.target.value))}
@@ -2603,8 +2603,8 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     />
                     <div className="flex justify-between text-[11px] text-slate-500 font-mono">
                       <span>1</span>
-                      <span>50</span>
-                      <span>100</span>
+                      <span>75</span>
+                      <span>150</span>
                     </div>
                   </div>
 
@@ -2621,7 +2621,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <input
                       type="range"
                       min={1}
-                      max={20}
+                      max={150}
                       step={1}
                       value={numOperadoras}
                       onChange={(e) => setNumOperadoras(Number(e.target.value))}
@@ -2629,8 +2629,8 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     />
                     <div className="flex justify-between text-[11px] text-slate-500 font-mono">
                       <span>1</span>
-                      <span>10</span>
-                      <span>20</span>
+                      <span>75</span>
+                      <span>150</span>
                     </div>
                   </div>
                 </div>
@@ -2668,7 +2668,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <input
                       type="range"
                       min={0}
-                      max={30}
+                      max={50}
                       step={1}
                       value={numJuegosDigital}
                       onChange={(e) => setNumJuegosDigital(Number(e.target.value))}
@@ -2677,11 +2677,11 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
 
                     <div className="flex justify-between text-[11px] text-slate-500 font-mono">
                       <span>0 juegos</span>
-                      <span>5</span>
                       <span>10</span>
-                      <span>15</span>
                       <span>20</span>
-                      <span>30 máx</span>
+                      <span>30</span>
+                      <span>40</span>
+                      <span>50 máx</span>
                     </div>
                   </div>
 
@@ -2705,7 +2705,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <input
                       type="range"
                       min={0}
-                      max={30}
+                      max={50}
                       step={1}
                       value={numJuegosEsferas}
                       onChange={(e) => setNumJuegosEsferas(Number(e.target.value))}
@@ -2714,11 +2714,11 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
 
                     <div className="flex justify-between text-[11px] text-slate-500 font-mono">
                       <span>0 juegos</span>
-                      <span>5</span>
                       <span>10</span>
-                      <span>15</span>
                       <span>20</span>
-                      <span>30 máx</span>
+                      <span>30</span>
+                      <span>40</span>
+                      <span>50 máx</span>
                     </div>
                   </div>
                 </div>
