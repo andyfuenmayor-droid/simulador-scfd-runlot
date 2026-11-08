@@ -20,7 +20,6 @@ import {
   Award,
   Coins,
   Layers,
-  Plus,
   Printer,
   RefreshCw,
   Sparkles,
@@ -71,12 +70,6 @@ export const Module1POS: React.FC<Module1POSProps> = ({
   onEmitWithholdingToSCFD,
 }) => {
   const modality = modalities[activeModalityId];
-  const [newOption, setNewOption] = useState<string>(
-    modality.catalogOptions[0] || ""
-  );
-  const [newAmount, setNewAmount] = useState<number>(
-    activeModalityId === "animalitos" ? 100 : 50
-  );
   const [tirajeUnitBet, setTirajeUnitBet] = useState<number>(1000);
   const [isPrizeModalOpen, setIsPrizeModalOpen] = useState<boolean>(false);
   const [forceShowBoth, setForceShowBoth] = useState<boolean>(false);
@@ -129,9 +122,6 @@ export const Module1POS: React.FC<Module1POSProps> = ({
 
   const handleModalitySwitch = (id: GameModalityId) => {
     onSelectModality(id);
-    const nextMod = modalities[id];
-    setNewOption(nextMod.catalogOptions[0] || "");
-    setNewAmount(id === "animalitos" ? 100 : 50);
   };
 
   const handleAmountChange = (id: string, value: number) => {
@@ -153,18 +143,6 @@ export const Module1POS: React.FC<Module1POSProps> = ({
 
   const handleClearAllPlays = () => {
     onUpdatePlays([]);
-  };
-
-  const handleAddPlay = (customOption?: string) => {
-    const optToAdd = (customOption ?? newOption).trim();
-    if (!optToAdd) return;
-    const nextPlay: BetPlay = {
-      id: `play-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-      option: optToAdd,
-      amount: Math.max(1, Number(newAmount) || 50),
-      combinationsCount: 1,
-    };
-    onUpdatePlays([...plays, nextPlay]);
   };
 
   const handleResetDefaults = () => {
@@ -459,7 +437,7 @@ export const Module1POS: React.FC<Module1POSProps> = ({
                     Sin jugadas por defecto en taquilla (Bs. 0,00)
                   </div>
                   <p className="text-[11px] text-slate-500">
-                    Pulse el botón <strong className="text-blue-400">Tiraje Completo ({modality.tirajeTotalOptions})</strong> arriba o agregue jugadas manualmente.
+                    Pulse el botón <strong className="text-blue-400">Tiraje Completo ({modality.tirajeTotalOptions})</strong> o <strong className="text-emerald-400">Jugadas Ejemplo</strong> arriba para cargar las opciones del sorteo.
                   </p>
                 </div>
               ) : (
@@ -534,61 +512,6 @@ export const Module1POS: React.FC<Module1POSProps> = ({
                   );
                 })
               )}
-            </div>
-
-            {/* Agregar Nueva Jugada + Catálogo Rápido */}
-            <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 space-y-2.5">
-              <div className="flex flex-wrap items-center gap-2">
-                <select
-                  value={newOption}
-                  onChange={(e) => setNewOption(e.target.value)}
-                  className="flex-1 min-w-[150px] px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-100 font-mono text-xs focus:outline-none focus:border-blue-500"
-                >
-                  {modality.catalogOptions.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs text-slate-400 font-mono">Monto Bs.</span>
-                  <input
-                    type="number"
-                    min={1}
-                    step={10}
-                    value={newAmount}
-                    onChange={(e) =>
-                      setNewAmount(parseFloat(e.target.value) || 0)
-                    }
-                    className="w-24 px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-100 font-mono text-xs font-bold focus:outline-none focus:border-blue-500"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleAddPlay()}
-                  className="px-3 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-300 font-bold text-xs flex items-center gap-1 transition-all"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  Agregar Jugada
-                </button>
-              </div>
-
-              {/* Botones rápidos de opciones */}
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mr-1">
-                  Clic Rápido:
-                </span>
-                {modality.catalogOptions.slice(0, 6).map((opt) => (
-                  <button
-                    key={opt}
-                    type="button"
-                    onClick={() => handleAddPlay(opt)}
-                    className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-slate-300 transition-colors"
-                  >
-                    + {opt}
-                  </button>
-                ))}
-              </div>
             </div>
           </div>
 
