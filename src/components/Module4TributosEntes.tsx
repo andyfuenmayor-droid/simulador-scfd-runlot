@@ -3072,21 +3072,9 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       <span>Carga Período (RUNLOT + IOBPAS + SENCAMER + IT):</span>
                       <span>Bs. {formatBs(totalCargasRegulatoriasOperadoras, 2)}</span>
                     </div>
-                    <div className="flex justify-between items-center text-purple-600 dark:text-purple-400 font-semibold pt-1">
-                      <div className="flex items-center gap-1.5">
-                        <span>Canon IT (</span>
-                        <input
-                          type="number"
-                          min={0}
-                          max={25}
-                          step={0.1}
-                          value={pctGastoITOperadora}
-                          onChange={(e) => setPctGastoITOperadora(Math.max(0, Number(e.target.value)))}
-                          className="w-14 px-1.5 py-0.5 text-[10px] font-mono font-bold bg-white dark:bg-slate-900 border border-purple-300 dark:border-purple-700 rounded text-purple-700 dark:text-purple-300 text-center focus:outline-none focus:border-purple-500"
-                        />
-                        <span>% s/ Venta):</span>
-                      </div>
-                      <span className="font-bold">-Bs. {formatBs(projGastoITOperadora, 2)}</span>
+                    <div className="flex justify-between items-center text-purple-600 dark:text-purple-400 font-semibold pt-0.5">
+                      <span>Canon IT ({pctGastoITOperadora}% s/ Venta):</span>
+                      <span>-Bs. {formatBs(projGastoITOperadora, 2)}</span>
                     </div>
                   </div>
                 </div>
