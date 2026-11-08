@@ -1609,19 +1609,6 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <select
-                  value={selectedLoteria}
-                  onChange={(e) => setSelectedLoteria(e.target.value)}
-                  className="bg-slate-950 border border-slate-700 text-xs text-white rounded-lg px-3 py-1.5 font-mono focus:outline-none focus:border-emerald-500"
-                >
-                  <option value="zulia">Lotería del Zulia (IOBPAS)</option>
-                  <option value="tachira">Lotería del Táchira (IOBPAS)</option>
-                  <option value="caracas">Lotería de Caracas (IOBPAS)</option>
-                  <option value="aragua">Lotería de Aragua (IOBPAS)</option>
-                  <option value="oriente">Lotería de Oriente (IOBPAS)</option>
-                </select>
-              </div>
             </div>
 
             {/* Tarjetas de Canon por Modalidad con datos reales */}
