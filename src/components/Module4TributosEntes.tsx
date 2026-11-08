@@ -2550,135 +2550,176 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
 
             {/* PANEL DE CONFIGURACIÓN DE RED Y HORIZONTE */}
             <div id="tour-sim-sliders" className="mt-5 bg-slate-50 dark:bg-slate-950/70 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-              {/* FILA 1: Estructura de la Red y Catálogo de Juegos (5 Columnas Equilibradas) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-                {/* Slider 1: Taquillas */}
-                <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5 truncate">
-                      <Store className="w-3.5 h-3.5 text-blue-500 shrink-0" /> 1. Taquillas POS
-                    </span>
-                    <span className="font-mono text-cyan-700 dark:text-cyan-400 font-extrabold bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded border border-blue-200 dark:border-transparent text-[11px] shrink-0">
-                      {numTaquillas.toLocaleString("es-VE")} taq.
-                    </span>
+              {/* SECCIÓN 1: Actores Principales de la Red Comercial (3 Columnas Amplias) */}
+              <div className="space-y-2">
+                <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <Building2 className="w-3.5 h-3.5 text-blue-500" /> 1. Actores y Sujetos Obligados de la Red
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                  {/* Slider 1: Taquillas */}
+                  <div className="p-4 bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-sm">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                        <Store className="w-4 h-4 text-blue-500 shrink-0" /> 1. Taquillas / Agencias POS
+                      </span>
+                      <span className="font-mono text-cyan-700 dark:text-cyan-400 font-extrabold bg-blue-50 dark:bg-blue-500/10 px-2.5 py-0.5 rounded border border-blue-200 dark:border-transparent text-xs shrink-0">
+                        {numTaquillas.toLocaleString("es-VE")} taq.
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={1}
+                      max={10000}
+                      step={numTaquillas <= 10 ? 1 : 25}
+                      value={numTaquillas}
+                      onChange={(e) => setNumTaquillas(Number(e.target.value))}
+                      className="w-full accent-cyan-500 cursor-pointer h-2 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                    />
+                    <div className="flex justify-between text-[11px] text-slate-500 font-mono">
+                      <span>1</span>
+                      <span>5.000</span>
+                      <span>10.000</span>
+                    </div>
                   </div>
-                  <input
-                    type="range"
-                    min={1}
-                    max={10000}
-                    step={numTaquillas <= 10 ? 1 : 25}
-                    value={numTaquillas}
-                    onChange={(e) => setNumTaquillas(Number(e.target.value))}
-                    className="w-full accent-cyan-500 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
-                  />
-                  <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                    <span>1</span>
-                    <span>5.000</span>
-                    <span>10.000</span>
+
+                  {/* Slider 2: Comercializadoras */}
+                  <div className="p-4 bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-sm">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                        <Building2 className="w-4 h-4 text-amber-500 shrink-0" /> 2. Comercializadoras
+                      </span>
+                      <span className="font-mono text-amber-700 dark:text-amber-400 font-extrabold bg-amber-50 dark:bg-amber-500/10 px-2.5 py-0.5 rounded border border-amber-200 dark:border-transparent text-xs shrink-0">
+                        {numComercializadoras} com.
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={1}
+                      max={100}
+                      step={1}
+                      value={numComercializadoras}
+                      onChange={(e) => setNumComercializadoras(Number(e.target.value))}
+                      className="w-full accent-amber-500 cursor-pointer h-2 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                    />
+                    <div className="flex justify-between text-[11px] text-slate-500 font-mono">
+                      <span>1</span>
+                      <span>50</span>
+                      <span>100</span>
+                    </div>
+                  </div>
+
+                  {/* Slider 3: Operadoras */}
+                  <div className="p-4 bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-sm">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                        <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" /> 3. Operadoras de Lotería
+                      </span>
+                      <span className="font-mono text-emerald-700 dark:text-emerald-400 font-extrabold bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-200 dark:border-transparent text-xs shrink-0">
+                        {numOperadoras} oper.
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={1}
+                      max={20}
+                      step={1}
+                      value={numOperadoras}
+                      onChange={(e) => setNumOperadoras(Number(e.target.value))}
+                      className="w-full accent-emerald-500 cursor-pointer h-2 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                    />
+                    <div className="flex justify-between text-[11px] text-slate-500 font-mono">
+                      <span>1</span>
+                      <span>10</span>
+                      <span>20</span>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                {/* Slider 2: Comercializadoras */}
-                <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5 truncate">
-                      <Building2 className="w-3.5 h-3.5 text-amber-500 shrink-0" /> 2. Comercializadoras
-                    </span>
-                    <span className="font-mono text-amber-700 dark:text-amber-400 font-extrabold bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 rounded border border-amber-200 dark:border-transparent text-[11px] shrink-0">
-                      {numComercializadoras} com.
-                    </span>
+              {/* SECCIÓN 2: Modalidades de Juegos Homologados (2 Columnas Amplias y Destacadas) */}
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <Dices className="w-3.5 h-3.5 text-indigo-500" /> 2. Modalidades de Juegos Homologados (RUNLOT Cat. 7 / SENCAMER)
                   </div>
-                  <input
-                    type="range"
-                    min={1}
-                    max={100}
-                    step={1}
-                    value={numComercializadoras}
-                    onChange={(e) => setNumComercializadoras(Number(e.target.value))}
-                    className="w-full accent-amber-500 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
-                  />
-                  <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                    <span>1</span>
-                    <span>50</span>
-                    <span>100</span>
-                  </div>
+                  <span className="text-xs font-mono font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 px-2.5 py-0.5 rounded-full border border-indigo-200 dark:border-indigo-800/60">
+                    Total Homologados: {numJuegos} juegos ({numJuegosDigital} Digital + {numJuegosEsferas} Esferas)
+                  </span>
                 </div>
 
-                {/* Slider 3: Operadoras */}
-                <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5 truncate">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" /> 3. Operadoras de Lotería
-                    </span>
-                    <span className="font-mono text-emerald-700 dark:text-emerald-400 font-extrabold bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-200 dark:border-transparent text-[11px] shrink-0">
-                      {numOperadoras} oper.
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={1}
-                    max={20}
-                    step={1}
-                    value={numOperadoras}
-                    onChange={(e) => setNumOperadoras(Number(e.target.value))}
-                    className="w-full accent-emerald-500 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
-                  />
-                  <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                    <span>1</span>
-                    <span>10</span>
-                    <span>20</span>
-                  </div>
-                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Sección Juegos con Premiador Digital */}
+                  <div className="p-4 bg-gradient-to-br from-white via-indigo-50/20 to-white dark:from-slate-900/90 dark:via-indigo-950/20 dark:to-slate-900/90 rounded-xl border border-indigo-200 dark:border-indigo-900/60 space-y-3 shadow-sm">
+                    <div className="flex justify-between items-start gap-2">
+                      <div>
+                        <div className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+                          <Cpu className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                          <span>Juegos con Premiador Digital</span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                          Sistemas con algoritmo generador de números (RNG telemático) • Certificación SENCAMER
+                        </p>
+                      </div>
+                      <span className="font-mono text-indigo-800 dark:text-indigo-300 font-extrabold bg-indigo-100 dark:bg-indigo-900/50 px-2.5 py-1 rounded-lg border border-indigo-300 dark:border-indigo-700/60 text-xs shrink-0">
+                        {numJuegosDigital} {numJuegosDigital === 1 ? "juego digital" : "juegos digitales"}
+                      </span>
+                    </div>
 
-                {/* Slider 4: Juegos con Premiador Digital */}
-                <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5 truncate" title="Juegos con Premiador Digital (Certificación Software RNG SENCAMER)">
-                      <Cpu className="w-3.5 h-3.5 text-indigo-500 shrink-0" /> Juegos c/ Premiador Digital
-                    </span>
-                    <span className="font-mono text-indigo-700 dark:text-indigo-400 font-extrabold bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-200 dark:border-transparent text-[11px] shrink-0">
-                      {numJuegosDigital} digital
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={30}
-                    step={1}
-                    value={numJuegosDigital}
-                    onChange={(e) => setNumJuegosDigital(Number(e.target.value))}
-                    className="w-full accent-indigo-500 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
-                  />
-                  <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                    <span>0</span>
-                    <span>15</span>
-                    <span>30</span>
-                  </div>
-                </div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={30}
+                      step={1}
+                      value={numJuegosDigital}
+                      onChange={(e) => setNumJuegosDigital(Number(e.target.value))}
+                      className="w-full accent-indigo-600 cursor-pointer h-2 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                    />
 
-                {/* Slider 5: Juegos con Esferas */}
-                <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5 truncate" title="Juegos con Esferas (Máquinas de Extracción por Aire / Balotas SENCAMER)">
-                      <CircleDot className="w-3.5 h-3.5 text-rose-500 shrink-0" /> Juegos con Esferas
-                    </span>
-                    <span className="font-mono text-rose-700 dark:text-rose-400 font-extrabold bg-rose-50 dark:bg-rose-500/10 px-2 py-0.5 rounded border border-rose-200 dark:border-transparent text-[11px] shrink-0">
-                      {numJuegosEsferas} esferas
-                    </span>
+                    <div className="flex justify-between text-[11px] text-slate-500 font-mono">
+                      <span>0 juegos</span>
+                      <span>5</span>
+                      <span>10</span>
+                      <span>15</span>
+                      <span>20</span>
+                      <span>30 máx</span>
+                    </div>
                   </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={30}
-                    step={1}
-                    value={numJuegosEsferas}
-                    onChange={(e) => setNumJuegosEsferas(Number(e.target.value))}
-                    className="w-full accent-rose-500 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
-                  />
-                  <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                    <span>0</span>
-                    <span>15</span>
-                    <span>30</span>
+
+                  {/* Sección Juegos con Esferas */}
+                  <div className="p-4 bg-gradient-to-br from-white via-rose-50/20 to-white dark:from-slate-900/90 dark:via-rose-950/20 dark:to-slate-900/90 rounded-xl border border-rose-200 dark:border-rose-900/60 space-y-3 shadow-sm">
+                    <div className="flex justify-between items-start gap-2">
+                      <div>
+                        <div className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+                          <CircleDot className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+                          <span>Juegos con Esferas (Balotas)</span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                          Máquinas neumáticas de extracción de aire / bombos mecánicos • Calibración metrológica SENCAMER
+                        </p>
+                      </div>
+                      <span className="font-mono text-rose-800 dark:text-rose-300 font-extrabold bg-rose-100 dark:bg-rose-900/50 px-2.5 py-1 rounded-lg border border-rose-300 dark:border-rose-700/60 text-xs shrink-0">
+                        {numJuegosEsferas} {numJuegosEsferas === 1 ? "juego de esferas" : "juegos de esferas"}
+                      </span>
+                    </div>
+
+                    <input
+                      type="range"
+                      min={0}
+                      max={30}
+                      step={1}
+                      value={numJuegosEsferas}
+                      onChange={(e) => setNumJuegosEsferas(Number(e.target.value))}
+                      className="w-full accent-rose-600 cursor-pointer h-2 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                    />
+
+                    <div className="flex justify-between text-[11px] text-slate-500 font-mono">
+                      <span>0 juegos</span>
+                      <span>5</span>
+                      <span>10</span>
+                      <span>15</span>
+                      <span>20</span>
+                      <span>30 máx</span>
+                    </div>
                   </div>
                 </div>
               </div>
