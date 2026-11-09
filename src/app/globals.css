@@ -492,3 +492,61 @@ html.light ::-webkit-scrollbar-thumb {
 html.light ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* ====================================================================
+   ESTILOS DE IMPRESIÓN OFICIAL (80 MM PAPEL TÉRMICO MODELO 3)
+   Aísla estrictamente el recibo térmico y evita que se imprima la UI oscura o páginas innecesarias
+==================================================================== */
+@media print {
+  body, html {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  #thermal-print-container,
+  #thermal-print-container * {
+    visibility: visible !important;
+  }
+
+  #thermal-print-container {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 80mm !important;
+    max-width: 80mm !important;
+    min-width: 80mm !important;
+    margin: 0 auto !important;
+    padding: 1mm !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    border: none !important;
+    z-index: 9999999 !important;
+  }
+
+  #thermal-print-container .thermal-ticket {
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    width: 100% !important;
+    margin-bottom: 4mm !important;
+    page-break-inside: avoid !important;
+  }
+
+  .print-page-break {
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  @page {
+    size: 80mm auto;
+    margin: 2mm;
+  }
+}
+

@@ -1335,18 +1335,15 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
       <PrizeWithholdingModal
         isOpen={isPrizeModalOpen}
         onClose={() => setIsPrizeModalOpen(false)}
-        modality={GAME_MODALITIES[selectedModalityPreview]}
-        plays={
-          selectedModalityPreview === "triples"
-            ? triplesModalPlays
-            : animalitosModalPlays
-        }
-        ticketNumber={
-          selectedModalityPreview === "triples"
-            ? triplesTicket?.ticketNumber || "00012345"
-            : animalitosTicket?.ticketNumber || "00012346"
-        }
-        drawNumber={triplesTicket?.drawNumber || "4501"}
+        triplesModality={GAME_MODALITIES.triples}
+        triplesPlays={triplesModalPlays}
+        triplesTicketNumber={triplesTicket?.ticketNumber || "00012345"}
+        triplesDrawNumber={triplesTicket?.drawNumber || "4501"}
+        animalitosModality={GAME_MODALITIES.animalitos}
+        animalitosPlays={animalitosModalPlays}
+        animalitosTicketNumber={animalitosTicket?.ticketNumber || "00012346"}
+        animalitosDrawNumber={animalitosTicket?.drawNumber || "4502"}
+        initialTab="both"
         dateTimeStr="02/11/2026 16:30:00"
         onEmitWithholdingToSCFD={onEmitWithholdingToSCFD || (() => {})}
       />
