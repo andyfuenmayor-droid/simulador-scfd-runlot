@@ -358,6 +358,16 @@ export default function SimulatorDashboardPage() {
     }));
   };
 
+  const handleUpdatePlaysByModality = (
+    modalityId: GameModalityId,
+    updatedPlays: BetPlay[]
+  ) => {
+    setPlaysByModality((prev) => ({
+      ...prev,
+      [modalityId]: updatedPlays,
+    }));
+  };
+
   const getFormattedNow = () => {
     const now = new Date();
     const dd = String(now.getDate()).padStart(2, "0");
@@ -848,6 +858,7 @@ export default function SimulatorDashboardPage() {
             onSelectModality={handleSelectModality}
             plays={currentPlays}
             playsByModality={playsByModality}
+            onUpdatePlaysByModality={handleUpdatePlaysByModality}
             timestampMs={timestampMs}
             onUpdatePlays={handleUpdatePlays}
             ticketNumber={ticketNumberStr}
