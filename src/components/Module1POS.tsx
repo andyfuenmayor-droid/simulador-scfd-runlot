@@ -94,9 +94,8 @@ export const Module1POS: React.FC<Module1POSProps> = ({
   const showBoth = (hasAnimalitosPlays && hasTriplesPlays) || forceShowBoth;
 
   // Secuencia e identificación SCFD para tickets separados e independientes
-  const animalitosTicketNumber = ticketNumber;
-  const nextTicketSeq = (Number(ticketNumber) || 12345) + 1;
-  const triplesTicketNumber = String(nextTicketSeq).padStart(8, "0");
+  const triplesTicketNumber = activeModalityId === "triples" ? ticketNumber : "00012345";
+  const animalitosTicketNumber = activeModalityId === "animalitos" ? ticketNumber : "00012346";
 
   const animalitosPayload = buildSCFDPayload({
     ticketNumber: animalitosTicketNumber,

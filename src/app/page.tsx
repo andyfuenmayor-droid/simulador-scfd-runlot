@@ -92,20 +92,87 @@ export default function SimulatorDashboardPage() {
   const [activeTab, setActiveTab] = useState<ActiveTabId>("module1");
   const [activeModalityId, setActiveModalityId] =
     useState<GameModalityId>("animalitos");
+
+  // Jugadas activas cargadas por defecto: Tiraje Completo en Triples (1.000 comb.) y Animalitos (38 figuras)
   const [playsByModality, setPlaysByModality] = useState<
     Record<GameModalityId, BetPlay[]>
-  >({
-    animalitos: [],
-    triples: [],
-  });
+  >(() => ({
+    animalitos: buildFullTirajePlays("animalitos", 1000),
+    triples: buildFullTirajePlays("triples", 1000),
+  }));
 
-  const [ticketSequence, setTicketSequence] = useState<number>(12345);
+  const [ticketSequence, setTicketSequence] = useState<number>(12347);
   const [drawNumber] = useState<string>("4501");
   const [dateTimeStr, setDateTimeStr] = useState<string>("02/11/2026 16:30:00");
   const [timestampMs, setTimestampMs] = useState<number>(1793651400000);
 
-  // Tickets o Tirajes efectivamente emitidos en caja
-  const [emittedTickets, setEmittedTickets] = useState<RecordedPOSTicket[]>([]);
+  // Tickets o Tirajes efectivamente emitidos en caja cargados por defecto con tiraje completo
+  const [emittedTickets, setEmittedTickets] = useState<RecordedPOSTicket[]>(() => {
+    const tripPlays = buildFullTirajePlays("triples", 1000);
+    const animPlays = buildFullTirajePlays("animalitos", 1000);
+    const timeStr = "02/11/2026 16:30:00";
+    const timeMs = 1793651400000;
+
+    const tripPayload = buildSCFDPayload({
+      ticketNumber: "00012345",
+      drawNumber: "4501",
+      modality: "triples",
+      modalityName: GAME_MODALITIES.triples.name,
+      multiplier: GAME_MODALITIES.triples.multiplier,
+      plays: tripPlays,
+      timestampMs: timeMs,
+    });
+
+    const animPayload = buildSCFDPayload({
+      ticketNumber: "00012346",
+      drawNumber: "4501",
+      modality: "animalitos",
+      modalityName: GAME_MODALITIES.animalitos.name,
+      multiplier: GAME_MODALITIES.animalitos.multiplier,
+      plays: animPlays,
+      timestampMs: timeMs + 1500,
+    });
+
+    const tripRecord: RecordedPOSTicket = {
+      ticketNumber: "00012345",
+      drawNumber: "4501",
+      timestamp: timeStr,
+      modalityId: "triples",
+      modalityName: GAME_MODALITIES.triples.shortName,
+      multiplier: 600,
+      plays: tripPlays,
+      isFullTiraje: true,
+      tirajeOptionCount: 1000,
+      unitBetAmount: 1000,
+      totalFacial: 1000000,
+      guaranteedOrMaxGrossPrize: 600000,
+      guaranteedOrMaxIgf16: 96000,
+      guaranteedOrMaxNetPrize: 504000,
+      sha256Hash: String(tripPayload.hmac_sha256_signature || ""),
+      status: "EMITIDO_EN_CAJA",
+    };
+
+    const animRecord: RecordedPOSTicket = {
+      ticketNumber: "00012346",
+      drawNumber: "4501",
+      timestamp: timeStr,
+      modalityId: "animalitos",
+      modalityName: GAME_MODALITIES.animalitos.shortName,
+      multiplier: 30,
+      plays: animPlays,
+      isFullTiraje: true,
+      tirajeOptionCount: 38,
+      unitBetAmount: 1000,
+      totalFacial: 38000,
+      guaranteedOrMaxGrossPrize: 30000,
+      guaranteedOrMaxIgf16: 4800,
+      guaranteedOrMaxNetPrize: 25200,
+      sha256Hash: String(animPayload.hmac_sha256_signature || ""),
+      status: "EMITIDO_EN_CAJA",
+    };
+
+    return [tripRecord, animRecord];
+  });
 
   useEffect(() => {
     const savedTheme = (localStorage.getItem("scfd_theme") as "dark" | "light") || "dark";
@@ -232,8 +299,53 @@ export default function SimulatorDashboardPage() {
     return recordedTicketsForCalc.reduce((acc, t) => acc + t.totalFacial, 0);
   }, [recordedTicketsForCalc]);
 
-  // Bitácora de transacciones en vivo para el Módulo 3
-  const [telemetryLogs, setTelemetryLogs] = useState<SCFDTransactionLog[]>([]);
+  // Bitácora de transacciones en vivo para el Módulo 3 cargada con los tirajes iniciales
+  const [telemetryLogs, setTelemetryLogs] = useState<SCFDTransactionLog[]>(() => {
+    const tripPlays = buildFullTirajePlays("triples", 1000);
+    const animPlays = buildFullTirajePlays("animalitos", 1000);
+    const timeMs = 1793651400000;
+
+    const tripPayload = buildSCFDPayload({
+      ticketNumber: "00012345",
+      drawNumber: "4501",
+      modality: "triples",
+      modalityName: GAME_MODALITIES.triples.name,
+      multiplier: GAME_MODALITIES.triples.multiplier,
+      plays: tripPlays,
+      timestampMs: timeMs,
+    });
+
+    const animPayload = buildSCFDPayload({
+      ticketNumber: "00012346",
+      drawNumber: "4501",
+      modality: "animalitos",
+      modalityName: GAME_MODALITIES.animalitos.name,
+      multiplier: GAME_MODALITIES.animalitos.multiplier,
+      plays: animPlays,
+      timestampMs: timeMs + 1500,
+    });
+
+    return [
+      {
+        id: "log-init-anim",
+        type: "TICKET_EMISSION",
+        httpStatus: 201,
+        statusText: "FULL_TIRAJE_SCFD_OK",
+        timestamp: "16:30:02",
+        timestampMs: timeMs + 1500,
+        payload: animPayload,
+      },
+      {
+        id: "log-init-trip",
+        type: "TICKET_EMISSION",
+        httpStatus: 201,
+        statusText: "FULL_TIRAJE_SCFD_OK",
+        timestamp: "16:30:00",
+        timestampMs: timeMs,
+        payload: tripPayload,
+      },
+    ];
+  });
 
   const handleSelectModality = (id: GameModalityId) => {
     setActiveModalityId(id);
