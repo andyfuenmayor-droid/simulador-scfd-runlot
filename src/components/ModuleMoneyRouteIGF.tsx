@@ -1,12 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { RecordedPOSTicket, GameModalityId } from "@/types/simulator";
+import {
+  RecordedPOSTicket,
+  GameModalityId,
+  GAME_MODALITIES,
+  BetPlay,
+} from "@/types/simulator";
+import { PrizeWithholdingModal } from "./PrizeWithholdingModal";
 import {
   formatBs,
   formatIntBs,
   generateSeniatWithholdingXML,
   generateDeterministicSha256,
+  buildFullTirajePlays,
 } from "@/lib/cryptoUtils";
 import {
   ArrowRight,
@@ -39,18 +46,28 @@ interface ModuleMoneyRouteIGFProps {
   recordedTickets?: RecordedPOSTicket[];
   onGoToPOS?: () => void;
   onGoToModule2?: () => void;
+  onEmitWithholdingToSCFD?: (data: {
+    winnerId: string;
+    winningPlay: BetPlay;
+    grossPrize: number;
+    igfWithheld: number;
+    netPaid: number;
+    certificateHash: string;
+  }) => void;
 }
 
 export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
   recordedTickets = [],
   onGoToPOS,
   onGoToModule2,
+  onEmitWithholdingToSCFD,
 }) => {
   const [activeStation, setActiveStation] = useState<number>(2); // Por defecto en estación 2 (Taquilla)
   const [selectedTicketFilter, setSelectedTicketFilter] =
     useState<string>("ALL");
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
   const [showArcModal, setShowArcModal] = useState<boolean>(false);
+  const [isPrizeModalOpen, setIsPrizeModalOpen] = useState<boolean>(false);
   const [selectedModalityPreview, setSelectedModalityPreview] = useState<
     "triples" | "animalitos"
   >("triples");
@@ -266,6 +283,19 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
     0
   );
 
+  const triplesTicket = sourceTickets.find((t) => t.modalityId === "triples");
+  const animalitosTicket = sourceTickets.find(
+    (t) => t.modalityId === "animalitos"
+  );
+  const triplesModalPlays =
+    triplesTicket?.plays && triplesTicket.plays.length > 0
+      ? triplesTicket.plays
+      : buildFullTirajePlays("triples", 1000);
+  const animalitosModalPlays =
+    animalitosTicket?.plays && animalitosTicket.plays.length > 0
+      ? animalitosTicket.plays
+      : buildFullTirajePlays("animalitos", 1000);
+
   // Generación de XML SENIAT oficial Planilla 99029 basado en los datos reales activos
   const xmlContent = generateSeniatWithholdingXML({
     rifAgente: "J-98765432-1",
@@ -395,6 +425,15 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
+              onClick={() => setIsPrizeModalOpen(true)}
+              className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-emerald-950/60 transition-all cursor-pointer font-mono"
+              title="Liquidar Premio Ganador y Retener el 16% IGF (Art. 18)"
+            >
+              <Award className="w-4 h-4 text-emerald-200" />
+              <span>Pagar Premio (Art. 18)</span>
+            </button>
+            <button
+              type="button"
               onClick={() => setShowArcModal(true)}
               className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-xs flex items-center gap-2 transition-all font-mono"
             >
@@ -404,7 +443,7 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
             <button
               type="button"
               onClick={handleDownloadXml}
-              className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-emerald-950/50 transition-all font-mono"
+              className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-blue-950/50 transition-all font-mono"
             >
               <Download className="w-4 h-4" />
               Descargar XML SENIAT
@@ -867,10 +906,22 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
         </div>
 
         {/* DETALLE EXPANDIDO DE LA ESTACIÓN SELECCIONADA */}
-        <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-          <div className="flex items-center gap-2 text-emerald-400 font-extrabold font-mono text-sm mb-1.5">
-            <CheckCircle2 className="w-4 h-4" />
-            <span>Detalle Técnico y Jurídico de la Estación #{activeStation}: {stations[activeStation - 1].title}</span>
+        <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-2.5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2 text-emerald-400 font-extrabold font-mono text-sm">
+              <CheckCircle2 className="w-4 h-4" />
+              <span>Detalle Técnico y Jurídico de la Estación #{activeStation}: {stations[activeStation - 1].title}</span>
+            </div>
+            {activeStation === 2 && (
+              <button
+                type="button"
+                onClick={() => setIsPrizeModalOpen(true)}
+                className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 font-mono shadow-md cursor-pointer transition-all"
+              >
+                <Award className="w-3.5 h-3.5" />
+                Ejecutar Retención y Liquidar Premio (Art. 18)
+              </button>
+            )}
           </div>
           <p className="text-slate-300 font-sans text-xs leading-relaxed">
             {stations[activeStation - 1].detail}
@@ -1279,6 +1330,26 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
           </div>
         </div>
       )}
+
+      {/* Motor Oficial de Liquidación y Retención de Premios (Art. 18 — Modelo 3) */}
+      <PrizeWithholdingModal
+        isOpen={isPrizeModalOpen}
+        onClose={() => setIsPrizeModalOpen(false)}
+        modality={GAME_MODALITIES[selectedModalityPreview]}
+        plays={
+          selectedModalityPreview === "triples"
+            ? triplesModalPlays
+            : animalitosModalPlays
+        }
+        ticketNumber={
+          selectedModalityPreview === "triples"
+            ? triplesTicket?.ticketNumber || "00012345"
+            : animalitosTicket?.ticketNumber || "00012346"
+        }
+        drawNumber={triplesTicket?.drawNumber || "4501"}
+        dateTimeStr="02/11/2026 16:30:00"
+        onEmitWithholdingToSCFD={onEmitWithholdingToSCFD || (() => {})}
+      />
     </div>
   );
 };

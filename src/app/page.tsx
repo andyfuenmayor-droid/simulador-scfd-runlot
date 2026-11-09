@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import {
   BetPlay,
+  GAME_MODALITIES,
   GameModalityConfig,
   GameModalityId,
   RecordedPOSTicket,
@@ -37,47 +38,7 @@ import {
   Terminal,
 } from "lucide-react";
 
-const GAME_MODALITIES: Record<GameModalityId, GameModalityConfig> = {
-  animalitos: {
-    id: "animalitos",
-    name: 'Sorteos de Figuras "Animalitos"',
-    shortName: "Animalitos",
-    multiplier: 30,
-    standardPayoutPct: 78.95,
-    tirajeTotalOptions: 38,
-    tirajeRangeLabel: "01 al 38 (38 figuras)",
-    defaultUnitBetTiraje: 1000,
-    defaultPlays: [
-      { id: "def-ani-1", option: "04 Tigre", amount: 100, combinationsCount: 1 },
-      { id: "def-ani-2", option: "12 Caballo", amount: 100, combinationsCount: 1 },
-    ],
-    catalogOptions: ANIMALITOS_38_FIGURES,
-  },
-  triples: {
-    id: "triples",
-    name: "Triples y Terminales Tradicionales",
-    shortName: "Triples y Terminales",
-    multiplier: 600,
-    standardPayoutPct: 60,
-    tirajeTotalOptions: 1000,
-    tirajeRangeLabel: "000 al 999 (1.000 comb.)",
-    defaultUnitBetTiraje: 1000,
-    defaultPlays: [
-      { id: "def-tri-1", option: "748 Zulia", amount: 50, combinationsCount: 1 },
-      { id: "def-tri-2", option: "125 Táchira", amount: 50, combinationsCount: 1 },
-    ],
-    catalogOptions: [
-      "748 Zulia",
-      "125 Táchira",
-      "000 Zulia",
-      "903 Caracas",
-      "412 Chance",
-      "555 Zamorano",
-      "819 Oriente",
-      "999 Zulia",
-    ],
-  },
-};
+
 
 type ActiveTabId =
   | "module1"
@@ -891,6 +852,7 @@ export default function SimulatorDashboardPage() {
             recordedTickets={recordedTicketsForCalc}
             onGoToPOS={() => setActiveTab("module1")}
             onGoToModule2={() => setActiveTab("module2")}
+            onEmitWithholdingToSCFD={handleEmitWithholdingToSCFD}
           />
         )}
 
