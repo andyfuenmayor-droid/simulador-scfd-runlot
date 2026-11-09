@@ -553,7 +553,7 @@ export const Module5TransactionalHub: React.FC<
                       Bs. {formatBs(stateVaults.iobpasCanonGgr, 2)}
                     </span>
                   </div>
-                  <div className="text-[10px] text-slate-500">Canon social 5% Triples / 1% Anim s/ GGR</div>
+                  <div className="text-[10px] text-slate-500">Propuesta: 5% s/ GGR Todos (Hoy: 5% Trip / 1% Anim Facial)</div>
                 </div>
 
                 {/* Alcaldías */}
@@ -665,12 +665,12 @@ export const Module5TransactionalHub: React.FC<
                 </div>
                 <div className="space-y-1 text-[11px] font-mono border-t border-slate-200 dark:border-slate-800 pt-2 text-slate-600 dark:text-slate-400">
                   <div className="flex justify-between">
-                    <span>Triples (5% s/ GGR):</span>
+                    <span>Propuesta (Todos s/ GGR):</span>
                     <strong className="text-emerald-600 dark:text-emerald-300">5,00%</strong>
                   </div>
                   <div className="flex justify-between">
-                    <span>Animalitos (1% s/ GGR):</span>
-                    <strong className="text-emerald-600 dark:text-emerald-300">1,00%</strong>
+                    <span>Hoy (s/ Valor Facial):</span>
+                    <strong className="text-rose-500 dark:text-rose-400">5% Trip / 1% Anim</strong>
                   </div>
                 </div>
               </div>

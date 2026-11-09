@@ -365,6 +365,9 @@ export function Module4TributosEntes({
   const [mixTriplesPct] = useState<number>(80);
 
   // COSTOS ANUALES EDITABLES DE LICENCIAMIENTO IOBPAS Y RUNLOT/CONALOT (Bs./año - 1 VEZ AL AÑO)
+  const [numIobpas] = useState<number>(1);
+  const [costoRunlotIobpas, setCostoRunlotIobpas] = useState<number>(1000000);
+
   const [costoRunlotTaquilla, setCostoRunlotTaquilla] = useState<number>(300000);
   const [costoIobpasTaquilla, setCostoIobpasTaquilla] = useState<number>(120000);
 
@@ -445,6 +448,7 @@ export function Module4TributosEntes({
   const projAlcaldiaTotal = projAlcaldiaTaquillas + projAlcaldiaComercial;
 
   // Costos de Licencias RUNLOT - CONALOT por cada actor de la cadena (Tasas Anuales • 1 vez al año)
+  const totalRunlotIobpas = numIobpas * costoRunlotIobpas * factorAnualidad;
   const totalRunlotTaquillas = numTaquillas * costoRunlotTaquilla * factorAnualidad;
   const totalRunlotComercializadoras = numComercializadoras * costoRunlotComercializadora * factorAnualidad;
   const totalRunlotOperadoraEntidad = numOperadoras * costoRunlotOperadora * factorAnualidad;
@@ -455,6 +459,7 @@ export function Module4TributosEntes({
   const totalRunlotResponsablesIT = numResponsablesIT * costoRunlotResponsableIT * factorAnualidad;
 
   const projConalotTotal =
+    totalRunlotIobpas +
     totalRunlotTaquillas +
     totalRunlotComercializadoras +
     totalRunlotOperadoras +
@@ -485,6 +490,7 @@ export function Module4TributosEntes({
 
   // Totales anuales íntegros de la red (1 vez al año)
   const totalAnualRunlotRed =
+    numIobpas * costoRunlotIobpas +
     numTaquillas * costoRunlotTaquilla +
     numComercializadoras * costoRunlotComercializadora +
     numOperadoras * costoRunlotOperadora +
@@ -2264,23 +2270,23 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
               <div className="bg-slate-950/90 border border-slate-800 rounded-xl p-5">
                 {activeRunlotCategory === "iobpas" && (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <h4 className="text-sm font-bold text-white flex items-center gap-2">
                         <Landmark className="w-4 h-4 text-emerald-400" />
                         Categoría 1: Institutos Oficiales de Beneficencia Pública y Asistencia Social (IOBPAS)
                       </h4>
-                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/20">
-                        Entes Concedentes
+                      <span className="text-[10px] font-mono text-purple-300 bg-purple-500/15 px-2.5 py-0.5 rounded border border-purple-500/30 font-bold">
+                        Tasa RUNLOT: Bs. {formatBs(costoRunlotIobpas, 2)} / año (Bs. {formatBs(costoRunlotIobpas / 12, 2)} / mes)
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 leading-relaxed">
-                      Loterías oficiales creadas mediante Leyes y Decretos Estadales, titulares exclusivos del monopolio de explotación de juegos de envite y azar en sus respectivas jurisdicciones.
+                      Loterías oficiales creadas mediante Leyes y Decretos Estadales, titulares exclusivos del monopolio de explotación de juegos de envite y azar en sus respectivas jurisdicciones. Sujetas a registro obligatorio anual en el RUNLOT ante la CONALOT.
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2">
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
                         <div className="text-[11px] text-slate-400">Requisito RUNLOT:</div>
                         <div className="text-xs font-bold text-white mt-1">Gaceta Oficial de Creación</div>
-                        <div className="text-[10px] text-emerald-400 font-mono mt-0.5">Vigente y Convalidada</div>
+                        <div className="text-[10px] text-emerald-400 font-mono mt-0.5">RUN-IOB-001 • Vigente</div>
                       </div>
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
                         <div className="text-[11px] text-slate-400">Supervisión CONALOT:</div>
@@ -2288,9 +2294,14 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                         <div className="text-[10px] text-blue-400 font-mono mt-0.5">Homologación Previa</div>
                       </div>
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-                        <div className="text-[11px] text-slate-400">Destino de Fondos:</div>
-                        <div className="text-xs font-bold text-white mt-1">Cuentas Sociales Hospitalarias</div>
-                        <div className="text-[10px] text-amber-400 font-mono mt-0.5">Auditoría Trimestral</div>
+                        <div className="text-[11px] text-slate-400">Tasa Registro RUNLOT:</div>
+                        <div className="text-xs font-bold text-purple-300 font-mono mt-1">Bs. {formatBs(costoRunlotIobpas, 2)} / año</div>
+                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">Alícuota: Bs. {formatBs(costoRunlotIobpas / 12, 2)} / mes</div>
+                      </div>
+                      <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+                        <div className="text-[11px] text-slate-400">Recaudación Social IOBPAS:</div>
+                        <div className="text-xs font-bold text-emerald-400 font-mono mt-1">5% s/ GGR + Licencias</div>
+                        <div className="text-[10px] text-amber-400 font-mono mt-0.5">Licencias Red: Bs. {formatBs(totalAnualIobpasRed, 0)} / año</div>
                       </div>
                     </div>
                   </div>
@@ -2298,33 +2309,38 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
 
                 {activeRunlotCategory === "centros_apuestas" && (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <h4 className="text-sm font-bold text-white flex items-center gap-2">
                         <Store className="w-4 h-4 text-blue-400" />
                         Categoría 2: Centros de Apuestas (Taquillas y Agencias Emisoras)
                       </h4>
-                      <span className="text-[10px] font-mono text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded border border-blue-500/20">
-                        Punto de Venta POS
+                      <span className="text-[10px] font-mono text-blue-300 bg-blue-500/15 px-2.5 py-0.5 rounded border border-blue-500/30 font-bold">
+                        Total Tasas: Bs. {formatBs(costoRunlotTaquilla + costoIobpasTaquilla, 2)} / año (Bs. {formatBs((costoRunlotTaquilla + costoIobpasTaquilla) / 12, 2)} / mes)
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 leading-relaxed">
                       Locales comerciales abiertos al público donde operan los terminales de venta físicos. Cada taquilla cuenta con un código único de registro (ej. <code>RUN-AG-0412</code>), geolocalización catastral y certificación técnica de la impresora térmica homologada de 80 mm.
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2">
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
                         <div className="text-[11px] text-slate-400">Código RUNLOT:</div>
                         <div className="text-xs font-bold text-white mt-1">RUN-AG-0412</div>
                         <div className="text-[10px] text-blue-400 font-mono mt-0.5">Centro Apuestas La Favorita</div>
                       </div>
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-                        <div className="text-[11px] text-slate-400">Hardware Homologado:</div>
-                        <div className="text-xs font-bold text-white mt-1">POS Térmico 80 mm (48 col)</div>
-                        <div className="text-[10px] text-emerald-400 font-mono mt-0.5">15 Líneas Exactas</div>
+                        <div className="text-[11px] text-slate-400">Tasa RUNLOT (CONALOT):</div>
+                        <div className="text-xs font-bold text-purple-300 font-mono mt-1">Bs. {formatBs(costoRunlotTaquilla, 2)} / año</div>
+                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">Alícuota: Bs. {formatBs(costoRunlotTaquilla / 12, 2)} / mes</div>
                       </div>
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-                        <div className="text-[11px] text-slate-400">Estatus Fiscal:</div>
-                        <div className="text-xs font-bold text-white mt-1">Intermediario de Cobro</div>
-                        <div className="text-[10px] text-emerald-400 font-mono mt-0.5">Exonerado Retención SENIAT</div>
+                        <div className="text-[11px] text-slate-400">Licencia IOBPAS (Taquilla):</div>
+                        <div className="text-xs font-bold text-emerald-400 font-mono mt-1">Bs. {formatBs(costoIobpasTaquilla, 2)} / año</div>
+                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">Alícuota: Bs. {formatBs(costoIobpasTaquilla / 12, 2)} / mes</div>
+                      </div>
+                      <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+                        <div className="text-[11px] text-slate-400">Carga Total Taquilla:</div>
+                        <div className="text-xs font-bold text-cyan-300 font-mono mt-1">Bs. {formatBs(costoRunlotTaquilla + costoIobpasTaquilla, 2)} / año</div>
+                        <div className="text-[10px] text-emerald-400 font-mono mt-0.5">Bs. {formatBs((costoRunlotTaquilla + costoIobpasTaquilla) / 12, 2)} / mes</div>
                       </div>
                     </div>
                   </div>
@@ -2332,33 +2348,38 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
 
                 {activeRunlotCategory === "comercializadoras" && (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <h4 className="text-sm font-bold text-white flex items-center gap-2">
                         <Building2 className="w-4 h-4 text-amber-400" />
                         Categoría 3: Comercializadoras Intermediarias (Agentes Máster y Redes)
                       </h4>
-                      <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded border border-amber-500/20">
-                        Distribuidores Máster
+                      <span className="text-[10px] font-mono text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
+                        Total Tasas: Bs. {formatBs(costoRunlotComercializadora + costoIobpasComercializadora, 2)} / año (Bs. {formatBs((costoRunlotComercializadora + costoIobpasComercializadora) / 12, 2)} / mes)
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 leading-relaxed">
                       Empresas mercantiles encargadas de la distribución, soporte logístico, suministro de consumibles y liquidación de saldos de las taquillas y agencias. Actúan bajo contrato de intermediación por cuenta de terceros (Arts. 32 y 33 de la Providencia SNAT/2026/00093).
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2">
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
                         <div className="text-[11px] text-slate-400">Código RUNLOT:</div>
                         <div className="text-xs font-bold text-white mt-1">RUN-COM-0089</div>
                         <div className="text-[10px] text-amber-400 font-mono mt-0.5">Corporación Máster Central C.A.</div>
                       </div>
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-                        <div className="text-[11px] text-slate-400">Régimen Municipal:</div>
-                        <div className="text-xs font-bold text-white mt-1">2,5% s/ Spread Propio</div>
-                        <div className="text-[10px] text-emerald-400 font-mono mt-0.5">LOCAPTEM Art. 29 num. 1</div>
+                        <div className="text-[11px] text-slate-400">Tasa RUNLOT (CONALOT):</div>
+                        <div className="text-xs font-bold text-purple-300 font-mono mt-1">Bs. {formatBs(costoRunlotComercializadora, 2)} / año</div>
+                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">Alícuota: Bs. {formatBs(costoRunlotComercializadora / 12, 2)} / mes</div>
                       </div>
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-                        <div className="text-[11px] text-slate-400">Fianza y Garantía:</div>
-                        <div className="text-xs font-bold text-white mt-1">Garantía Bancaria de Red</div>
-                        <div className="text-[10px] text-blue-400 font-mono mt-0.5">Auditada por CONALOT</div>
+                        <div className="text-[11px] text-slate-400">Licencia IOBPAS:</div>
+                        <div className="text-xs font-bold text-emerald-400 font-mono mt-1">Bs. {formatBs(costoIobpasComercializadora, 2)} / año</div>
+                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">Alícuota: Bs. {formatBs(costoIobpasComercializadora / 12, 2)} / mes</div>
+                      </div>
+                      <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+                        <div className="text-[11px] text-slate-400">Carga Total Comercializadora:</div>
+                        <div className="text-xs font-bold text-amber-300 font-mono mt-1">Bs. {formatBs(costoRunlotComercializadora + costoIobpasComercializadora, 2)} / año</div>
+                        <div className="text-[10px] text-emerald-400 font-mono mt-0.5">Bs. {formatBs((costoRunlotComercializadora + costoIobpasComercializadora) / 12, 2)} / mes</div>
                       </div>
                     </div>
                   </div>
@@ -2366,35 +2387,38 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
 
                 {activeRunlotCategory === "sistemas_informaticos" && (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <h4 className="text-sm font-bold text-white flex items-center gap-2">
                         <Cpu className="w-4 h-4 text-purple-400" />
                         Categoría 4: Sistemas Informáticos (Software de Lotería y Plataformas de Apuestas)
                       </h4>
-                      <span className="text-[10px] font-mono text-purple-400 bg-purple-500/10 px-2.5 py-0.5 rounded border border-purple-500/20">
-                        Software & Telemetría
+                      <span className="text-[10px] font-mono text-purple-300 bg-purple-500/15 px-2.5 py-0.5 rounded border border-purple-500/30 font-bold">
+                        Homologación RUNLOT: Bs. {formatBs(costoRunlotSistemaIT, 2)} / año (Bs. {formatBs(costoRunlotSistemaIT / 12, 2)} / mes) + Canon {pctGastoITOperadora}%
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 leading-relaxed">
                       Plataformas informáticas y servidores centrales transaccionales donde se capturan, procesan y almacenan las jugadas. Requieren certificación de inalterabilidad, timestampping criptográfico, auditoría de hash SHA-256 de compilación y conexión nativa al API SCFD del Estado.
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2">
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
                         <div className="text-[11px] text-slate-400">Identificador RUNLOT:</div>
                         <div className="text-xs font-bold text-white mt-1">SYS-CDAPUESTAS-v4.2</div>
                         <div className="text-[10px] text-purple-400 font-mono mt-0.5">Certificado RUN-SYS-019</div>
                       </div>
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-                        <div className="text-[11px] text-slate-400">Hash de Compilación (SHA-256):</div>
-                        <div className="text-xs font-mono font-bold text-slate-300 truncate mt-1">
-                          BFF803FCB670E689...
-                        </div>
-                        <div className="text-[10px] text-emerald-400 font-mono mt-0.5">Binario Homologado</div>
+                        <div className="text-[11px] text-slate-400">Homologación RUNLOT:</div>
+                        <div className="text-xs font-bold text-purple-300 font-mono mt-1">Bs. {formatBs(costoRunlotSistemaIT, 2)} / año</div>
+                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">Alícuota: Bs. {formatBs(costoRunlotSistemaIT / 12, 2)} / mes</div>
+                      </div>
+                      <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+                        <div className="text-[11px] text-slate-400">Canon Tecnológico IT:</div>
+                        <div className="text-xs font-bold text-amber-300 font-mono mt-1">{pctGastoITOperadora}% s/ Venta Facial</div>
+                        <div className="text-[10px] text-emerald-400 font-mono mt-0.5">Asumido por la Operadora</div>
                       </div>
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
                         <div className="text-[11px] text-slate-400">Estándar de Seguridad:</div>
                         <div className="text-xs font-bold text-white mt-1">ISO/IEC 27001 + SCFD REST</div>
-                        <div className="text-[10px] text-blue-400 font-mono mt-0.5">TLS 1.3 / Latencia &lt; 250ms</div>
+                        <div className="text-[10px] text-blue-400 font-mono mt-0.5">TLS 1.3 / SHA-256</div>
                       </div>
                     </div>
                   </div>
@@ -2402,23 +2426,28 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
 
                 {activeRunlotCategory === "responsables_informaticos" && (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <h4 className="text-sm font-bold text-white flex items-center gap-2">
                         <UserCheck className="w-4 h-4 text-cyan-400" />
                         Categoría 5: Responsables Informáticos (Ingenieros y Peritos de Sistemas)
                       </h4>
-                      <span className="text-[10px] font-mono text-cyan-400 bg-cyan-500/10 px-2.5 py-0.5 rounded border border-cyan-500/20">
-                        Firmantes Técnicos
+                      <span className="text-[10px] font-mono text-cyan-300 bg-cyan-500/15 px-2.5 py-0.5 rounded border border-cyan-500/30 font-bold">
+                        Registro RUNLOT: Bs. {formatBs(costoRunlotResponsableIT, 2)} / año (Bs. {formatBs(costoRunlotResponsableIT / 12, 2)} / mes)
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 leading-relaxed">
                       Profesionales colegiados (CIV) legalmente juramentados ante la CONALOT como custodios y garantes de la inalterabilidad de la base de datos, del código fuente del software y de la veracidad de los logs telemáticos enviados al Estado.
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2">
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
                         <div className="text-[11px] text-slate-400">Registro Profesional:</div>
                         <div className="text-xs font-bold text-white mt-1">Ing. Sistemas CIV #241.890</div>
-                        <div className="text-[10px] text-cyan-400 font-mono mt-0.5">Perito Informático Juramentado</div>
+                        <div className="text-[10px] text-cyan-400 font-mono mt-0.5">RUN-PER-890 • Juramentado</div>
+                      </div>
+                      <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+                        <div className="text-[11px] text-slate-400">Tasa Registro RUNLOT:</div>
+                        <div className="text-xs font-bold text-purple-300 font-mono mt-1">Bs. {formatBs(costoRunlotResponsableIT, 2)} / año</div>
+                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">Alícuota: Bs. {formatBs(costoRunlotResponsableIT / 12, 2)} / mes</div>
                       </div>
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
                         <div className="text-[11px] text-slate-400">Firma Criptográfica:</div>
@@ -2427,7 +2456,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       </div>
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
                         <div className="text-[11px] text-slate-400">Responsabilidad Legal:</div>
-                        <div className="text-xs font-bold text-white mt-1">Solidaria / Penal por Alteración</div>
+                        <div className="text-xs font-bold text-white mt-1">Fiel Custodio / Solidaria</div>
                         <div className="text-[10px] text-rose-400 font-mono mt-0.5">Ley de Delitos Informáticos</div>
                       </div>
                     </div>
@@ -2436,33 +2465,38 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
 
                 {activeRunlotCategory === "operadoras" && (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <h4 className="text-sm font-bold text-white flex items-center gap-2">
                         <ShieldCheck className="w-4 h-4 text-emerald-400" />
                         Categoría 6: Operadoras de Juegos de Lotería (Concesionarias Oficiales)
                       </h4>
-                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/20">
-                        Agente de Retención Único
+                      <span className="text-[10px] font-mono text-emerald-300 bg-emerald-500/15 px-2.5 py-0.5 rounded border border-emerald-500/30 font-bold">
+                        Total Concesión: Bs. {formatBs(costoRunlotOperadora + costoIobpasOperadora, 2)} / año (Bs. {formatBs((costoRunlotOperadora + costoIobpasOperadora) / 12, 2)} / mes)
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 leading-relaxed">
                       Entidades jurídicas autorizadas que firman los convenios de explotación con las IOBPAS. Asumen el riesgo financiero de la premiación, garantizan el pago de boletos ganadores y actúan como Agente Único de Retención del 16% IGF ante el SENIAT.
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2">
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
                         <div className="text-[11px] text-slate-400">Código RUNLOT:</div>
                         <div className="text-xs font-bold text-white mt-1">RUN-OP-987654</div>
                         <div className="text-[10px] text-emerald-400 font-mono mt-0.5">Operadora Oficial Lotería C.A.</div>
                       </div>
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-                        <div className="text-[11px] text-slate-400">RIF Jurídico:</div>
-                        <div className="text-xs font-bold text-white mt-1">J-98765432-1</div>
-                        <div className="text-[10px] text-blue-400 font-mono mt-0.5">Agente de Retención SENIAT</div>
+                        <div className="text-[11px] text-slate-400">Tasa RUNLOT Operadora:</div>
+                        <div className="text-xs font-bold text-purple-300 font-mono mt-1">Bs. {formatBs(costoRunlotOperadora, 2)} / año</div>
+                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">Alícuota: Bs. {formatBs(costoRunlotOperadora / 12, 2)} / mes</div>
                       </div>
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-                        <div className="text-[11px] text-slate-400">Fianza de Cumplimiento:</div>
-                        <div className="text-xs font-bold text-white mt-1">Póliza de Fiel Cumplimiento</div>
-                        <div className="text-[10px] text-amber-400 font-mono mt-0.5">Depositada en IOBPAS</div>
+                        <div className="text-[11px] text-slate-400">Licencia IOBPAS Operadora:</div>
+                        <div className="text-xs font-bold text-emerald-400 font-mono mt-1">Bs. {formatBs(costoIobpasOperadora, 2)} / año</div>
+                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">Alícuota: Bs. {formatBs(costoIobpasOperadora / 12, 2)} / mes</div>
+                      </div>
+                      <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+                        <div className="text-[11px] text-slate-400">Total Cargas Concesión:</div>
+                        <div className="text-xs font-bold text-emerald-300 font-mono mt-1">Bs. {formatBs(costoRunlotOperadora + costoIobpasOperadora, 2)} / año</div>
+                        <div className="text-[10px] text-amber-400 font-mono mt-0.5">Bs. {formatBs((costoRunlotOperadora + costoIobpasOperadora) / 12, 2)} / mes</div>
                       </div>
                     </div>
                   </div>
@@ -2470,33 +2504,48 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
 
                 {activeRunlotCategory === "juegos" && (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <h4 className="text-sm font-bold text-white flex items-center gap-2">
                         <Dices className="w-4 h-4 text-rose-400" />
-                        Categoría 7: Juegos y Modalidades Homologadas
+                        Categoría 7: Juegos y Modalidades Homologadas ({numJuegos} Juegos: {numJuegosDigital} Digital + {numJuegosEsferas} Esferas)
                       </h4>
-                      <span className="text-[10px] font-mono text-rose-400 bg-rose-500/10 px-2.5 py-0.5 rounded border border-rose-500/20">
-                        Modalidades Oficiales
+                      <span className="text-[10px] font-mono text-rose-300 bg-rose-500/15 px-2.5 py-0.5 rounded border border-rose-500/30 font-bold">
+                        RUNLOT + SENCAMER ({numJuegos} jgs): Bs. {formatBs(numJuegos * costoRunlotJuegoOperadora + totalAnualSencamerRed, 2)} / año
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 leading-relaxed">
-                      Catálogo oficial de modalidades reglamentadas y publicadas en Gaceta Oficial. Cada juego posee sus tablas oficiales de premiación, horarios de sorteos y límites de comercialización por jugada autorizada.
+                      Catálogo oficial de modalidades reglamentadas y publicadas en Gaceta Oficial. Cada juego paga su registro anual en Categoría 7 del RUNLOT y su certificación metrológica anual ante SENCAMER (Premiador Digital RNG o Esferas/Balotas).
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2">
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-                        <div className="text-[11px] text-slate-400">Modalidad Tradicional:</div>
-                        <div className="text-xs font-bold text-white mt-1">Triples y Terminales</div>
-                        <div className="text-[10px] text-rose-400 font-mono mt-0.5">Factor 600x | Payout 60%</div>
+                        <div className="text-[11px] text-slate-400">Tasa RUNLOT por Juego:</div>
+                        <div className="text-xs font-bold text-purple-300 font-mono mt-1">Bs. {formatBs(costoRunlotJuegoOperadora, 2)} / año c/u</div>
+                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+                          {numJuegos} jgs: Bs. {formatBs(numJuegos * costoRunlotJuegoOperadora, 0)}/año (Bs. {formatBs((numJuegos * costoRunlotJuegoOperadora) / 12, 2)}/mes)
+                        </div>
                       </div>
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-                        <div className="text-[11px] text-slate-400">Modalidad Figuras:</div>
-                        <div className="text-xs font-bold text-white mt-1">Lotería de Animalitos</div>
-                        <div className="text-[10px] text-amber-400 font-mono mt-0.5">Factor 30x (38 fig) | Payout 75%</div>
+                        <div className="text-[11px] text-slate-400">SENCAMER Premiador Digital:</div>
+                        <div className="text-xs font-bold text-cyan-300 font-mono mt-1">Bs. {formatBs(costoSencamerSistemaPremiador, 2)} / año c/u</div>
+                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+                          Alícuota: Bs. {formatBs(costoSencamerSistemaPremiador / 12, 2)} / mes
+                        </div>
                       </div>
                       <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-                        <div className="text-[11px] text-slate-400">Homologación Sorteo:</div>
-                        <div className="text-xs font-bold text-white mt-1">Presencia de Notario Público</div>
-                        <div className="text-[10px] text-emerald-400 font-mono mt-0.5">Transmisión en Vivo</div>
+                        <div className="text-[11px] text-slate-400">SENCAMER Esferas / Balotas:</div>
+                        <div className="text-xs font-bold text-cyan-300 font-mono mt-1">Bs. {formatBs(costoSencamerEsferas, 2)} / año c/u</div>
+                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+                          Alícuota: Bs. {formatBs(costoSencamerEsferas / 12, 2)} / mes
+                        </div>
+                      </div>
+                      <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+                        <div className="text-[11px] text-slate-400">Total {numJuegos} Juegos Homologados:</div>
+                        <div className="text-xs font-bold text-rose-300 font-mono mt-1">
+                          Bs. {formatBs(numJuegos * costoRunlotJuegoOperadora + totalAnualSencamerRed, 2)} / año
+                        </div>
+                        <div className="text-[10px] text-emerald-400 font-mono mt-0.5">
+                          Bs. {formatBs((numJuegos * costoRunlotJuegoOperadora + totalAnualSencamerRed) / 12, 2)} / mes
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2504,12 +2553,17 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
               </div>
             </div>
 
-            {/* TABLA CENSO MAESTRO RUNLOT DE LOS 7 SUJETOS */}
+            {/* TABLA CENSO MAESTRO RUNLOT DE LOS 7 SUJETOS (SINCRONIZADA CON EL PANEL DE TASAS) */}
             <div className="mt-8">
-              <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                <Table className="w-4 h-4 text-purple-400" />
-                Censo Maestro de Sujetos y Elementos Registrados en el RUNLOT
-              </h3>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <Table className="w-4 h-4 text-purple-400" />
+                  Censo Maestro de Sujetos y Elementos Registrados en el RUNLOT (Todos con Tasa Oficial)
+                </h3>
+                <span className="text-[11px] font-mono text-emerald-300 bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/30 font-bold">
+                  Tasas Sincronizadas con el Panel de Inserción de Costos (Anual y Mensual ÷12)
+                </span>
+              </div>
               <div className="overflow-x-auto rounded-xl border border-slate-800">
                 <table className="w-full text-xs text-left">
                   <thead className="bg-slate-950 text-slate-400 font-mono text-[11px] border-b border-slate-800">
@@ -2519,79 +2573,207 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       <th className="p-3">Denominación / Sujeto</th>
                       <th className="p-3">Parámetro Técnico Homologado</th>
                       <th className="p-3 text-center">Estatus</th>
-                      <th className="p-3 text-right">Tasa Supervisión SCFD</th>
+                      <th className="p-3 text-right text-purple-300">Tasa RUNLOT Anual</th>
+                      <th className="p-3 text-right text-emerald-300">Licencia IOBPAS / SENCAMER</th>
+                      <th className="p-3 text-right text-amber-300">Tasa Supervisión SCFD (Mensual ÷12)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800/60 bg-slate-900/40 text-slate-300">
+                    {/* 1. IOBPAS */}
                     <tr>
-                      <td className="p-3 font-semibold text-white flex items-center gap-2">
-                        <Landmark className="w-3.5 h-3.5 text-emerald-400" /> 1. IOBPAS
+                      <td className="p-3 font-semibold text-white flex items-center gap-2 whitespace-nowrap">
+                        <Landmark className="w-3.5 h-3.5 text-emerald-400 shrink-0" /> 1. IOBPAS
                       </td>
-                      <td className="p-3 font-mono text-emerald-300">RUN-IOB-001</td>
+                      <td className="p-3 font-mono text-emerald-300 whitespace-nowrap">RUN-IOB-001</td>
                       <td className="p-3">Lotería del Zulia (Beneficencia Pública)</td>
                       <td className="p-3 text-slate-400">Gaceta Oficial Estadal #142</td>
-                      <td className="p-3 text-center"><span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-bold">VIGENTE</span></td>
-                      <td className="p-3 text-right font-mono text-slate-400">Exento de Tasa</td>
-                    </tr>
-                    <tr>
-                      <td className="p-3 font-semibold text-white flex items-center gap-2">
-                        <Store className="w-3.5 h-3.5 text-blue-400" /> 2. Centros de Apuestas
+                      <td className="p-3 text-center">
+                        <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-bold">VIGENTE</span>
                       </td>
-                      <td className="p-3 font-mono text-blue-300">RUN-AG-0412</td>
+                      <td className="p-3 text-right font-mono text-purple-300 font-bold whitespace-nowrap">
+                        Bs. {formatBs(costoRunlotIobpas, 2)} / año
+                      </td>
+                      <td className="p-3 text-right font-mono text-emerald-400 text-[11px] whitespace-nowrap">
+                        Recauda Bs. {formatBs(totalAnualIobpasRed, 0)}/año + 5% GGR
+                      </td>
+                      <td className="p-3 text-right font-mono text-amber-300 font-bold whitespace-nowrap">
+                        Bs. {formatBs(costoRunlotIobpas / 12, 2)} / mes
+                      </td>
+                    </tr>
+
+                    {/* 2. Centros de Apuestas */}
+                    <tr>
+                      <td className="p-3 font-semibold text-white flex items-center gap-2 whitespace-nowrap">
+                        <Store className="w-3.5 h-3.5 text-blue-400 shrink-0" /> 2. Centros de Apuestas
+                      </td>
+                      <td className="p-3 font-mono text-blue-300 whitespace-nowrap">RUN-AG-0412</td>
                       <td className="p-3">Centro de Apuestas La Favorita (POS)</td>
                       <td className="p-3 text-slate-400">Impresora Térmica 80mm (15 líneas)</td>
-                      <td className="p-3 text-center"><span className="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-300 font-bold">HOMOLOGADO</span></td>
-                      <td className="p-3 text-right font-mono text-purple-300 font-bold">Bs. 150,00 / mes</td>
-                    </tr>
-                    <tr>
-                      <td className="p-3 font-semibold text-white flex items-center gap-2">
-                        <Building2 className="w-3.5 h-3.5 text-amber-400" /> 3. Comercializadoras
+                      <td className="p-3 text-center">
+                        <span className="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-300 font-bold">HOMOLOGADO</span>
                       </td>
-                      <td className="p-3 font-mono text-amber-300">RUN-COM-0089</td>
+                      <td className="p-3 text-right font-mono text-purple-300 font-bold whitespace-nowrap">
+                        Bs. {formatBs(costoRunlotTaquilla, 2)} / año
+                      </td>
+                      <td className="p-3 text-right font-mono text-emerald-300 font-bold whitespace-nowrap">
+                        Bs. {formatBs(costoIobpasTaquilla, 2)} / año (IOBPAS)
+                      </td>
+                      <td className="p-3 text-right font-mono text-amber-300 font-bold whitespace-nowrap">
+                        <div>Bs. {formatBs((costoRunlotTaquilla + costoIobpasTaquilla) / 12, 2)} / mes</div>
+                        <span className="block text-[10px] text-slate-400 font-normal">
+                          (Total: Bs. {formatBs(costoRunlotTaquilla + costoIobpasTaquilla, 0)} / año)
+                        </span>
+                      </td>
+                    </tr>
+
+                    {/* 3. Comercializadoras */}
+                    <tr>
+                      <td className="p-3 font-semibold text-white flex items-center gap-2 whitespace-nowrap">
+                        <Building2 className="w-3.5 h-3.5 text-amber-400 shrink-0" /> 3. Comercializadoras
+                      </td>
+                      <td className="p-3 font-mono text-amber-300 whitespace-nowrap">RUN-COM-0089</td>
                       <td className="p-3">Corporación Máster Central C.A.</td>
                       <td className="p-3 text-slate-400">Intermediación Arts. 32-33 / Fianza</td>
-                      <td className="p-3 text-center"><span className="px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 font-bold">CERTIFICADO</span></td>
-                      <td className="p-3 text-right font-mono text-slate-400">Garantía Bancaria</td>
-                    </tr>
-                    <tr>
-                      <td className="p-3 font-semibold text-white flex items-center gap-2">
-                        <Cpu className="w-3.5 h-3.5 text-purple-400" /> 4. Sistemas Informáticos
+                      <td className="p-3 text-center">
+                        <span className="px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 font-bold">CERTIFICADO</span>
                       </td>
-                      <td className="p-3 font-mono text-purple-300">RUN-SYS-019</td>
+                      <td className="p-3 text-right font-mono text-purple-300 font-bold whitespace-nowrap">
+                        Bs. {formatBs(costoRunlotComercializadora, 2)} / año
+                      </td>
+                      <td className="p-3 text-right font-mono text-emerald-300 font-bold whitespace-nowrap">
+                        Bs. {formatBs(costoIobpasComercializadora, 2)} / año (IOBPAS)
+                      </td>
+                      <td className="p-3 text-right font-mono text-amber-300 font-bold whitespace-nowrap">
+                        <div>Bs. {formatBs((costoRunlotComercializadora + costoIobpasComercializadora) / 12, 2)} / mes</div>
+                        <span className="block text-[10px] text-slate-400 font-normal">
+                          (Total: Bs. {formatBs(costoRunlotComercializadora + costoIobpasComercializadora, 0)} / año)
+                        </span>
+                      </td>
+                    </tr>
+
+                    {/* 4. Sistemas Informáticos */}
+                    <tr>
+                      <td className="p-3 font-semibold text-white flex items-center gap-2 whitespace-nowrap">
+                        <Cpu className="w-3.5 h-3.5 text-purple-400 shrink-0" /> 4. Sistemas Informáticos
+                      </td>
+                      <td className="p-3 font-mono text-purple-300 whitespace-nowrap">RUN-SYS-019</td>
                       <td className="p-3">SYS-CDAPUESTAS-v4.2 (Motor Lotería)</td>
                       <td className="p-3 text-slate-400">SHA-256: BFF803FCB670E689...</td>
-                      <td className="p-3 text-center"><span className="px-2 py-0.5 rounded text-[10px] bg-purple-500/20 text-purple-300 font-bold">AUDITADO</span></td>
-                      <td className="p-3 text-right font-mono text-purple-300 font-bold">Bs. 1.200,00 / mes</td>
-                    </tr>
-                    <tr>
-                      <td className="p-3 font-semibold text-white flex items-center gap-2">
-                        <UserCheck className="w-3.5 h-3.5 text-cyan-400" /> 5. Resp. Informáticos
+                      <td className="p-3 text-center">
+                        <span className="px-2 py-0.5 rounded text-[10px] bg-purple-500/20 text-purple-300 font-bold">AUDITADO</span>
                       </td>
-                      <td className="p-3 font-mono text-cyan-300">RUN-PER-890</td>
+                      <td className="p-3 text-right font-mono text-purple-300 font-bold whitespace-nowrap">
+                        Bs. {formatBs(costoRunlotSistemaIT, 2)} / año
+                      </td>
+                      <td className="p-3 text-right font-mono text-purple-300 text-[11px] whitespace-nowrap">
+                        Canon IT: {pctGastoITOperadora}% s/ Venta
+                      </td>
+                      <td className="p-3 text-right font-mono text-amber-300 font-bold whitespace-nowrap">
+                        <div>Bs. {formatBs((costoRunlotSistemaIT + costoIobpasSistemaIT) / 12, 2)} / mes</div>
+                        <span className="block text-[10px] text-slate-400 font-normal">
+                          (+ {pctGastoITOperadora}% Canon s/ Venta)
+                        </span>
+                      </td>
+                    </tr>
+
+                    {/* 5. Responsables Informáticos */}
+                    <tr>
+                      <td className="p-3 font-semibold text-white flex items-center gap-2 whitespace-nowrap">
+                        <UserCheck className="w-3.5 h-3.5 text-cyan-400 shrink-0" /> 5. Resp. Informáticos
+                      </td>
+                      <td className="p-3 font-mono text-cyan-300 whitespace-nowrap">RUN-PER-890</td>
                       <td className="p-3">Ing. de Sistemas Colegiado (CIV #241.890)</td>
                       <td className="p-3 text-slate-400">Firma Digital SUSCERTE RSA-4096</td>
-                      <td className="p-3 text-center"><span className="px-2 py-0.5 rounded text-[10px] bg-cyan-500/20 text-cyan-300 font-bold">JURAMENTADO</span></td>
-                      <td className="p-3 text-right font-mono text-slate-400">Fiel Custodio</td>
-                    </tr>
-                    <tr>
-                      <td className="p-3 font-semibold text-white flex items-center gap-2">
-                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> 6. Operadoras
+                      <td className="p-3 text-center">
+                        <span className="px-2 py-0.5 rounded text-[10px] bg-cyan-500/20 text-cyan-300 font-bold">JURAMENTADO</span>
                       </td>
-                      <td className="p-3 font-mono text-emerald-300">RUN-OP-987654</td>
+                      <td className="p-3 text-right font-mono text-purple-300 font-bold whitespace-nowrap">
+                        Bs. {formatBs(costoRunlotResponsableIT, 2)} / año
+                      </td>
+                      <td className="p-3 text-right font-mono text-cyan-300 text-[11px] whitespace-nowrap">
+                        Fiel Custodio SUSCERTE
+                      </td>
+                      <td className="p-3 text-right font-mono text-amber-300 font-bold whitespace-nowrap">
+                        <div>Bs. {formatBs((costoRunlotResponsableIT + costoIobpasResponsableIT) / 12, 2)} / mes</div>
+                        <span className="block text-[10px] text-slate-400 font-normal">
+                          (Total: Bs. {formatBs(costoRunlotResponsableIT + costoIobpasResponsableIT, 0)} / año)
+                        </span>
+                      </td>
+                    </tr>
+
+                    {/* 6. Operadoras */}
+                    <tr>
+                      <td className="p-3 font-semibold text-white flex items-center gap-2 whitespace-nowrap">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" /> 6. Operadoras
+                      </td>
+                      <td className="p-3 font-mono text-emerald-300 whitespace-nowrap">RUN-OP-987654</td>
                       <td className="p-3">Operadora Oficial de Lotería C.A.</td>
                       <td className="p-3 text-slate-400">Agente Único SENIAT / Convenio IOBPAS</td>
-                      <td className="p-3 text-center"><span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-bold">AUTORIZADO</span></td>
-                      <td className="p-3 text-right font-mono text-slate-400">Fianza Concesión</td>
-                    </tr>
-                    <tr>
-                      <td className="p-3 font-semibold text-white flex items-center gap-2">
-                        <Dices className="w-3.5 h-3.5 text-rose-400" /> 7. Juegos y Sorteos
+                      <td className="p-3 text-center">
+                        <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-bold">AUTORIZADO</span>
                       </td>
-                      <td className="p-3 font-mono text-rose-300">RUN-MOD-TRIPLES</td>
+                      <td className="p-3 text-right font-mono text-purple-300 font-bold whitespace-nowrap">
+                        Bs. {formatBs(costoRunlotOperadora, 2)} / año
+                      </td>
+                      <td className="p-3 text-right font-mono text-emerald-300 font-bold whitespace-nowrap">
+                        Bs. {formatBs(costoIobpasOperadora, 2)} / año (IOBPAS)
+                      </td>
+                      <td className="p-3 text-right font-mono text-amber-300 font-bold whitespace-nowrap">
+                        <div>Bs. {formatBs((costoRunlotOperadora + costoIobpasOperadora) / 12, 2)} / mes</div>
+                        <span className="block text-[10px] text-slate-400 font-normal">
+                          (Total: Bs. {formatBs(costoRunlotOperadora + costoIobpasOperadora, 0)} / año)
+                        </span>
+                      </td>
+                    </tr>
+
+                    {/* 7. Juegos y Sorteos */}
+                    <tr>
+                      <td className="p-3 font-semibold text-white flex items-center gap-2 whitespace-nowrap">
+                        <Dices className="w-3.5 h-3.5 text-rose-400 shrink-0" /> 7. Juegos y Sorteos
+                      </td>
+                      <td className="p-3 font-mono text-rose-300 whitespace-nowrap">RUN-MOD-TRIPLES</td>
                       <td className="p-3">Triples Tradicionales (600x) & Animalitos (30x)</td>
-                      <td className="p-3 text-slate-400">Tablas de Premios en Gaceta Oficial</td>
-                      <td className="p-3 text-center"><span className="px-2 py-0.5 rounded text-[10px] bg-rose-500/20 text-rose-300 font-bold">HOMOLOGADO</span></td>
-                      <td className="p-3 text-right font-mono text-slate-400">Canon s/ GGR</td>
+                      <td className="p-3 text-slate-400">Tablas de Premios + Metrología SENCAMER</td>
+                      <td className="p-3 text-center">
+                        <span className="px-2 py-0.5 rounded text-[10px] bg-rose-500/20 text-rose-300 font-bold">HOMOLOGADO</span>
+                      </td>
+                      <td className="p-3 text-right font-mono text-purple-300 font-bold whitespace-nowrap">
+                        <div>Bs. {formatBs(numJuegos * costoRunlotJuegoOperadora, 2)} / año</div>
+                        <span className="block text-[10px] text-slate-400 font-normal">
+                          ({numJuegos} jgs × Bs. {formatBs(costoRunlotJuegoOperadora, 0)})
+                        </span>
+                      </td>
+                      <td className="p-3 text-right font-mono text-cyan-300 font-bold whitespace-nowrap">
+                        <div>Bs. {formatBs(totalAnualSencamerRed, 2)} / año</div>
+                        <span className="block text-[10px] text-slate-400 font-normal">
+                          (SENCAMER: Dig. {formatBs(costoSencamerSistemaPremiador, 0)} + Esf. {formatBs(costoSencamerEsferas, 0)})
+                        </span>
+                      </td>
+                      <td className="p-3 text-right font-mono text-amber-300 font-bold whitespace-nowrap">
+                        <div>Bs. {formatBs((numJuegos * costoRunlotJuegoOperadora + totalAnualSencamerRed) / 12, 2)} / mes</div>
+                        <span className="block text-[10px] text-slate-400 font-normal">
+                          (Total: Bs. {formatBs(numJuegos * costoRunlotJuegoOperadora + totalAnualSencamerRed, 0)} / año)
+                        </span>
+                      </td>
+                    </tr>
+
+                    {/* FILA TOTALIZADORA DE LAS 7 CATEGORÍAS */}
+                    <tr className="bg-slate-950/90 font-bold border-t-2 border-slate-700">
+                      <td className="p-3 text-white" colSpan={5}>
+                        TOTAL CONSOLIDADO CATEGORÍAS RUNLOT (CONALOT + LICENCIAS IOBPAS + SENCAMER)
+                      </td>
+                      <td className="p-3 text-right font-mono text-purple-300 font-extrabold whitespace-nowrap">
+                        Bs. {formatBs(totalAnualRunlotRed, 2)} / año
+                      </td>
+                      <td className="p-3 text-right font-mono text-emerald-300 font-extrabold whitespace-nowrap">
+                        Bs. {formatBs(totalAnualIobpasRed + totalAnualSencamerRed, 2)} / año
+                      </td>
+                      <td className="p-3 text-right font-mono text-amber-300 font-black text-sm whitespace-nowrap">
+                        <div>Bs. {formatBs((totalAnualRunlotRed + totalAnualIobpasRed + totalAnualSencamerRed) / 12, 2)} / mes</div>
+                        <span className="block text-[10px] text-emerald-400 font-mono">
+                          Anual Red: Bs. {formatBs(totalAnualRunlotRed + totalAnualIobpasRed + totalAnualSencamerRed, 2)} / año
+                        </span>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -3104,6 +3286,17 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       />
                     </div>
                     <div>
+                      <label className="text-slate-600 dark:text-slate-400 block font-medium">RUNLOT IOBPAS (Cat. 1 • Bs./año):</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={100}
+                        value={costoRunlotIobpas}
+                        onChange={(e) => setCostoRunlotIobpas(Math.max(0, Number(e.target.value)))}
+                        className="w-full px-2 py-1 text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded text-slate-900 dark:text-emerald-300 focus:outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
                       <label className="text-purple-700 dark:text-purple-300 block font-bold">Canon IT (% s/ Venta):</label>
                       <div className="relative flex items-center">
                         <input
@@ -3583,7 +3776,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400">
                       {pctFacial(projIobpasCanonGGR)}%
                     </td>
-                    <td className="p-3 text-slate-500 dark:text-slate-400">5% Triples / 1% Animalitos s/ GGR</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">Propuesta: 5% s/ GGR Todos (Hoy: 5% Trip / 1% Anim s/ Facial)</td>
                     <td className="p-3 text-emerald-800 dark:text-emerald-300 font-semibold">Loterías Oficiales (Hospitales)</td>
                     <td className="p-3 text-slate-500 dark:text-slate-400">Ley de Lotería Art. 23</td>
                   </tr>
