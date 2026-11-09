@@ -110,6 +110,7 @@ export function Module4TributosEntes({
     // Tributos sobre GGR
     seniatGGR: number;
     iobpasRoyalty: number;
+    vigenteIobpasAmount: number;
     // Nivel 3: Operadora
     operNetWin50: number;
     operIaeAmount: number;
@@ -163,9 +164,12 @@ export function Module4TributosEntes({
       // Tributos del Juego sobre GGR:
       // SENIAT 10% Armonizado universal sobre GGR para todas las modalidades
       const seniatGGR = ggrNeto * 0.1;
-      // Royalty IOBPAS Beneficencia: 5% Triples / 1% Animalitos sobre GGR
-      const iobpasRate = isAnimalitos ? 0.01 : 0.05;
+      // Royalty IOBPAS Beneficencia (PROPUESTA): 5,00% Armonizado sobre GGR para todos (Triples y Animalitos)
+      const iobpasRate = 0.05;
       const iobpasRoyalty = ggrNeto * iobpasRate;
+      // Esquema HOY EN DÍA IOBPAS: 5% sobre Valor Facial en Triples y 1% sobre Valor Facial en Animalitos
+      const vigenteIobpasRate = isAnimalitos ? 0.01 : 0.05;
+      const vigenteIobpasAmount = sales * vigenteIobpasRate;
       const totalTributosJuego = seniatGGR + iobpasRoyalty;
 
       // Net Win Distribuible tras tributos
@@ -201,6 +205,7 @@ export function Module4TributosEntes({
         comerFinalComm,
         seniatGGR,
         iobpasRoyalty,
+        vigenteIobpasAmount,
         operNetWin50,
         operIaeAmount,
         operSurplus,
@@ -271,6 +276,10 @@ export function Module4TributosEntes({
     (acc, i) => acc + i.iobpasRoyalty,
     0
   );
+  const totalVigenteIobpas = calculatedItems.reduce(
+    (acc, i) => acc + i.vigenteIobpasAmount,
+    0
+  );
   const totalSeniatGGR = calculatedItems.reduce(
     (acc, i) => acc + i.seniatGGR,
     0
@@ -295,6 +304,10 @@ export function Module4TributosEntes({
     (acc, i) => acc + i.iobpasRoyalty,
     0
   );
+  const triplesVigenteIobpas = triplesItems.reduce(
+    (acc, i) => acc + i.vigenteIobpasAmount,
+    0
+  );
 
   const animalitosSales = animalitosItems.reduce((acc, i) => acc + i.sales, 0);
   const animalitosGrossPrize = animalitosItems.reduce(
@@ -304,6 +317,10 @@ export function Module4TributosEntes({
   const animalitosGGR = Math.max(0, animalitosSales - animalitosGrossPrize);
   const animalitosIobpas = animalitosItems.reduce(
     (acc, i) => acc + i.iobpasRoyalty,
+    0
+  );
+  const animalitosVigenteIobpas = animalitosItems.reduce(
+    (acc, i) => acc + i.vigenteIobpasAmount,
     0
   );
 
@@ -405,9 +422,12 @@ export function Module4TributosEntes({
   // SENIAT
   const projSeniatJuegos10 = projTotalGGR * 0.1;
 
-  // IOBPAS Canon Beneficencia s/ GGR
+  // IOBPAS Canon Beneficencia Propuesta: 5,00% Armonizado sobre GGR para todos (Triples y Animalitos)
   const projIobpasCanonGGR =
-    projTriplesGGR * 0.05 + projAnimalitosGGR * 0.01;
+    projTriplesGGR * 0.05 + projAnimalitosGGR * 0.05;
+  // IOBPAS Esquema Hoy en Día: 5% sobre Valor Facial en Triples y 1% sobre Valor Facial en Animalitos
+  const projIobpasVigenteFacial =
+    projTriplesSales * 0.05 + projAnimalitosSales * 0.01;
 
   // Comisiones Taquilla
   const projTaquillaCommBruta =
@@ -600,7 +620,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
       ["(-) Spread Neto Comercializadoras", (-projComercialSpreadNeto).toFixed(2), `${pctFacial(projComercialSpreadNeto)}%`, "Spread Bruto - 2.5% IAE", "Agentes Máster / Distribuidores", "Arts. 32 y 33 Prov. 00093"],
       ["(-) IAE Municipal Alcaldías (2.5% Comisiones)", (-projAlcaldiaTotal).toFixed(2), `${pctFacial(projAlcaldiaTotal)}%`, "2.5% s/ Comisiones de Red", "Haciendas Municipales", "LOCAPTEM Art. 29 num 1"],
       ["(-) Impuesto s/ Juegos SENIAT (10% GGR)", (-projSeniatJuegos10).toFixed(2), `${pctFacial(projSeniatJuegos10)}%`, "10% s/ GGR del Neto", "SENIAT (Tesoro Nacional)", "Ley de Juegos de Envite"],
-      ["(-) Canon IOBPAS Beneficencia Pública", (-projIobpasCanonGGR).toFixed(2), `${pctFacial(projIobpasCanonGGR)}%`, "5% Triples / 1% Anim s/ GGR", "Lotería Oficial (Hospitales)", "Ley Nacional Lotería Art 23"],
+      ["(-) Canon IOBPAS Beneficencia Pública", (-projIobpasCanonGGR).toFixed(2), `${pctFacial(projIobpasCanonGGR)}%`, "Propuesta 5% s/ GGR (Todos) • Hoy: 5% Trip / 1% Anim s/ Facial", "Lotería Oficial (Hospitales)", "Ley Nacional Lotería Art 23"],
       ["(-) Licencias y Avales IOBPAS (5 Actores)", (-projIobpasLicenciasTotal).toFixed(2), `${pctFacial(projIobpasLicenciasTotal)}%`, "Cánones Fijos de Licencia", "IOBPAS (Lotería Oficial)", "Reglamento IOBPAS"],
       ["(-) Tasas y Homologación RUNLOT / CONALOT", (-projConalotTotal).toFixed(2), `${pctFacial(projConalotTotal)}%`, "Cánones SCFD por Actor + Juegos", "CONALOT (Ente Regulador)", "Resolución 002-2026"],
       ["(-) Certificación Metrológica SENCAMER", (-totalSencamerOperadoras).toFixed(2), `${pctFacial(totalSencamerOperadoras)}%`, `Sistema Premiador RNG (${numJuegosDigital} jgs) + Calibración de Esferas (${numJuegosEsferas} jgs)`, "SENCAMER (Ministerio Comercio)", "Ley de Metrología Legal"],
@@ -631,7 +651,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
       ["(-) Spread Neto Comercializadoras", (-projComercialSpreadNeto).toFixed(2), `${pctFacial(projComercialSpreadNeto)}%`, "Spread Bruto - 2.5% IAE", "Agentes Master / Distribuidores", "Arts. 32 y 33 Prov. 00093"],
       ["(-) IAE Municipal Alcaldias (2.5% Comisiones)", (-projAlcaldiaTotal).toFixed(2), `${pctFacial(projAlcaldiaTotal)}%`, "2.5% s/ Comisiones de Red", "Haciendas Municipales", "LOCAPTEM Art. 29 num 1"],
       ["(-) Impuesto s/ Juegos SENIAT (10% GGR)", (-projSeniatJuegos10).toFixed(2), `${pctFacial(projSeniatJuegos10)}%`, "10% s/ GGR del Neto", "SENIAT (Tesoro Nacional)", "Ley de Juegos de Envite"],
-      ["(-) Canon IOBPAS Beneficencia Publica", (-projIobpasCanonGGR).toFixed(2), `${pctFacial(projIobpasCanonGGR)}%`, "5% Triples / 1% Anim s/ GGR", "Loteria Oficial (Hospitales)", "Ley Nacional Loteria Art 23"],
+      ["(-) Canon IOBPAS Beneficencia Publica", (-projIobpasCanonGGR).toFixed(2), `${pctFacial(projIobpasCanonGGR)}%`, "Propuesta 5% s/ GGR (Todos) - Hoy: 5% Trip / 1% Anim s/ Facial", "Loteria Oficial (Hospitales)", "Ley Nacional Loteria Art 23"],
       ["(-) Licencias y Avales IOBPAS (5 Actores)", (-projIobpasLicenciasTotal).toFixed(2), `${pctFacial(projIobpasLicenciasTotal)}%`, "Canones Fijos de Licencia", "IOBPAS (Loteria Oficial)", "Reglamento IOBPAS"],
       ["(-) Tasas y Homologacion RUNLOT / CONALOT", (-projConalotTotal).toFixed(2), `${pctFacial(projConalotTotal)}%`, "Canones SCFD por Actor + Juegos", "CONALOT (Ente Regulador)", "Resolucion 002-2026"],
       ["(-) Certificacion Metrologica SENCAMER", (-totalSencamerOperadoras).toFixed(2), `${pctFacial(totalSencamerOperadoras)}%`, `Sistema Premiador RNG (${numJuegosDigital} jgs) + Calibracion de Esferas (${numJuegosEsferas} jgs)`, "SENCAMER (Ministerio Comercio)", "Ley de Metrologia Legal"],
@@ -1118,10 +1138,13 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                   {/* IOBPAS Beneficencia */}
                   <tr className="bg-emerald-950/20 font-bold">
                     <td className="p-3 text-emerald-300 pl-6">
-                      (−) Canon IOBPAS Beneficencia Pública (5% Triples / 1% Anim s/ GGR)
+                      <div>(−) Canon IOBPAS Beneficencia Pública (Propuesta: 5,00% s/ GGR Todos)</div>
+                      <div className="text-[10.5px] font-normal text-slate-400 mt-0.5">
+                        Hoy en día s/ Valor Facial: 5% Triples (Bs. {formatBs(triplesVigenteIobpas, 2)}) + 1% Animalitos (Bs. {formatBs(animalitosVigenteIobpas, 2)}) = -Bs. {formatBs(totalVigenteIobpas, 2)}
+                      </div>
                     </td>
                     <td className="p-3 text-right font-mono text-emerald-400">Bs. {formatBs(totalGgrNeto, 2)}</td>
-                    <td className="p-3 text-right font-mono text-emerald-400">5% Trip / 1% Anim</td>
+                    <td className="p-3 text-right font-mono text-emerald-400">5,00% s/ GGR</td>
                     <td className="p-3 text-right font-mono text-emerald-400 text-sm">
                       -Bs. {formatBs(totalIobpasRoyalty, 2)}
                     </td>
@@ -1602,25 +1625,71 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     Subnivel 2: IOBPAS (Institutos Oficiales de Beneficencia Pública)
                   </h2>
                   <p className="text-xs text-slate-400">
-                    Art. 23 Ley Nacional de Lotería • Canon Social calculado con la venta real de taquilla:{" "}
-                    <span className="font-mono text-emerald-400 font-bold">
-                      Bs. {formatBs(totalSales, 2)}
-                    </span>
+                    Art. 23 Ley Nacional de Lotería • Comparativa Hoy en Día (5% Triples / 1% Animalitos s/ Valor Facial) vs. Propuesta Reforma (5% Armonizado s/ GGR para todos)
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Tarjetas de Canon por Modalidad con datos reales */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+            {/* BANNER COMPARATIVO: HOY EN DÍA (SOBRE VALOR FACIAL) vs. PROPUESTA (5% SOBRE GGR TODOS) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+              <div className="p-4 rounded-xl bg-rose-950/25 border border-rose-500/40 flex items-center justify-between">
+                <div>
+                  <div className="text-[11px] font-mono uppercase font-extrabold text-rose-300">
+                    Como está Hoy en Día (Sobre Valor Facial Bruto)
+                  </div>
+                  <div className="text-xs text-slate-300 mt-1 font-mono">
+                    • Triples (5% s/ Facial): <strong>Bs. {formatBs(triplesVigenteIobpas, 2)}</strong>
+                  </div>
+                  <div className="text-xs text-slate-300 font-mono">
+                    • Animalitos (1% s/ Facial): <strong>Bs. {formatBs(animalitosVigenteIobpas, 2)}</strong>
+                  </div>
+                </div>
+                <div className="text-right font-mono">
+                  <div className="text-[10px] uppercase text-rose-300 font-bold">Total Hoy (Facial)</div>
+                  <div className="text-lg font-black text-rose-400">
+                    Bs. {formatBs(totalVigenteIobpas, 2)}
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-emerald-950/25 border border-emerald-500/40 flex items-center justify-between">
+                <div>
+                  <div className="text-[11px] font-mono uppercase font-extrabold text-emerald-300">
+                    Propuesta de Reforma (5,00% sobre GGR para Todos)
+                  </div>
+                  <div className="text-xs text-slate-300 mt-1 font-mono">
+                    • Triples (5% s/ GGR): <strong>Bs. {formatBs(triplesIobpas, 2)}</strong>
+                  </div>
+                  <div className="text-xs text-slate-300 font-mono">
+                    • Animalitos (5% s/ GGR): <strong>Bs. {formatBs(animalitosIobpas, 2)}</strong>
+                  </div>
+                </div>
+                <div className="text-right font-mono">
+                  <div className="text-[10px] uppercase text-emerald-300 font-bold">Total Propuesta (GGR)</div>
+                  <div className="text-lg font-black text-emerald-400">
+                    Bs. {formatBs(totalIobpasRoyalty, 2)}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Tarjetas de Canon por Modalidad con datos reales: HOY EN DÍA vs PROPUESTA 5% GGR */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+              {/* TARJETA 1: TRIPLES */}
               <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-5">
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                   <span className="text-xs font-bold text-white flex items-center gap-2">
                     <Dices className="w-4 h-4 text-emerald-400" /> Triples y Terminales Tradicionales
                   </span>
-                  <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-                    5,00% sobre GGR
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10.5px] font-mono font-bold text-rose-300 bg-rose-500/15 px-2 py-0.5 rounded-full border border-rose-500/30">
+                      Hoy: 5% Valor Facial
+                    </span>
+                    <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                      Propuesta: 5,00% sobre GGR
+                    </span>
+                  </div>
                 </div>
                 <div className="space-y-2 text-xs text-slate-400">
                   <div className="flex justify-between">
@@ -1641,23 +1710,39 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       Bs. {formatBs(triplesGGR, 2)}
                     </span>
                   </div>
-                  <div className="flex justify-between text-base font-bold text-emerald-400 pt-2 border-t border-slate-700">
-                    <span>Canon Beneficencia IOBPAS (5%):</span>
-                    <span className="font-mono">
-                      Bs. {formatBs(triplesIobpas, 2)}
-                    </span>
+
+                  {/* Comparativa Hoy en Día vs Propuesta */}
+                  <div className="pt-2 border-t border-slate-700 space-y-1.5">
+                    <div className="flex justify-between items-center text-xs font-semibold text-rose-400 bg-rose-950/20 px-2.5 py-1.5 rounded-lg border border-rose-500/30">
+                      <span>Hoy en Día (5% s/ Valor Facial):</span>
+                      <span className="font-mono font-bold">
+                        Bs. {formatBs(triplesVigenteIobpas, 2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm sm:text-base font-bold text-emerald-400 bg-emerald-950/25 px-2.5 py-2 rounded-lg border border-emerald-500/40">
+                      <span>Propuesta Canon IOBPAS (5% s/ GGR):</span>
+                      <span className="font-mono font-black">
+                        Bs. {formatBs(triplesIobpas, 2)}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
 
+              {/* TARJETA 2: ANIMALITOS */}
               <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-5">
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                   <span className="text-xs font-bold text-white flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-amber-400" /> Sorteos de Animalitos (Figuras)
                   </span>
-                  <span className="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
-                    1,00% sobre GGR
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10.5px] font-mono font-bold text-rose-300 bg-rose-500/15 px-2 py-0.5 rounded-full border border-rose-500/30">
+                      Hoy: 1% Valor Facial
+                    </span>
+                    <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                      Propuesta: 5,00% sobre GGR
+                    </span>
+                  </div>
                 </div>
                 <div className="space-y-2 text-xs text-slate-400">
                   <div className="flex justify-between">
@@ -1678,11 +1763,21 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                       Bs. {formatBs(animalitosGGR, 2)}
                     </span>
                   </div>
-                  <div className="flex justify-between text-base font-bold text-amber-400 pt-2 border-t border-slate-700">
-                    <span>Canon Beneficencia IOBPAS (1%):</span>
-                    <span className="font-mono">
-                      Bs. {formatBs(animalitosIobpas, 2)}
-                    </span>
+
+                  {/* Comparativa Hoy en Día vs Propuesta */}
+                  <div className="pt-2 border-t border-slate-700 space-y-1.5">
+                    <div className="flex justify-between items-center text-xs font-semibold text-rose-400 bg-rose-950/20 px-2.5 py-1.5 rounded-lg border border-rose-500/30">
+                      <span>Hoy en Día (1% s/ Valor Facial):</span>
+                      <span className="font-mono font-bold">
+                        Bs. {formatBs(animalitosVigenteIobpas, 2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm sm:text-base font-bold text-emerald-400 bg-emerald-950/25 px-2.5 py-2 rounded-lg border border-emerald-500/40">
+                      <span>Propuesta Canon IOBPAS (5% s/ GGR):</span>
+                      <span className="font-mono font-black">
+                        Bs. {formatBs(animalitosIobpas, 2)}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1694,12 +1789,15 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                 <div>
                   <h3 className="text-sm font-bold text-white flex items-center gap-2">
                     <Landmark className="w-4 h-4 text-emerald-400" />
-                    Distribución Auditada del Fondo Social Recaudado
+                    Distribución Auditada del Fondo Social Recaudado (Propuesta 5% sobre GGR Todos)
                   </h3>
                   <p className="text-xs text-slate-400">
-                    Fondo generado por los tickets actuales:{" "}
+                    Fondo generado por los tickets actuales bajo la Propuesta (5% s/ GGR):{" "}
                     <span className="font-mono text-emerald-400 font-bold">
                       Bs. {formatBs(totalIobpasRoyalty, 2)}
+                    </span>{" "}
+                    <span className="text-slate-500 font-mono">
+                      (Hoy en día s/ Valor Facial: Bs. {formatBs(totalVigenteIobpas, 2)})
                     </span>
                   </p>
                 </div>
@@ -1741,7 +1839,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
             <div className="mt-8">
               <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
                 <Table className="w-4 h-4 text-emerald-400" />
-                Matriz de Liquidación IOBPAS y Destino Social por Modalidad
+                Matriz de Liquidación IOBPAS: Hoy en Día (5% / 1% Facial) vs. Propuesta (5% s/ GGR Todos)
               </h3>
               <div className="overflow-x-auto rounded-xl border border-slate-800">
                 <table className="w-full text-xs text-left">
@@ -1749,10 +1847,11 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <tr>
                       <th className="p-3">Modalidad Oficial</th>
                       <th className="p-3 text-right">Venta Facial</th>
+                      <th className="p-3 text-right text-rose-400">Hoy en Día (s/ Facial)</th>
                       <th className="p-3 text-right">Premios Brutos</th>
-                      <th className="p-3 text-right">GGR (Base Imponible)</th>
-                      <th className="p-3 text-center">Alícuota Canon</th>
-                      <th className="p-3 text-right text-emerald-400">Canon IOBPAS (Bs.)</th>
+                      <th className="p-3 text-right">GGR (Base Propuesta)</th>
+                      <th className="p-3 text-center text-emerald-400">Alícuota Propuesta</th>
+                      <th className="p-3 text-right text-emerald-400">Propuesta IOBPAS (5% GGR)</th>
                       <th className="p-3 text-right">Salud (40%)</th>
                       <th className="p-3 text-right">Deporte (30%)</th>
                       <th className="p-3 text-right">Educación (20%)</th>
@@ -1765,9 +1864,13 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                         <Dices className="w-3.5 h-3.5 text-emerald-400" /> Triples y Terminales
                       </td>
                       <td className="p-3 text-right font-mono text-slate-300">Bs. {formatBs(triplesSales, 2)}</td>
+                      <td className="p-3 text-right font-mono text-rose-400 font-bold">
+                        Bs. {formatBs(triplesVigenteIobpas, 2)}
+                        <span className="block text-[10px] text-slate-400 font-normal">5,00% s/ Facial</span>
+                      </td>
                       <td className="p-3 text-right font-mono text-slate-400">-Bs. {formatBs(triplesGrossPrize, 2)}</td>
                       <td className="p-3 text-right font-mono text-emerald-300 font-bold">Bs. {formatBs(triplesGGR, 2)}</td>
-                      <td className="p-3 text-center font-mono text-emerald-400">5,00%</td>
+                      <td className="p-3 text-center font-mono text-emerald-400 font-bold">5,00% s/ GGR</td>
                       <td className="p-3 text-right font-mono text-emerald-400 font-bold text-sm">
                         Bs. {formatBs(triplesIobpas, 2)}
                       </td>
@@ -1781,10 +1884,14 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                         <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Sorteos de Animalitos
                       </td>
                       <td className="p-3 text-right font-mono text-slate-300">Bs. {formatBs(animalitosSales, 2)}</td>
+                      <td className="p-3 text-right font-mono text-rose-400 font-bold">
+                        Bs. {formatBs(animalitosVigenteIobpas, 2)}
+                        <span className="block text-[10px] text-slate-400 font-normal">1,00% s/ Facial</span>
+                      </td>
                       <td className="p-3 text-right font-mono text-slate-400">-Bs. {formatBs(animalitosGrossPrize, 2)}</td>
                       <td className="p-3 text-right font-mono text-amber-300 font-bold">Bs. {formatBs(animalitosGGR, 2)}</td>
-                      <td className="p-3 text-center font-mono text-amber-400">1,00%</td>
-                      <td className="p-3 text-right font-mono text-amber-400 font-bold text-sm">
+                      <td className="p-3 text-center font-mono text-emerald-400 font-bold">5,00% s/ GGR</td>
+                      <td className="p-3 text-right font-mono text-emerald-400 font-bold text-sm">
                         Bs. {formatBs(animalitosIobpas, 2)}
                       </td>
                       <td className="p-3 text-right font-mono text-slate-300">Bs. {formatBs(animalitosIobpas * 0.4, 2)}</td>
@@ -1795,9 +1902,12 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     <tr className="bg-slate-950/80 font-bold border-t-2 border-slate-700">
                       <td className="p-3 text-white">TOTAL CONSOLIDADO IOBPAS</td>
                       <td className="p-3 text-right font-mono text-white">Bs. {formatBs(totalSales, 2)}</td>
+                      <td className="p-3 text-right font-mono text-rose-400 font-black text-sm">
+                        Bs. {formatBs(totalVigenteIobpas, 2)}
+                      </td>
                       <td className="p-3 text-right font-mono text-slate-300">-Bs. {formatBs(totalGrossPrize, 2)}</td>
                       <td className="p-3 text-right font-mono text-emerald-300 font-extrabold">Bs. {formatBs(totalGgrNeto, 2)}</td>
-                      <td className="p-3 text-center font-mono text-slate-400">-</td>
+                      <td className="p-3 text-center font-mono text-emerald-400 font-bold">5,00% Todos</td>
                       <td className="p-3 text-right font-mono text-emerald-400 font-black text-sm">
                         Bs. {formatBs(totalIobpasRoyalty, 2)}
                       </td>
@@ -3152,9 +3262,11 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                 <div className="flex justify-between items-center p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
                   <div>
                     <div className="text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> IOBPAS: Beneficencia Pública (5% / 1% GGR)
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> IOBPAS: Beneficencia Pública (Propuesta: 5% s/ GGR Todos)
                     </div>
-                    <div className="text-[10px] text-slate-500">Destino Hospitales y Asistencia Social</div>
+                    <div className="text-[10px] text-slate-500">
+                      Hoy s/ Facial (5% Trip / 1% Anim): Bs. {formatBs(projIobpasVigenteFacial, 2)} • Destino Hospitales
+                    </div>
                   </div>
                   <span className="font-mono text-sm font-bold text-emerald-700 dark:text-emerald-400">
                     Bs. {formatBs(projIobpasCanonGGR, 2)}

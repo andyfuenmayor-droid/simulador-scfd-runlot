@@ -159,8 +159,8 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
     const seniatRate = 0.10;
     const seniatGGR = ggrNeto * seniatRate;
 
-    // 2) Royalty Lotería IOBPAS: 5% Triples / 1% Animalitos sobre GGR
-    const iobpasRate = isAnimalitos ? 0.01 : 0.05;
+    // 2) Royalty Lotería IOBPAS (Propuesta): 5% Armonizado sobre GGR para todos (Triples y Animalitos)
+    const iobpasRate = 0.05;
     const iobpasRoyalty = ggrNeto * iobpasRate;
     const totalGameTaxes = seniatGGR + iobpasRoyalty;
 
@@ -797,7 +797,7 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
                   <span className="text-red-400">-Bs. {formatBs(totalSeniatGGR, 2)}</span>
                 </div>
                 <div className="flex justify-between text-slate-300 text-[11px]">
-                  <span>(-) Royalty IOBPAS (5% Triples / 1% Animalitos s/ GGR):</span>
+                  <span>(-) Royalty IOBPAS (Propuesta: 5% s/ GGR para todos • Hoy: 5% Trip / 1% Anim s/ Facial):</span>
                   <span className="text-red-400">-Bs. {formatBs(totalIobpasRoyalty, 2)}</span>
                 </div>
                 <div className="flex justify-between text-emerald-300">

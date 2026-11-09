@@ -166,8 +166,8 @@ export function computeVaultsFromTickets(
     // 2. CONALOT (Supervisión telemática promedio 0.5% facial en tickets individuales o base RUNLOT)
     conalotSupervision += t.totalFacial * 0.005;
 
-    // 3. IOBPAS (5% Triples / 1% Animalitos s/ GGR)
-    iobpasCanonGgr += isTriples ? ggr * 0.05 : ggr * 0.01;
+    // 3. IOBPAS (Propuesta: 5% Armonizado s/ GGR para todos)
+    iobpasCanonGgr += ggr * 0.05;
 
     // 4. Alcaldías (2.5% sobre la comisión bruta de taquilla y el spread de comercializadora)
     const commTaquilla = isTriples ? t.totalFacial * 0.2 : t.totalFacial * 0.12;
@@ -220,7 +220,7 @@ export function createForensicRecordFromTicket(
   const comercializadoraSpread = comercialSpreadBruto - iaeComercial;
 
   const seniatJuegos10 = ggr * 0.1;
-  const iobpasCanonGgr = isTriples ? ggr * 0.05 : ggr * 0.01;
+  const iobpasCanonGgr = ggr * 0.05;
   const conalotSupervision = ticket.totalFacial * 0.005;
 
   const seniatShare = retencionIgf16 + seniatJuegos10;

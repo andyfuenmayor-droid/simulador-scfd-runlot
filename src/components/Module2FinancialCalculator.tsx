@@ -167,8 +167,8 @@ function computeTicketBreakdown(
   const seniatReformaRate = 0.10;
   const seniatReformaAmount = ggrNeto * seniatReformaRate;
 
-  // 2) Royalty Lotería IOBPAS: 5% Triples / 1% Animalitos (sobre GGR)
-  const iobpasReformaRate = isAnimalitos ? 0.01 : 0.05;
+  // 2) Royalty Lotería IOBPAS (Propuesta): 5% Armonizado sobre GGR para todos (Triples y Animalitos)
+  const iobpasReformaRate = 0.05;
   const iobpasReformaAmount = ggrNeto * iobpasReformaRate;
   const totalGameTaxes = seniatReformaAmount + iobpasReformaAmount;
 
@@ -722,7 +722,7 @@ export const Module2FinancialCalculator: React.FC<
             "bg-emerald-950/35 border-emerald-500/50 text-emerald-300 shadow-emerald-950/30",
           badgeText:
             taxMode === "operadora_absorbe"
-              ? `Superávit tras SENIAT 10% e IOBPAS 5%/1% (IAE Operadora 0%)`
+              ? `Superávit tras SENIAT 10% e IOBPAS 5% s/ GGR (IAE Operadora 0%)`
               : `Remanente ${operadoraSharePct}% con Tributos GGR Deducidos (IAE Operadora 0%)`,
         };
 
@@ -1590,7 +1590,7 @@ export const Module2FinancialCalculator: React.FC<
                         <div>(+) Participación Societaria del {comercializadoraSharePct}% en el Net Win Distribuible</div>
                         <div className="text-[11px] text-slate-400 font-mono mt-1 space-y-0.5">
                           <div className="text-slate-300 font-sans">
-                            Modo actual: {iaeMode === "individual_sujeto" ? "Opción B (Individual por Sujeto)" : iaeMode === "base_premios_sin_igf" ? "Opción C (Premios s/ IGF)" : "Opción A (Cascada CDAPUESTAS)"} • Reparto {comercializadoraSharePct}% / {operadoraSharePct}% tras deducir tributos de juego (SENIAT 10% + IOBPAS 5%/1%)
+                            Modo actual: {iaeMode === "individual_sujeto" ? "Opción B (Individual por Sujeto)" : iaeMode === "base_premios_sin_igf" ? "Opción C (Premios s/ IGF)" : "Opción A (Cascada CDAPUESTAS)"} • Reparto {comercializadoraSharePct}% / {operadoraSharePct}% tras deducir tributos de juego (SENIAT 10% + IOBPAS 5% s/ GGR)
                           </div>
                           {hasTriples && (
                             <div>
@@ -1890,7 +1890,7 @@ export const Module2FinancialCalculator: React.FC<
                       <td className="py-2.5 px-5 font-sans font-extrabold text-emerald-400">
                         <div>(=) Net Win Base de la Operación (GGR - Comisiones de Red)</div>
                         <div className="text-[11px] text-slate-400 font-normal font-sans">
-                          Utilidad bruta de juego antes de deducir tributos de lotería (SENIAT 10% + IOBPAS 5%/1%)
+                          Utilidad bruta de juego antes de deducir tributos de lotería (SENIAT 10% + IOBPAS 5% s/ GGR)
                         </div>
                       </td>
                       <td className="py-2.5 px-5 bg-red-950/15 border-x border-slate-800 font-bold text-slate-300">
@@ -1926,19 +1926,19 @@ export const Module2FinancialCalculator: React.FC<
                       <td className="py-3 px-5 font-sans font-semibold text-slate-200">
                         <div>(-) Royalty / Canon IOBPAS Beneficencia Pública</div>
                         <div className="text-[11px] text-slate-400 font-sans mt-0.5">
-                          Aporte de beneficencia a la Lotería Oficial (5% Triples / 1% Animalitos)
+                          Hoy en día: 5% Triples / 1% Animalitos sobre Valor Facial • Propuesta: 5% sobre GGR para todos
                         </div>
                       </td>
                       <td className="py-3 px-5 bg-red-950/10 border-x border-slate-800 font-bold text-red-400">
                         -Bs. {formatBs(lvl3IobpasVigente, 2)}
                         <span className="text-[11px] text-red-300/90 block font-sans">
-                          5% Triples (-Bs. {formatBs(lvl3IobpasVigenteTriples, 2)}) + 1% Animalitos (-Bs. {formatBs(lvl3IobpasVigenteAnimalitos, 2)}) s/ Facial
+                          Hoy: 5% Triples (-Bs. {formatBs(lvl3IobpasVigenteTriples, 2)}) + 1% Animalitos (-Bs. {formatBs(lvl3IobpasVigenteAnimalitos, 2)}) sobre el Facial
                         </span>
                       </td>
                       <td className="py-3 px-5 bg-emerald-950/10 font-bold text-emerald-400">
                         -Bs. {formatBs(lvl3IobpasReforma, 2)}
                         <span className="text-[11px] text-emerald-300/90 block font-sans">
-                          5% Triples (-Bs. {formatBs(lvl3IobpasReformaTriples, 2)}) + 1% Animalitos (-Bs. {formatBs(lvl3IobpasReformaAnimalitos, 2)}) s/ GGR
+                          Propuesta: 5% Triples (-Bs. {formatBs(lvl3IobpasReformaTriples, 2)}) + 5% Animalitos (-Bs. {formatBs(lvl3IobpasReformaAnimalitos, 2)}) s/ GGR • 5% Todos
                         </span>
                       </td>
                     </tr>
