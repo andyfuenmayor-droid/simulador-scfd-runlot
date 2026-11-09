@@ -118,6 +118,7 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
     iobpasRate: number;
     seniatGGR: number;
     iobpasRoyalty: number;
+    vigenteIobpasAmount: number;
     operSurplus: number;
   }
 
@@ -162,6 +163,9 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
     // 2) Royalty Lotería IOBPAS (Propuesta): 5% Armonizado sobre GGR para todos (Triples y Animalitos)
     const iobpasRate = 0.05;
     const iobpasRoyalty = ggrNeto * iobpasRate;
+    // Esquema Hoy en Día IOBPAS: 5% Valor Facial para Triples y 1% Valor Facial para Animalitos
+    const vigenteIobpasRate = isAnimalitos ? 0.01 : 0.05;
+    const vigenteIobpasAmount = sales * vigenteIobpasRate;
     const totalGameTaxes = seniatGGR + iobpasRoyalty;
 
     const totalCommChain = taquillaCommAmount + spreadAmount;
@@ -169,8 +173,8 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
 
     // Net Win de Juego = GGR - Comisiones de Red
     const netWinBase = Math.max(0, ggrNeto - totalCommChain);
-    // Net Win Distribuible tras tributos SENIAT e IOBPAS
-    const distributableNetWin = Math.max(0, netWinBase - totalGameTaxes);
+    // Net Win Distribuible tras tributos SENIAT (10% GGR) e IOBPAS (5% GGR)
+    const distributableNetWin = netWinBase - totalGameTaxes;
     const comerNetWin50 = distributableNetWin * 0.5;
     const comerTotalResult = comerFinalComm + comerNetWin50;
 
@@ -208,6 +212,7 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
       iobpasRate,
       seniatGGR,
       iobpasRoyalty,
+      vigenteIobpasAmount,
       operSurplus,
     };
   });
@@ -233,7 +238,7 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
     0
   );
 
-  // Totales Nivel 2
+  // Totales Nivel 2 y Nivel 3 (Consolidados exactos)
   const totalOperTotalAssignedComm = items.reduce(
     (a, b) => a + b.operTotalAssignedCommAmount,
     0
@@ -245,20 +250,24 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
     0
   );
   const totalNetWinBase = items.reduce((a, b) => a + b.netWinBase, 0);
-  const totalNetWin = items.reduce((a, b) => a + b.netWin, 0);
-  const totalComerNetWin50 = items.reduce((a, b) => a + b.comerNetWin50, 0);
-  const totalComerTotalResult = items.reduce(
-    (a, b) => a + b.comerTotalResult,
-    0
-  );
-
-  // Totales Nivel 3
-  const totalOperNetWin50 = items.reduce((a, b) => a + b.operNetWin50, 0);
   const totalSeniatGGR = items.reduce((a, b) => a + b.seniatGGR, 0);
   const totalIobpasRoyalty = items.reduce((a, b) => a + b.iobpasRoyalty, 0);
-  const totalOperSurplus = items.reduce((a, b) => a + b.operSurplus, 0);
-  const totalGgrNeto = Math.max(0, totalSales - totalGrossPrize);
+  const totalVigenteIobpas = items.reduce(
+    (a, b) => a + b.vigenteIobpasAmount,
+    0
+  );
+  const totalNetWin = Math.max(
+    0,
+    totalNetWinBase - totalSeniatGGR - totalIobpasRoyalty
+  );
+  const totalComerNetWin50 = totalNetWin * 0.5;
+  const totalComerTotalResult = totalComerFinalComm + totalComerNetWin50;
+
+  // Totales Nivel 3
+  const totalOperNetWin50 = totalNetWin * 0.5;
   const totalOperIae = 0; // IAE Operadora 0% por prohibición constitucional de doble tributación
+  const totalOperSurplus = totalOperNetWin50 - totalOperIae;
+  const totalGgrNeto = Math.max(0, totalSales - totalGrossPrize);
 
   // Desglose por modalidad
   const triplesItems = items.filter((i) => i.ticket.modalityId === "triples");
@@ -646,37 +655,37 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
               </div>
 
               <div className="mt-3 space-y-2 text-xs font-mono">
-                <div className="flex justify-between">
+                <div className="flex justify-between items-baseline gap-2">
                   <span className="text-slate-400">Venta Captada:</span>
-                  <span className="font-bold text-white">Bs. {formatBs(totalSales, 2)}</span>
+                  <span className="font-bold text-white whitespace-nowrap shrink-0">Bs. {formatBs(totalSales, 2)}</span>
                 </div>
-                <div className="flex justify-between text-emerald-400 font-bold">
+                <div className="flex justify-between items-baseline gap-2 text-emerald-400 font-bold">
                   <span>(-) Efectivo Pagado (84%):</span>
-                  <span>-Bs. {formatBs(totalNetPaidToWinner, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">-Bs. {formatBs(totalNetPaidToWinner, 2)}</span>
                 </div>
-                <div className="flex justify-between text-blue-300">
+                <div className="flex justify-between items-baseline gap-2 text-blue-300">
                   <span>(+) Comisión Bruta:</span>
-                  <span>+Bs. {formatBs(totalTaquillaComm, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">+Bs. {formatBs(totalTaquillaComm, 2)}</span>
                 </div>
-                <div className="flex justify-between text-slate-400 text-[11px]">
+                <div className="flex justify-between items-baseline gap-2 text-slate-400 text-[11px]">
                   <span>(-) IAE 2,5% s/ Comisión:</span>
-                  <span>-Bs. {formatBs(totalTaquillaIae, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">-Bs. {formatBs(totalTaquillaIae, 2)}</span>
                 </div>
               </div>
             </div>
 
             <div className="pt-2.5 border-t border-slate-800 space-y-2">
-              <div className="flex justify-between text-xs font-extrabold text-blue-300">
+              <div className="flex justify-between items-baseline gap-2 text-xs font-extrabold text-blue-300">
                 <span>(=) Margen Neto Libre:</span>
-                <span className="text-sm">+Bs. {formatBs(totalTaquillaNetMargin, 2)}</span>
+                <span className="text-sm whitespace-nowrap shrink-0">+Bs. {formatBs(totalTaquillaNetMargin, 2)}</span>
               </div>
               <p className="text-[10px] text-slate-400 font-sans leading-tight">
                 97,5% de su comisión retenido. La taquilla queda exonerada de enterar retenciones al SENIAT.
               </p>
               {/* LIQUIDACIÓN IGF EN CUSTODIA AL FINAL SIN SUMAR EN NADA */}
-              <div className="p-2 rounded bg-slate-900 border border-slate-800 text-[10.5px] font-mono flex justify-between items-center text-slate-400">
+              <div className="p-2 rounded bg-slate-900 border border-slate-800 text-[10.5px] font-mono flex justify-between items-center gap-2 text-slate-400">
                 <span>Retención 16% IGF (Custodia):</span>
-                <span className="font-bold text-red-400">Bs. {formatBs(totalIgf16, 2)}</span>
+                <span className="font-bold text-red-400 whitespace-nowrap shrink-0">Bs. {formatBs(totalIgf16, 2)}</span>
               </div>
             </div>
           </div>
@@ -696,58 +705,58 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
 
               <div className="mt-3 space-y-1.5 text-xs font-mono">
                 {/* VENTA Y PREMIOS EN LA ECUACIÓN */}
-                <div className="flex justify-between">
+                <div className="flex justify-between items-baseline gap-2">
                   <span className="text-slate-400">Venta de Red:</span>
-                  <span className="font-bold text-white">Bs. {formatBs(totalSales, 2)}</span>
+                  <span className="font-bold text-white whitespace-nowrap shrink-0">Bs. {formatBs(totalSales, 2)}</span>
                 </div>
-                <div className="flex justify-between text-red-400 font-semibold">
+                <div className="flex justify-between items-baseline gap-2 text-red-400 font-semibold">
                   <span>(-) Premios Acertados:</span>
-                  <span>-Bs. {formatBs(totalGrossPrize, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">-Bs. {formatBs(totalGrossPrize, 2)}</span>
                 </div>
-                <div className="flex justify-between text-emerald-400 font-bold border-b border-slate-800 pb-1">
+                <div className="flex justify-between items-baseline gap-2 text-emerald-400 font-bold border-b border-slate-800 pb-1">
                   <span>(=) GGR de Red (Venta - Premios):</span>
-                  <span>Bs. {formatBs(totalGgrNeto, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">Bs. {formatBs(totalGgrNeto, 2)}</span>
                 </div>
                 {/* RESTA DEL DIFERENCIAL DE COMISIONES */}
-                <div className="flex justify-between text-slate-300 pt-0.5 text-[11px]">
+                <div className="flex justify-between items-baseline gap-2 text-slate-300 pt-0.5 text-[11px]">
                   <span>(+) Comisión Total Operadora (25%/18%):</span>
-                  <span>+Bs. {formatBs(totalOperTotalAssignedComm, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">+Bs. {formatBs(totalOperTotalAssignedComm, 2)}</span>
                 </div>
-                <div className="flex justify-between text-red-400 text-[11px]">
-                  <span>(-) Comisión Cedida a Taquilla (20%/12%):</span>
-                  <span>-Bs. {formatBs(totalTaquillaComm, 2)}</span>
+                <div className="flex justify-between items-baseline gap-2 text-red-400 text-[11px]">
+                  <span>(-) Comisión Cedida Taquilla (20%/12%):</span>
+                  <span className="whitespace-nowrap shrink-0">-Bs. {formatBs(totalTaquillaComm, 2)}</span>
                 </div>
-                <div className="flex justify-between text-amber-300 font-bold border-b border-slate-800 pb-0.5">
-                  <span>(=) Diferencial de Comisión (Spread 5%/6%):</span>
-                  <span>+Bs. {formatBs(totalSpreadAmount, 2)}</span>
+                <div className="flex justify-between items-baseline gap-2 text-amber-300 font-bold border-b border-slate-800 pb-0.5 text-[11px]">
+                  <span>(=) Diferencial Comisión (Spread 5%/6%):</span>
+                  <span className="whitespace-nowrap shrink-0">+Bs. {formatBs(totalSpreadAmount, 2)}</span>
                 </div>
-                <div className="flex justify-between text-slate-400 text-[11px]">
+                <div className="flex justify-between items-baseline gap-2 text-slate-400 text-[11px]">
                   <span>(-) IAE 2,5% s/ Diferencial:</span>
-                  <span>-Bs. {formatBs(totalComerIae, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">-Bs. {formatBs(totalComerIae, 2)}</span>
                 </div>
-                <div className="flex justify-between text-amber-800 dark:text-amber-200 font-bold">
+                <div className="flex justify-between items-baseline gap-2 text-amber-800 dark:text-amber-200 font-bold">
                   <span>Comisiones Finales (Neto):</span>
-                  <span>Bs. {formatBs(totalComerFinalComm, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">Bs. {formatBs(totalComerFinalComm, 2)}</span>
                 </div>
-                <div className="flex justify-between text-emerald-400">
+                <div className="flex justify-between items-baseline gap-2 text-emerald-400">
                   <span>(+) 50% Net Win:</span>
-                  <span>+Bs. {formatBs(totalComerNetWin50, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">+Bs. {formatBs(totalComerNetWin50, 2)}</span>
                 </div>
               </div>
             </div>
 
             <div className="pt-2.5 border-t border-slate-800 space-y-2">
-              <div className="flex justify-between text-xs font-extrabold text-amber-300">
+              <div className="flex justify-between items-baseline gap-2 text-xs font-extrabold text-amber-300">
                 <span>(=) Resultado Neto Propio:</span>
-                <span className="text-sm">+Bs. {formatBs(totalComerTotalResult, 2)}</span>
+                <span className="text-sm whitespace-nowrap shrink-0">+Bs. {formatBs(totalComerTotalResult, 2)}</span>
               </div>
               <p className="text-[10px] text-slate-400 font-sans leading-tight">
                 Comisión neta + 50% Net Win. Fondos de terceros en custodia telemática (Arts. 32-33).
               </p>
               {/* LIQUIDACIÓN IGF EN TRÁNSITO AL FINAL SIN SUMAR EN NADA */}
-              <div className="p-2 rounded bg-slate-900 border border-slate-800 text-[10.5px] font-mono flex justify-between items-center text-slate-400">
+              <div className="p-2 rounded bg-slate-900 border border-slate-800 text-[10.5px] font-mono flex justify-between items-center gap-2 text-slate-400">
                 <span>Retención 16% IGF en Tránsito:</span>
-                <span className="font-bold text-red-400">Bs. {formatBs(totalIgf16, 2)}</span>
+                <span className="font-bold text-red-400 whitespace-nowrap shrink-0">Bs. {formatBs(totalIgf16, 2)}</span>
               </div>
             </div>
           </div>
@@ -767,67 +776,79 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
 
               <div className="mt-3 space-y-1.5 text-xs font-mono">
                 {/* VENTA Y PREMIOS EN LA ECUACIÓN */}
-                <div className="flex justify-between">
+                <div className="flex justify-between items-baseline gap-2">
                   <span className="text-slate-400">Venta de Red:</span>
-                  <span className="font-bold text-white">Bs. {formatBs(totalSales, 2)}</span>
+                  <span className="font-bold text-white whitespace-nowrap shrink-0">Bs. {formatBs(totalSales, 2)}</span>
                 </div>
-                <div className="flex justify-between text-red-400 font-semibold">
+                <div className="flex justify-between items-baseline gap-2 text-red-400 font-semibold">
                   <span>(-) Premios Acertados:</span>
-                  <span>-Bs. {formatBs(totalGrossPrize, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">-Bs. {formatBs(totalGrossPrize, 2)}</span>
                 </div>
-                <div className="flex justify-between text-emerald-400 font-bold border-b border-slate-800 pb-1">
+                <div className="flex justify-between items-baseline gap-2 text-emerald-400 font-bold border-b border-slate-800 pb-1">
                   <span>(=) GGR del Neto (Venta - Premios):</span>
-                  <span>Bs. {formatBs(totalGgrNeto, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">Bs. {formatBs(totalGgrNeto, 2)}</span>
                 </div>
                 {/* RESTA DE COMISIONES DE LA RED */}
-                <div className="flex justify-between text-red-400 text-[11px] pt-0.5">
+                <div className="flex justify-between items-baseline gap-2 text-red-400 text-[11px] pt-0.5">
                   <span>(-) Comisión Taquilla (20%/12%):</span>
-                  <span>-Bs. {formatBs(totalTaquillaComm, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">-Bs. {formatBs(totalTaquillaComm, 2)}</span>
                 </div>
-                <div className="flex justify-between text-red-400 text-[11px]">
+                <div className="flex justify-between items-baseline gap-2 text-red-400 text-[11px]">
                   <span>(-) Diferencial Comercializadora (5%/6%):</span>
-                  <span>-Bs. {formatBs(totalSpreadAmount, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">-Bs. {formatBs(totalSpreadAmount, 2)}</span>
                 </div>
-                <div className="flex justify-between text-emerald-300 font-bold border-b border-slate-800 pb-0.5">
+                <div className="flex justify-between items-baseline gap-2 text-emerald-300 font-bold border-b border-slate-800 pb-0.5">
                   <span>(=) Net Win de la Operación:</span>
-                  <span>Bs. {formatBs(totalNetWinBase, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">Bs. {formatBs(totalNetWinBase, 2)}</span>
                 </div>
-                <div className="flex justify-between text-slate-300 text-[11px]">
-                  <span>(-) SENIAT GGR (10% Armonizado para todos):</span>
-                  <span className="text-red-400">-Bs. {formatBs(totalSeniatGGR, 2)}</span>
+                <div className="flex justify-between items-baseline gap-2 text-slate-300 text-[11px]">
+                  <span>(-) SENIAT GGR (10% Todos):</span>
+                  <span className="text-red-400 whitespace-nowrap shrink-0">-Bs. {formatBs(totalSeniatGGR, 2)}</span>
                 </div>
-                <div className="flex justify-between text-slate-300 text-[11px]">
-                  <span>(-) Royalty IOBPAS (Propuesta: 5% s/ GGR para todos • Hoy: 5% Trip / 1% Anim s/ Facial):</span>
-                  <span className="text-red-400">-Bs. {formatBs(totalIobpasRoyalty, 2)}</span>
+                <div className="space-y-0.5">
+                  <div className="flex justify-between items-baseline gap-2 text-slate-300 text-[11px]">
+                    <span>(-) Royalty IOBPAS (Propuesta 5% s/ GGR):</span>
+                    <span className="text-red-400 whitespace-nowrap shrink-0">-Bs. {formatBs(totalIobpasRoyalty, 2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center gap-1 text-[9.5px] font-sans text-slate-400">
+                    <span>Hoy s/ Facial: 5% Triples / 1% Animalitos</span>
+                    <span className="font-mono text-rose-500/80 dark:text-red-400/80 whitespace-nowrap shrink-0">
+                      (Hoy: -Bs. {formatBs(totalVigenteIobpas, 2)})
+                    </span>
+                  </div>
                 </div>
-                <div className="flex justify-between text-emerald-300">
+                <div className="flex justify-between items-baseline gap-2 text-slate-200 font-bold border-t border-slate-800 pt-1 text-[11px]">
+                  <span>(=) Net Win Distribuible (100%):</span>
+                  <span className="whitespace-nowrap shrink-0">Bs. {formatBs(totalNetWin, 2)}</span>
+                </div>
+                <div className="flex justify-between items-baseline gap-2 text-emerald-300 font-bold">
                   <span>(+) 50% Net Win Operadora:</span>
-                  <span>+Bs. {formatBs(totalOperNetWin50, 2)}</span>
+                  <span className="whitespace-nowrap shrink-0">+Bs. {formatBs(totalOperNetWin50, 2)}</span>
                 </div>
-                <div className="flex justify-between text-slate-400 text-[11px]">
+                <div className="flex justify-between items-baseline gap-2 text-slate-400 text-[11px]">
                   <span>(-) IAE Municipal Operadora:</span>
-                  <span className="text-emerald-400 font-bold">Bs. 0,00 (No Aplica)</span>
+                  <span className="text-emerald-400 font-bold whitespace-nowrap shrink-0">Bs. 0,00 (No Aplica)</span>
                 </div>
               </div>
             </div>
 
             <div className="pt-2.5 border-t border-slate-800 space-y-2">
-              <div className="flex justify-between text-xs font-extrabold text-emerald-400">
+              <div className="flex justify-between items-baseline gap-2 text-xs font-extrabold text-emerald-400">
                 <span>(=) Superávit Operativo Neto:</span>
-                <span className="text-sm">+Bs. {formatBs(totalOperSurplus, 2)}</span>
+                <span className="text-sm whitespace-nowrap shrink-0">+Bs. {formatBs(totalOperSurplus, 2)}</span>
               </div>
               <p className="text-[10px] text-slate-400 font-sans leading-tight">
                 Operación solvente y sostenible tras enterar tributos de juego y tasas municipales.
               </p>
               {/* LIQUIDACIÓN DEL IGF AL FINAL SIN SUMARLO EN NADA */}
               <div className="p-2.5 rounded-lg bg-rose-50 dark:bg-red-950/30 border border-rose-200 dark:border-red-500/30 text-xs font-mono">
-                <div className="flex justify-between items-center text-rose-800 dark:text-red-300 font-bold">
+                <div className="flex justify-between items-center gap-2 text-rose-800 dark:text-red-300 font-bold">
                   <span>Liquidación Retención 16% IGF:</span>
-                  <span className="text-sm font-extrabold text-rose-700 dark:text-red-400">Bs. {formatBs(totalIgf16, 2)}</span>
+                  <span className="text-sm font-extrabold text-rose-700 dark:text-red-400 whitespace-nowrap shrink-0">Bs. {formatBs(totalIgf16, 2)}</span>
                 </div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 font-sans mt-0.5 flex justify-between">
-                  <span>Planilla SENIAT Forma 99029 (XML)</span>
-                  <span className="text-slate-500 dark:text-slate-400 font-mono">(Fondos Terceros • No suma al resultado)</span>
+                <div className="text-[10px] text-slate-600 dark:text-slate-400 font-sans mt-0.5 flex flex-wrap justify-between items-center gap-1">
+                  <span>Planilla SENIAT 99029 (XML)</span>
+                  <span className="font-mono text-[9.5px] whitespace-nowrap">(Fondos Terceros • No suma)</span>
                 </div>
               </div>
             </div>

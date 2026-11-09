@@ -173,7 +173,7 @@ export function Module4TributosEntes({
       const totalTributosJuego = seniatGGR + iobpasRoyalty;
 
       // Net Win Distribuible tras tributos
-      const netWinDistribuible = Math.max(0, netWinBase - totalTributosJuego);
+      const netWinDistribuible = netWinBase - totalTributosJuego;
       const operNetWin50 = netWinDistribuible * 0.5;
 
       // 3. Operadora (Nivel 3): 0,00% No Sujeto (Prohibición Constitucional de Doble Tributación)

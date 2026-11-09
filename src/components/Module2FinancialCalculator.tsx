@@ -179,7 +179,7 @@ function computeTicketBreakdown(
   // Reparto del Net Win con proporción societaria dinámica (editable de 30% a 70%):
   const distributableNetWinReforma =
     taxMode === "deducido_netwin"
-      ? Math.max(0, netWinReforma - totalGameTaxes)
+      ? netWinReforma - totalGameTaxes
       : netWinReforma;
 
   const comerRatio = comercializadoraSharePct / 100;
