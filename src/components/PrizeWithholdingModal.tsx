@@ -307,58 +307,58 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
     headerBadge: string;
   }) => {
     return (
-      <div className="w-full max-w-[390px] select-text">
+      <div className="w-full max-w-[430px] select-text">
         <div className="thermal-edge-top" />
         <div
-          className="thermal-ticket !bg-white !text-slate-950 font-mono px-3.5 py-3.5 text-[10.5px] leading-[1.38] border-x border-slate-300"
+          className="thermal-ticket !bg-white !text-slate-950 font-mono px-4 py-4 text-[11px] leading-[1.42] border-x border-slate-300"
           style={{ backgroundColor: "#ffffff", color: "#020617" }}
         >
           {/* LÍNEA 1 */}
-          <div className="text-center font-extrabold text-[11px] !text-slate-950">
+          <div className="text-center font-extrabold text-[11.5px] !text-slate-950">
             01| SENIAT / CONALOT - RETENCIÓN PREMIO (ART. 18)
           </div>
           {/* LÍNEA 2 */}
-          <div className="text-center font-bold text-[10px] !text-slate-900">
+          <div className="text-center font-bold text-[10.5px] !text-slate-900">
             02| AGENTE RETENCIÓN: Lotería Oficial C.A. J-98765432-1
           </div>
           {/* LÍNEA 3 */}
           <div
-            className="text-center font-extrabold text-[9.5px] my-0.5 py-0.5 rounded"
+            className="text-center font-extrabold text-[10px] my-0.5 py-0.5 rounded"
             style={{ backgroundColor: "#ecfdf5", color: "#065f46" }}
           >
             03| CDAPUESTAS SYS-RUN-009 | RUNLOT: RUN-0089 | COMP: #R-{params.ticketNum.slice(-4)}
           </div>
           {/* LÍNEA 4 */}
-          <div className="text-[10px] !text-slate-950">
+          <div className="text-[10.5px] !text-slate-950">
             04| <span className="font-bold">TAQUILLA PAGADORA:</span> Centro de Apuestas La Favorita
           </div>
           {/* LÍNEA 5 */}
-          <div className="text-[10px] !text-slate-950">
+          <div className="text-[10.5px] !text-slate-950">
             05| <span className="font-bold">RIF TAQUILLA:</span> J-12345678-9 | <span className="font-bold">FECHA:</span> {dateTimeStr}
           </div>
           {/* LÍNEA 6 */}
-          <div className="text-[9.5px] !text-slate-400 overflow-hidden whitespace-nowrap">
+          <div className="text-[10px] !text-slate-400 overflow-hidden whitespace-nowrap">
             06| ----------------------------------------------
           </div>
           {/* LÍNEA 7 */}
-          <div className="text-[10.5px] !text-slate-950 font-bold">
+          <div className="text-[11px] !text-slate-950 font-bold">
             07| CÉDULA / RIF GANADOR: {params.winnerDoc || "V-18.456.789"}
           </div>
           {/* LÍNEA 8 */}
-          <div className="text-[10px] !text-slate-950">
+          <div className="text-[10.5px] !text-slate-950">
             08| <span className="font-bold">TICKET ORIGEN:</span> #{params.ticketNum} | <span className="font-bold">SORTEO:</span> #{params.drawNum}
           </div>
           {/* LÍNEA 9 */}
-          <div className="text-[10px] !text-slate-950">
+          <div className="text-[10.5px] !text-slate-950">
             09| <span className="font-bold">MODALIDAD:</span> {params.modalityName} ({params.factor}x)
           </div>
           {/* LÍNEA 10 */}
-          <div className="text-[9.5px] !text-slate-400 overflow-hidden whitespace-nowrap">
+          <div className="text-[10px] !text-slate-400 overflow-hidden whitespace-nowrap">
             10| ----------------------------------------------
           </div>
           {/* LÍNEA 11: Encabezado Tabla 1 Línea */}
           <div
-            className="grid items-center font-extrabold text-[9px] !text-slate-950 whitespace-nowrap"
+            className="grid items-center font-extrabold text-[9.5px] !text-slate-950 whitespace-nowrap"
             style={{ gridTemplateColumns: "25% 15% 21% 18% 21%" }}
           >
             <div className="pr-1">11| OPCIÓN</div>
@@ -369,7 +369,7 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
           </div>
           {/* LÍNEA 12: Cálculo Exacto 1 Línea */}
           <div
-            className="grid items-center font-bold text-[9.5px] py-1 my-0.5 rounded px-1 whitespace-nowrap"
+            className="grid items-center font-bold text-[10px] py-1 my-0.5 rounded px-1 whitespace-nowrap"
             style={{
               gridTemplateColumns: "25% 15% 21% 18% 21%",
               backgroundColor: "#f8fafc",
@@ -398,21 +398,21 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
             </div>
           </div>
           {/* LÍNEA 13 */}
-          <div className="text-[9.5px] !text-slate-400 overflow-hidden whitespace-nowrap">
+          <div className="text-[10px] !text-slate-400 overflow-hidden whitespace-nowrap">
             13| ----------------------------------------------
           </div>
           {/* LÍNEA 14 */}
-          <div className="text-[9.5px] font-bold !text-slate-900">
+          <div className="text-[10px] font-bold !text-slate-900">
             14| BASE LEGAL: Art. 18 Prov. SNAT/2026/00093 (16% IGF)
           </div>
           {/* LÍNEA 15 */}
-          <div className="flex items-center justify-between pt-1 mt-0.5 border-t !border-slate-300 text-[9.5px] font-extrabold !text-slate-950">
+          <div className="flex items-center justify-between pt-1 mt-0.5 border-t !border-slate-300 text-[10px] font-extrabold !text-slate-950">
             <span className="flex items-center gap-1 truncate">
               <QrCode
                 className="w-3.5 h-3.5 shrink-0 inline"
                 style={{ color: "#059669" }}
               />
-              15| CERT. API SCFD • HASH: {params.hash.slice(0, 12).toUpperCase()}
+              15| CERT. API SCFD • HASH: {params.hash.slice(0, 14).toUpperCase()}
             </span>
             <span style={{ color: "#059669" }}>[OK-200]</span>
           </div>
@@ -796,13 +796,19 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                   </span>
                 </div>
 
-                {/* Despliegue de los comprobantes térmicos según la pestaña activa */}
+                {/* Despliegue de los comprobantes térmicos: UNO ARRIBA Y EL OTRO DEBAJO CON SEPARADOR */}
                 {activeTab === "both" ? (
-                  <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 items-start justify-items-center">
-                    {/* Ticket 1: Triples */}
-                    <div className="w-full flex flex-col items-center">
-                      <div className="w-full text-center text-[10px] font-bold font-mono text-amber-400 mb-1 uppercase tracking-wide">
-                        Liquidación #1 • Triples (600x)
+                  <div className="w-full flex flex-col items-center">
+                    {/* TICKET 1 ARRIBA: TRIPLES */}
+                    <div className="w-full max-w-[440px] flex flex-col items-center">
+                      <div className="w-full flex items-center justify-between text-[11px] font-bold font-mono text-amber-400 mb-1.5 px-1 uppercase tracking-wider">
+                        <span className="flex items-center gap-1.5">
+                          <Award className="w-3.5 h-3.5" />
+                          1. Liquidación: Triples y Terminales (600x)
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          Ticket #{triplesTicketNum}
+                        </span>
                       </div>
                       {renderThermalReceipt({
                         modalityName: "Triples y Terminales",
@@ -820,10 +826,27 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                       })}
                     </div>
 
-                    {/* Ticket 2: Animalitos */}
-                    <div className="w-full flex flex-col items-center">
-                      <div className="w-full text-center text-[10px] font-bold font-mono text-emerald-400 mb-1 uppercase tracking-wide">
-                        Liquidación #2 • Animalitos (30x)
+                    {/* SEPARADOR ESTÉTICO ENTRE AMBOS TICKETS */}
+                    <div className="w-full max-w-[440px] my-5 flex items-center gap-2 sm:gap-3">
+                      <div className="flex-1 border-t-2 border-dashed border-slate-600/70" />
+                      <div className="px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-700 text-slate-200 text-[11px] font-mono font-bold flex items-center gap-2 shadow-lg shrink-0">
+                        <span className="text-amber-400">✂️</span>
+                        <span>SEPARADOR • CORTE DE PAPEL TÉRMICO (80 MM)</span>
+                        <span className="text-emerald-400">✂️</span>
+                      </div>
+                      <div className="flex-1 border-t-2 border-dashed border-slate-600/70" />
+                    </div>
+
+                    {/* TICKET 2 DEBAJO: ANIMALITOS */}
+                    <div className="w-full max-w-[440px] flex flex-col items-center">
+                      <div className="w-full flex items-center justify-between text-[11px] font-bold font-mono text-emerald-400 mb-1.5 px-1 uppercase tracking-wider">
+                        <span className="flex items-center gap-1.5">
+                          <Award className="w-3.5 h-3.5" />
+                          2. Liquidación: Sorteos de Figuras "Animalitos" (30x)
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          Ticket #{animalitosTicketNum}
+                        </span>
                       </div>
                       {renderThermalReceipt({
                         modalityName: 'Sorteos de Figuras "Animalitos"',
@@ -839,6 +862,25 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                         hash: animalitosHash,
                         headerBadge: "LIQUIDACIÓN #2",
                       })}
+                    </div>
+
+                    {/* RESUMEN CONSOLIDADO DEBAJO DE AMBOS TICKETS */}
+                    <div className="w-full max-w-[440px] mt-5 p-3 rounded-xl bg-slate-900/90 border border-slate-700 font-mono text-xs text-slate-200 space-y-1 shadow-md">
+                      <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                        Consolidado Oficial de Ambos Comprobantes en Taquilla:
+                      </div>
+                      <div className="flex justify-between items-center text-[11px]">
+                        <span>Premios Ganadores Brutos:</span>
+                        <span className="font-extrabold text-white">Bs. {formatIntBs(totalGrossPrizes)}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-[11px] text-amber-400 font-bold">
+                        <span>Retención Total 16% IGF (Art. 18):</span>
+                        <span>-Bs. {formatIntBs(totalIgfWithheld)}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs text-emerald-400 font-extrabold pt-1 border-t border-slate-800">
+                        <span>Efectivo Total Entregado al Ganador:</span>
+                        <span>Bs. {formatIntBs(totalNetCashPaid)}</span>
+                      </div>
                     </div>
                   </div>
                 ) : activeTab === "triples" ? (
