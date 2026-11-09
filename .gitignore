@@ -33,3 +33,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
+# persistent auth credentials store (server local)
+.auth-credentials.json
+
+

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import SecurityGuard from "@/components/SecurityGuard";
 
 export const metadata: Metadata = {
   title: "Simulador Ejecutivo SCFD / RUNLOT | Reforma Tributaria SENIAT - CONALOT",
@@ -35,7 +36,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-blue-600 selection:text-white"
       >
-        {children}
+        <SecurityGuard>{children}</SecurityGuard>
       </body>
     </html>
   );
