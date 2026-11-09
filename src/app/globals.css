@@ -257,13 +257,19 @@ html.light .bg-rose-500\/10 {
 }
 
 html.light .text-red-400,
+html.light .text-red-400\/90,
+html.light .text-red-400\/80,
 html.light .text-red-300,
 html.light .text-red-300\/90,
 html.light .text-red-300\/80,
 html.light .text-red-200,
 html.light .text-rose-400,
-html.light .text-rose-300 {
-  color: #b91c1c !important; /* Rojo profundo legible sobre fondos claros */
+html.light .text-rose-400\/90,
+html.light .text-rose-400\/80,
+html.light .text-rose-300,
+html.light .text-rose-300\/90,
+html.light .text-rose-300\/80 {
+  color: #991b1b !important; /* Rojo profundo legible sobre fondos claros */
 }
 
 html.light .border-red-800,
@@ -303,11 +309,14 @@ html.light .bg-emerald-500\/10 {
 }
 
 html.light .text-emerald-400,
+html.light .text-emerald-400\/90,
+html.light .text-emerald-400\/80,
 html.light .text-emerald-300,
 html.light .text-emerald-300\/90,
 html.light .text-emerald-300\/80,
-html.light .text-emerald-200 {
-  color: #047857 !important; /* Verde bosque profundo de alto contraste */
+html.light .text-emerald-200,
+html.light .text-emerald-500 {
+  color: #065f46 !important; /* Verde bosque profundo de alto contraste */
 }
 
 html.light .border-emerald-800,
@@ -381,11 +390,21 @@ html.light .bg-amber-500\/10 {
 
 html.light .text-amber-400,
 html.light .text-amber-400\/90,
+html.light .text-amber-400\/80,
+html.light .text-amber-400\/70,
 html.light .text-amber-300,
 html.light .text-amber-300\/90,
+html.light .text-amber-300\/80,
 html.light .text-amber-200,
-html.light .text-amber-200\/80 {
-  color: #92400e !important; /* Bronce/ámbar oscuro, NUNCA amarillo pálido */
+html.light .text-amber-200\/80,
+html.light .text-amber-500,
+html.light .text-yellow-400,
+html.light .text-yellow-400\/80,
+html.light .text-yellow-300,
+html.light .text-yellow-300\/80,
+html.light .text-yellow-500,
+html.light .text-yellow-600 {
+  color: #78350f !important; /* Bronce/ámbar oscuro #78350f de altísimo contraste */
 }
 
 html.light .border-amber-800,

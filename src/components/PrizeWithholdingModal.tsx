@@ -481,22 +481,22 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
           if (e.target === e.currentTarget) onClose();
         }}
       >
-        <div className="relative w-full max-w-5xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] my-auto">
+        <div className="relative w-full max-w-5xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] my-auto">
           {/* Header del Modal */}
-          <div className="sticky top-0 z-20 px-5 sm:px-6 py-3.5 bg-slate-950 border-b border-slate-800 shrink-0 space-y-3">
+          <div className="sticky top-0 z-20 px-5 sm:px-6 py-3.5 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 shrink-0 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+                <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-500/15 border border-emerald-300 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-400">
                   <Award className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-sm sm:text-base font-bold text-slate-100 flex items-center gap-2">
+                  <h2 className="text-sm sm:text-base font-black text-slate-950 dark:text-slate-100 flex items-center gap-2">
                     Motor de Liquidación y Retención de Premios (Art. 18 — Modelo 3)
-                    <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/90 border border-emerald-600/50 text-emerald-300 font-normal">
+                    <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/90 border border-emerald-400 dark:border-emerald-600 text-emerald-950 dark:text-emerald-300 font-black shadow-sm">
                       2 Liquidaciones en Taquilla
                     </span>
                   </h2>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">
                     Comprobante Simplificado de Retención de Premio (80 mm, 15 líneas) • Enteramiento Instantáneo SCFD
                   </p>
                 </div>
@@ -506,7 +506,7 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-3.5 py-1.5 rounded-xl bg-red-600/20 hover:bg-red-600 border border-red-500/40 text-red-200 hover:text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm font-mono"
+                  className="px-3.5 py-1.5 rounded-xl bg-red-100 hover:bg-red-600 dark:bg-red-600/20 border border-red-300 dark:border-red-500/40 text-red-800 hover:text-white dark:text-red-200 font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-sm font-mono cursor-pointer"
                   title="Salir / Cerrar (Esc)"
                 >
                   <X className="w-4 h-4" />
@@ -517,44 +517,44 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
 
             {/* BARRA SUPERIOR DE RESUMEN CONSOLIDADO DE TAQUILLA (2 PREMIOS) */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
-              <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 flex items-center justify-between shadow-sm">
                 <div>
-                  <div className="text-[10px] uppercase font-bold text-slate-400">
+                  <div className="text-[10px] uppercase font-bold text-slate-700 dark:text-slate-400">
                     Premios Acertados (2 Sorteos)
                   </div>
-                  <div className="text-sm font-black font-mono text-slate-100">
+                  <div className="text-sm sm:text-base font-black font-mono text-slate-950 dark:text-white mt-0.5">
                     Bs. {formatBs(totalGrossPrizes, 2)}
                   </div>
                 </div>
-                <div className="text-[10px] font-mono text-slate-400 text-right">
+                <div className="text-[10.5px] font-mono text-slate-700 dark:text-slate-300 font-bold text-right">
                   Triples: 600k<br />Anim: 30k
                 </div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-amber-950/30 border border-amber-800/40 flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-rose-50 dark:bg-red-950/40 border border-rose-300 dark:border-red-700/60 flex items-center justify-between shadow-sm">
                 <div>
-                  <div className="text-[10px] uppercase font-bold text-amber-400">
+                  <div className="text-[10px] uppercase font-extrabold text-rose-800 dark:text-red-300">
                     Retención Total 16% IGF (Art. 18)
                   </div>
-                  <div className="text-sm font-black font-mono text-amber-300">
+                  <div className="text-sm sm:text-base font-black font-mono text-rose-700 dark:text-rose-300 mt-0.5">
                     -Bs. {formatBs(totalIgfWithheld, 2)}
                   </div>
                 </div>
-                <div className="text-[10px] font-mono text-amber-400/80 text-right">
+                <div className="text-[10.5px] font-mono text-rose-900 dark:text-rose-300 font-black text-right">
                   -96.000 (Triples)<br />-4.800 (Anim.)
                 </div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-emerald-950/30 border border-emerald-800/40 flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700/60 flex items-center justify-between shadow-sm">
                 <div>
-                  <div className="text-[10px] uppercase font-bold text-emerald-400">
+                  <div className="text-[10px] uppercase font-extrabold text-emerald-800 dark:text-emerald-300">
                     Efectivo Total Desembolsado (84%)
                   </div>
-                  <div className="text-sm font-black font-mono text-emerald-300">
+                  <div className="text-sm sm:text-base font-black font-mono text-emerald-700 dark:text-emerald-300 mt-0.5">
                     Bs. {formatBs(totalNetCashPaid, 2)}
                   </div>
                 </div>
-                <div className="text-[10px] font-mono text-emerald-400/80 text-right">
+                <div className="text-[10.5px] font-mono text-emerald-900 dark:text-emerald-300 font-black text-right">
                   504.000 (Triples)<br />25.200 (Anim.)
                 </div>
               </div>
@@ -568,7 +568,7 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                 className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 border ${
                   activeTab === "both"
                     ? "bg-blue-600 text-white border-blue-400 shadow-md shadow-blue-950/50"
-                    : "bg-slate-950/70 hover:bg-slate-800 text-slate-300 border-slate-800"
+                    : "bg-slate-100 dark:bg-slate-950/70 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-800"
                 }`}
               >
                 <Layers className="w-3.5 h-3.5" />
@@ -580,8 +580,8 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                 onClick={() => setActiveTab("triples")}
                 className={`py-1.5 px-3 rounded-lg text-xs font-bold font-mono transition-all flex items-center gap-1.5 border ${
                   activeTab === "triples"
-                    ? "bg-amber-600/30 text-amber-200 border-amber-500 shadow-sm"
-                    : "bg-slate-950/70 hover:bg-slate-800 text-slate-400 border-slate-800"
+                    ? "bg-amber-100 dark:bg-amber-600/30 text-amber-900 dark:text-amber-200 border-amber-500 font-extrabold shadow-sm"
+                    : "bg-slate-100 dark:bg-slate-950/70 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-400 border-slate-300 dark:border-slate-800"
                 }`}
               >
                 <span>Liq #1: Triples (Bs. 600.000 | Ret. -Bs. 96.000)</span>
@@ -592,8 +592,8 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                 onClick={() => setActiveTab("animalitos")}
                 className={`py-1.5 px-3 rounded-lg text-xs font-bold font-mono transition-all flex items-center gap-1.5 border ${
                   activeTab === "animalitos"
-                    ? "bg-emerald-600/30 text-emerald-200 border-emerald-500 shadow-sm"
-                    : "bg-slate-950/70 hover:bg-slate-800 text-slate-400 border-slate-800"
+                    ? "bg-emerald-100 dark:bg-emerald-600/30 text-emerald-900 dark:text-emerald-200 border-emerald-500 font-extrabold shadow-sm"
+                    : "bg-slate-100 dark:bg-slate-950/70 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-400 border-slate-300 dark:border-slate-800"
                 }`}
               >
                 <span>Liq #2: Animalitos (Bs. 30.000 | Ret. -Bs. 4.800)</span>
@@ -608,26 +608,26 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
               <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
                 {/* 1. SECCIÓN TRIPLES */}
                 {(activeTab === "triples" || activeTab === "both") && (
-                  <div className="p-4 rounded-xl bg-slate-950/90 border border-amber-900/40 space-y-3">
+                  <div className="p-4 rounded-xl bg-white dark:bg-slate-950 border-2 border-amber-300 dark:border-amber-700/60 space-y-3 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-                        <Award className="w-4 h-4" />
+                      <span className="text-xs font-black uppercase tracking-wider text-amber-950 dark:text-amber-400 flex items-center gap-1.5">
+                        <Award className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                         Liquidación #1: Triples y Terminales (600x)
                       </span>
-                      <span className="text-[11px] font-mono text-slate-400">
+                      <span className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded border border-slate-300 dark:border-slate-800">
                         Ticket #{triplesTicketNum}
                       </span>
                     </div>
 
                     {/* Selector de jugada ganadora Triples */}
                     <div>
-                      <label className="block text-[11px] font-bold uppercase text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold uppercase text-slate-800 dark:text-slate-300 mb-1">
                         Opción Ganadora Triples (Sorteo #{triplesDrawNum}):
                       </label>
                       <select
                         value={triplesSelectedPlayId}
                         onChange={(e) => setTriplesSelectedPlayId(e.target.value)}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 font-mono text-xs focus:outline-none focus:border-amber-500"
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-slate-100 font-mono text-xs font-bold focus:outline-none focus:border-amber-500"
                       >
                         {effectiveTriplesPlays.slice(0, 50).map((p) => (
                           <option key={p.id} value={p.id}>
@@ -639,34 +639,34 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
 
                     {/* Cédula Ganador Triples */}
                     <div>
-                      <label className="block text-[11px] font-bold uppercase text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold uppercase text-slate-800 dark:text-slate-300 mb-1">
                         Cédula / RIF Ganador Triples:
                       </label>
                       <div className="relative">
-                        <UserCheck className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                        <UserCheck className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                         <input
                           type="text"
                           value={triplesWinnerDocId}
                           onChange={(e) => setTriplesWinnerDocId(e.target.value)}
-                          className="w-full pl-8 pr-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-100 font-mono text-xs"
+                          className="w-full pl-8 pr-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-slate-100 font-mono text-xs font-bold"
                           placeholder="V-18.456.789"
                         />
                       </div>
                     </div>
 
                     {/* Desglose Triples */}
-                    <div className="grid grid-cols-3 gap-1.5 pt-1 text-center font-mono text-[11px]">
-                      <div className="p-1.5 rounded bg-slate-900 border border-slate-800">
-                        <div className="text-[9.5px] text-slate-400">Bruto (600x)</div>
-                        <div className="font-bold text-slate-100">Bs. {formatIntBs(triplesGrossPrize)}</div>
+                    <div className="grid grid-cols-3 gap-2 pt-1 text-center font-mono text-xs">
+                      <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 shadow-sm">
+                        <div className="text-[10px] uppercase font-bold text-slate-700 dark:text-slate-400">Bruto (600x)</div>
+                        <div className="font-extrabold text-slate-950 dark:text-slate-100 text-xs">Bs. {formatIntBs(triplesGrossPrize)}</div>
                       </div>
-                      <div className="p-1.5 rounded bg-amber-950/40 border border-amber-800/40">
-                        <div className="text-[9.5px] text-amber-400">IGF 16%</div>
-                        <div className="font-bold text-amber-300">-Bs. {formatIntBs(triplesIgf16)}</div>
+                      <div className="p-2 rounded-lg bg-rose-50 dark:bg-red-950/40 border border-rose-300 dark:border-red-800/40 shadow-sm">
+                        <div className="text-[10px] uppercase font-extrabold text-rose-800 dark:text-red-300">IGF 16%</div>
+                        <div className="font-extrabold text-rose-700 dark:text-rose-300 text-xs">-Bs. {formatIntBs(triplesIgf16)}</div>
                       </div>
-                      <div className="p-1.5 rounded bg-emerald-950/40 border border-emerald-800/40">
-                        <div className="text-[9.5px] text-emerald-400">Neto (84%)</div>
-                        <div className="font-bold text-emerald-300">Bs. {formatIntBs(triplesNetPaid)}</div>
+                      <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800/40 shadow-sm">
+                        <div className="text-[10px] uppercase font-extrabold text-emerald-800 dark:text-emerald-300">Neto (84%)</div>
+                        <div className="font-extrabold text-emerald-700 dark:text-emerald-300 text-xs">Bs. {formatIntBs(triplesNetPaid)}</div>
                       </div>
                     </div>
 
@@ -676,13 +676,13 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                       onClick={handleTransmitTriples}
                       className={`w-full py-2 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all font-mono cursor-pointer ${
                         triplesTransmitted
-                          ? "bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 shadow-sm"
+                          ? "bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-400 dark:border-emerald-500/60 text-emerald-900 dark:text-emerald-300 shadow-sm"
                           : "bg-amber-600 hover:bg-amber-500 text-white shadow-md shadow-amber-950/50"
                       }`}
                     >
                       {triplesTransmitted ? (
                         <>
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
                           <span>✓ Triples Liquidado (Retenido: Bs. {formatIntBs(triplesIgf16)})</span>
                         </>
                       ) : (
@@ -697,26 +697,26 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
 
                 {/* 2. SECCIÓN ANIMALITOS */}
                 {(activeTab === "animalitos" || activeTab === "both") && (
-                  <div className="p-4 rounded-xl bg-slate-950/90 border border-emerald-900/40 space-y-3">
+                  <div className="p-4 rounded-xl bg-white dark:bg-slate-950 border-2 border-emerald-300 dark:border-emerald-700/60 space-y-3 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                        <Award className="w-4 h-4" />
+                      <span className="text-xs font-black uppercase tracking-wider text-emerald-950 dark:text-emerald-400 flex items-center gap-1.5">
+                        <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                         Liquidación #2: Animalitos (30x)
                       </span>
-                      <span className="text-[11px] font-mono text-slate-400">
+                      <span className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded border border-slate-300 dark:border-slate-800">
                         Ticket #{animalitosTicketNum}
                       </span>
                     </div>
 
                     {/* Selector de figura ganadora Animalitos */}
                     <div>
-                      <label className="block text-[11px] font-bold uppercase text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold uppercase text-slate-800 dark:text-slate-300 mb-1">
                         Figura Ganadora (Sorteo #{animalitosDrawNum}):
                       </label>
                       <select
                         value={animalitosSelectedPlayId}
                         onChange={(e) => setAnimalitosSelectedPlayId(e.target.value)}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 font-mono text-xs focus:outline-none focus:border-emerald-500"
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-slate-100 font-mono text-xs font-bold focus:outline-none focus:border-emerald-500"
                       >
                         {effectiveAnimalitosPlays.map((p) => (
                           <option key={p.id} value={p.id}>
@@ -728,34 +728,34 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
 
                     {/* Cédula Ganador Animalitos */}
                     <div>
-                      <label className="block text-[11px] font-bold uppercase text-slate-300 mb-1">
+                      <label className="block text-[11px] font-bold uppercase text-slate-800 dark:text-slate-300 mb-1">
                         Cédula / RIF Ganador Animalitos:
                       </label>
                       <div className="relative">
-                        <UserCheck className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                        <UserCheck className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                         <input
                           type="text"
                           value={animalitosWinnerDocId}
                           onChange={(e) => setAnimalitosWinnerDocId(e.target.value)}
-                          className="w-full pl-8 pr-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-100 font-mono text-xs"
+                          className="w-full pl-8 pr-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-950 dark:text-slate-100 font-mono text-xs font-bold"
                           placeholder="V-24.589.123"
                         />
                       </div>
                     </div>
 
                     {/* Desglose Animalitos */}
-                    <div className="grid grid-cols-3 gap-1.5 pt-1 text-center font-mono text-[11px]">
-                      <div className="p-1.5 rounded bg-slate-900 border border-slate-800">
-                        <div className="text-[9.5px] text-slate-400">Bruto (30x)</div>
-                        <div className="font-bold text-slate-100">Bs. {formatIntBs(animalitosGrossPrize)}</div>
+                    <div className="grid grid-cols-3 gap-2 pt-1 text-center font-mono text-xs">
+                      <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 shadow-sm">
+                        <div className="text-[10px] uppercase font-bold text-slate-700 dark:text-slate-400">Bruto (30x)</div>
+                        <div className="font-extrabold text-slate-950 dark:text-slate-100 text-xs">Bs. {formatIntBs(animalitosGrossPrize)}</div>
                       </div>
-                      <div className="p-1.5 rounded bg-amber-950/40 border border-amber-800/40">
-                        <div className="text-[9.5px] text-amber-400">IGF 16%</div>
-                        <div className="font-bold text-amber-300">-Bs. {formatIntBs(animalitosIgf16)}</div>
+                      <div className="p-2 rounded-lg bg-rose-50 dark:bg-red-950/40 border border-rose-300 dark:border-red-800/40 shadow-sm">
+                        <div className="text-[10px] uppercase font-extrabold text-rose-800 dark:text-red-300">IGF 16%</div>
+                        <div className="font-extrabold text-rose-700 dark:text-rose-300 text-xs">-Bs. {formatIntBs(animalitosIgf16)}</div>
                       </div>
-                      <div className="p-1.5 rounded bg-emerald-950/40 border border-emerald-800/40">
-                        <div className="text-[9.5px] text-emerald-400">Neto (84%)</div>
-                        <div className="font-bold text-emerald-300">Bs. {formatIntBs(animalitosNetPaid)}</div>
+                      <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800/40 shadow-sm">
+                        <div className="text-[10px] uppercase font-extrabold text-emerald-800 dark:text-emerald-300">Neto (84%)</div>
+                        <div className="font-extrabold text-emerald-700 dark:text-emerald-300 text-xs">Bs. {formatIntBs(animalitosNetPaid)}</div>
                       </div>
                     </div>
 
@@ -765,13 +765,13 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                       onClick={handleTransmitAnimalitos}
                       className={`w-full py-2 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all font-mono cursor-pointer ${
                         animalitosTransmitted
-                          ? "bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 shadow-sm"
+                          ? "bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-400 dark:border-emerald-500/60 text-emerald-900 dark:text-emerald-300 shadow-sm"
                           : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-950/50"
                       }`}
                     >
                       {animalitosTransmitted ? (
                         <>
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
                           <span>✓ Animalitos Liquidado (Retenido: Bs. {formatIntBs(animalitosIgf16)})</span>
                         </>
                       ) : (
@@ -809,8 +809,8 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                   </button>
 
                   {(triplesTransmitted || animalitosTransmitted) && (
-                    <div className="p-2.5 rounded-lg bg-emerald-950/70 border border-emerald-700/60 text-emerald-300 text-xs flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                    <div className="p-2.5 rounded-lg bg-emerald-100 dark:bg-emerald-950/70 border border-emerald-400 dark:border-emerald-700/60 text-emerald-950 dark:text-emerald-300 text-xs flex items-center gap-2 font-mono font-bold">
+                      <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-700 dark:text-emerald-400" />
                       <span>
                         {triplesTransmitted && animalitosTransmitted
                           ? `Ambas retenciones (Bs. ${formatIntBs(totalIgfWithheld)}) registradas en Consola Telemática SCFD.`
@@ -822,31 +822,31 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                   )}
 
                   {/* Panel Informativo: Ruta del Dinero Taquilla */}
-                  <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-300 space-y-1 font-sans">
-                    <div className="font-bold uppercase tracking-wide flex items-center gap-1.5 text-xs text-amber-400">
-                      <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                  <div className="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-300 space-y-1 font-sans shadow-sm">
+                    <div className="font-extrabold uppercase tracking-wide flex items-center gap-1.5 text-xs text-amber-900 dark:text-amber-400">
+                      <ShieldCheck className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                       Conciliación de Caja CDAPUESTAS (Art. 65 LISLR)
                     </div>
-                    <div className="space-y-0.5 text-slate-300 text-[11px]">
-                      <div>• <strong>Efectivo Total Pagado (84%):</strong> Bs. {formatBs(totalNetCashPaid, 2)} entregados en taquilla.</div>
-                      <div>• <strong>Retención 16% IGF (Art. 18):</strong> Bs. {formatBs(totalIgfWithheld, 2)} protegidos para Operadora.</div>
+                    <div className="space-y-0.5 text-slate-800 dark:text-slate-300 text-xs font-mono">
+                      <div>• <strong>Efectivo Total Pagado (84%):</strong> <span className="text-emerald-700 dark:text-emerald-400 font-bold">Bs. {formatBs(totalNetCashPaid, 2)}</span> entregados en taquilla.</div>
+                      <div>• <strong>Retención 16% IGF (Art. 18):</strong> <span className="text-rose-700 dark:text-rose-300 font-bold">Bs. {formatBs(totalIgfWithheld, 2)}</span> protegidos para Operadora.</div>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Columna Derecha: Comprobantes Térmicos Modelo 3 (15 Líneas Exactas • 80mm) */}
-              <div className="lg:col-span-7 flex flex-col items-center justify-center bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 sm:p-5">
+              <div className="lg:col-span-7 flex flex-col items-center justify-center bg-slate-100/70 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/80 rounded-xl p-4 sm:p-5">
                 <div className="w-full mb-3 flex items-center justify-between">
-                  <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <Award className="w-4 h-4" />
+                  <span className="text-xs font-extrabold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                     {activeTab === "both"
                       ? "2 Comprobantes Modelo 3 (Art. 18 — 80 mm)"
                       : activeTab === "triples"
                       ? "Comprobante #1: Triples (80 mm • 15 Líneas)"
                       : "Comprobante #2: Animalitos (80 mm • 15 Líneas)"}
                   </span>
-                  <span className="text-[11px] font-mono text-slate-400">
+                  <span className="text-[11px] font-mono font-bold text-slate-600 dark:text-slate-400">
                     PAPEL BLANCO PURO • ENTERAMIENTO SCFD
                   </span>
                 </div>
@@ -856,12 +856,12 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                   <div className="w-full flex flex-col items-center">
                     {/* TICKET 1 ARRIBA: TRIPLES */}
                     <div className="w-full max-w-[440px] flex flex-col items-center">
-                      <div className="w-full flex items-center justify-between text-[11px] font-bold font-mono text-amber-400 mb-1.5 px-1 uppercase tracking-wider">
+                      <div className="w-full flex items-center justify-between text-[11px] font-extrabold font-mono text-amber-900 dark:text-amber-400 mb-1.5 px-1 uppercase tracking-wider">
                         <span className="flex items-center gap-1.5">
-                          <Award className="w-3.5 h-3.5" />
+                          <Award className="w-4 h-4 text-amber-700 dark:text-amber-400" />
                           1. Liquidación: Triples y Terminales (600x)
                         </span>
-                        <span className="text-[10px] text-slate-400">
+                        <span className="text-[10px] text-slate-600 dark:text-slate-400 font-bold">
                           Ticket #{triplesTicketNum}
                         </span>
                       </div>
@@ -884,23 +884,23 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
 
                     {/* SEPARADOR ESTÉTICO ENTRE AMBOS TICKETS */}
                     <div className="w-full max-w-[440px] my-5 flex items-center gap-2 sm:gap-3">
-                      <div className="flex-1 border-t-2 border-dashed border-slate-600/70" />
-                      <div className="px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-700 text-slate-200 text-[11px] font-mono font-bold flex items-center gap-2 shadow-lg shrink-0">
-                        <span className="text-amber-400">✂️</span>
+                      <div className="flex-1 border-t-2 border-dashed border-slate-400 dark:border-slate-600/70" />
+                      <div className="px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-[11px] font-mono font-bold flex items-center gap-2 shadow-md shrink-0">
+                        <span>✂️</span>
                         <span>SEPARADOR • CORTE DE PAPEL TÉRMICO (80 MM)</span>
-                        <span className="text-emerald-400">✂️</span>
+                        <span>✂️</span>
                       </div>
-                      <div className="flex-1 border-t-2 border-dashed border-slate-600/70" />
+                      <div className="flex-1 border-t-2 border-dashed border-slate-400 dark:border-slate-600/70" />
                     </div>
 
                     {/* TICKET 2 DEBAJO: ANIMALITOS */}
                     <div className="w-full max-w-[440px] flex flex-col items-center">
-                      <div className="w-full flex items-center justify-between text-[11px] font-bold font-mono text-emerald-400 mb-1.5 px-1 uppercase tracking-wider">
+                      <div className="w-full flex items-center justify-between text-[11px] font-extrabold font-mono text-emerald-900 dark:text-emerald-400 mb-1.5 px-1 uppercase tracking-wider">
                         <span className="flex items-center gap-1.5">
-                          <Award className="w-3.5 h-3.5" />
+                          <Award className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
                           2. Liquidación: Sorteos de Figuras "Animalitos" (30x)
                         </span>
-                        <span className="text-[10px] text-slate-400">
+                        <span className="text-[10px] text-slate-600 dark:text-slate-400 font-bold">
                           Ticket #{animalitosTicketNum}
                         </span>
                       </div>
@@ -922,21 +922,21 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                     </div>
 
                     {/* RESUMEN CONSOLIDADO DEBAJO DE AMBOS TICKETS */}
-                    <div className="w-full max-w-[440px] mt-5 p-3 rounded-xl bg-slate-900/90 border border-slate-700 font-mono text-xs text-slate-200 space-y-1 shadow-md">
-                      <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                    <div className="w-full max-w-[440px] mt-5 p-3 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-300 dark:border-slate-700 font-mono text-xs text-slate-900 dark:text-slate-200 space-y-1 shadow-md">
+                      <div className="text-[10px] uppercase font-extrabold text-slate-600 dark:text-slate-400 tracking-wider">
                         Consolidado Oficial de Ambos Comprobantes en Taquilla:
                       </div>
                       <div className="flex justify-between items-center text-[11px]">
-                        <span>Premios Ganadores Brutos:</span>
-                        <span className="font-extrabold text-white">Bs. {formatIntBs(totalGrossPrizes)}</span>
+                        <span className="text-slate-700 dark:text-slate-300 font-bold">Premios Ganadores Brutos:</span>
+                        <span className="font-extrabold text-slate-950 dark:text-white">Bs. {formatIntBs(totalGrossPrizes)}</span>
                       </div>
-                      <div className="flex justify-between items-center text-[11px] text-amber-400 font-bold">
-                        <span>Retención Total 16% IGF (Art. 18):</span>
-                        <span>-Bs. {formatIntBs(totalIgfWithheld)}</span>
+                      <div className="flex justify-between items-center text-[11px] font-bold">
+                        <span className="text-slate-700 dark:text-slate-300">Retención Total 16% IGF (Art. 18):</span>
+                        <span className="text-rose-700 dark:text-rose-400 font-extrabold">-Bs. {formatIntBs(totalIgfWithheld)}</span>
                       </div>
-                      <div className="flex justify-between items-center text-xs text-emerald-400 font-extrabold pt-1 border-t border-slate-800">
-                        <span>Efectivo Total Entregado al Ganador:</span>
-                        <span>Bs. {formatIntBs(totalNetCashPaid)}</span>
+                      <div className="flex justify-between items-center text-xs pt-1 border-t border-slate-200 dark:border-slate-800 font-extrabold">
+                        <span className="text-slate-900 dark:text-slate-100">Efectivo Total Entregado al Ganador:</span>
+                        <span className="text-emerald-700 dark:text-emerald-400 font-black">Bs. {formatIntBs(totalNetCashPaid)}</span>
                       </div>
                     </div>
                   </div>
@@ -978,9 +978,9 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
           </div>
 
           {/* Footer del Modal (Sticky Bottom) con Botones de Impresión Aislada */}
-          <div className="sticky bottom-0 z-20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 sm:px-6 py-3 bg-slate-950 border-t border-slate-800 shrink-0">
-            <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
-              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="sticky bottom-0 z-20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 sm:px-6 py-3 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shrink-0">
+            <div className="flex items-center gap-2 text-xs font-mono text-slate-700 dark:text-slate-400 font-bold">
+              <ShieldCheck className="w-4 h-4 text-emerald-700 dark:text-emerald-400 shrink-0" />
               <span>Retención del 16% consolidada en Taquilla y declarada por Operadora</span>
             </div>
 
@@ -988,10 +988,10 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
               <button
                 type="button"
                 onClick={() => triggerPrint(activeTab === "both" ? "both" : activeTab)}
-                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all font-mono border border-slate-700 cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all font-mono border border-slate-300 dark:border-slate-700 cursor-pointer shadow-sm"
                 title="Imprime exclusivamente el comprobante térmico en formato 80mm exacto"
               >
-                <Printer className="w-3.5 h-3.5 text-amber-400" />
+                <Printer className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />
                 <span>
                   {activeTab === "both"
                     ? "Imprimir Ambos Tickets (80 mm)"
@@ -1005,9 +1005,9 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                 <button
                   type="button"
                   onClick={() => triggerPrint("both")}
-                  className="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center gap-1.5 font-mono border border-slate-700 cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-300 font-bold text-xs flex items-center gap-1.5 font-mono border border-slate-300 dark:border-slate-700 cursor-pointer shadow-sm"
                 >
-                  <Printer className="w-3.5 h-3.5 text-blue-400" />
+                  <Printer className="w-3.5 h-3.5 text-blue-700 dark:text-blue-400" />
                   <span>Imprimir Ambos (2 Recibos)</span>
                 </button>
               )}

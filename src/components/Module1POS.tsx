@@ -428,41 +428,49 @@ export const Module1POS: React.FC<Module1POSProps> = ({
             </div>
 
             {/* MÓDULO DE LIQUIDACIÓN Y RETENCIÓN DE PREMIOS EN TAQUILLA (ART. 18 — MODELO 3) */}
-            <div className="mt-4 p-3.5 rounded-xl bg-slate-950/90 border border-emerald-500/40 space-y-2.5 shadow-sm">
+            <div className="mt-4 p-4 rounded-2xl bg-white dark:bg-slate-950 border-2 border-emerald-500/60 space-y-3 shadow-md">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                  <Award className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="text-xs font-mono font-extrabold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 flex items-center gap-1.5">
+                  <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   Módulo de Liquidación y Retención IGF (Art. 18)
                 </span>
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                <span className="text-[11px] font-mono font-extrabold px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/70 border border-amber-400 dark:border-amber-600 text-amber-900 dark:text-amber-300 shadow-sm">
                   Modelo 3 • 16% IGF
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-[10.5px] font-mono">
-                <div className="p-2 rounded-lg bg-slate-900 border border-slate-800">
-                  <div className="text-[9.5px] text-slate-400">Premios Acertados (2 Sorteos):</div>
-                  <div className="font-extrabold text-white text-xs mt-0.5">
+              <div className="grid grid-cols-2 gap-2.5 text-xs font-mono">
+                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800">
+                  <div className="text-[10px] uppercase font-bold text-slate-700 dark:text-slate-400">
+                    Premios Acertados (2 Sorteos):
+                  </div>
+                  <div className="font-black text-slate-950 dark:text-white text-sm mt-0.5">
                     Bs. {formatIntBs(combinedGrossPrize)}
                   </div>
-                  <div className="text-[9px] text-slate-500">600k (Trip) + 30k (Anim)</div>
+                  <div className="text-[10px] text-slate-600 dark:text-slate-400 font-bold mt-0.5">
+                    600k (Trip) + 30k (Anim)
+                  </div>
                 </div>
 
-                <div className="p-2 rounded-lg bg-amber-950/30 border border-amber-800/40">
-                  <div className="text-[9.5px] text-amber-400">Retención 16% IGF:</div>
-                  <div className="font-extrabold text-amber-300 text-xs mt-0.5">
+                <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-red-950/40 border border-rose-300 dark:border-red-700/60">
+                  <div className="text-[10px] uppercase font-extrabold text-rose-800 dark:text-red-300">
+                    Retención 16% IGF (Art. 18):
+                  </div>
+                  <div className="font-black text-rose-700 dark:text-rose-300 text-sm mt-0.5">
                     -Bs. {formatIntBs(combinedIgf16)}
                   </div>
-                  <div className="text-[9px] text-amber-400/80">-96k (Trip) + -4.8k (Anim)</div>
+                  <div className="text-[10px] text-rose-900 dark:text-rose-300 font-black mt-0.5">
+                    -96k (Trip) • -4.8k (Anim)
+                  </div>
                 </div>
               </div>
 
               <button
                 type="button"
                 onClick={() => setIsPrizeModalOpen(true)}
-                className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/60 transition-all cursor-pointer font-mono"
+                className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 transition-all cursor-pointer font-mono"
               >
-                <Award className="w-4 h-4 text-emerald-200" />
+                <Award className="w-4 h-4 text-emerald-100" />
                 <span>Pagar Premio / Liquidar Retención IGF (Art. 18)</span>
               </button>
             </div>
@@ -628,52 +636,52 @@ export const Module1POS: React.FC<Module1POSProps> = ({
             {/* ==============================================================
                 SUB-TOTAL DE LA MODALIDAD ACTIVA EN PANTALLA (AQUÍ SUB TOTAL)
             ============================================================== */}
-            <div className="mt-3 p-3 rounded-xl bg-slate-950 border border-amber-500/40 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
+            <div className="mt-3 p-3.5 rounded-xl bg-white dark:bg-slate-950 border-2 border-slate-300 dark:border-amber-500/40 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
               <div className="flex items-center gap-2.5">
                 <span
                   className={`p-1.5 rounded-lg font-bold text-sm ${
                     activeModalityId === "triples"
-                      ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-                      : "bg-blue-500/20 text-blue-300 border border-blue-500/30"
+                      ? "bg-amber-100 dark:bg-amber-500/20 text-amber-900 dark:text-amber-300 border border-amber-400 dark:border-amber-500/30"
+                      : "bg-blue-100 dark:bg-blue-500/20 text-blue-900 dark:text-blue-300 border border-blue-400 dark:border-blue-500/30"
                   }`}
                 >
                   {activeModalityId === "triples" ? "🎲" : "🐾"}
                 </span>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-extrabold text-white uppercase tracking-wider text-xs">
+                    <span className="font-extrabold text-slate-950 dark:text-white uppercase tracking-wider text-xs">
                       Sub-Total {modality.shortName}
                     </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-bold border border-slate-700">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-300 font-bold border border-slate-300 dark:border-slate-700">
                       {totalComb} {totalComb === 1 ? "Opción" : "Opciones"} en Pantalla
                     </span>
                   </div>
-                  <div className="text-[11px] text-slate-400 mt-0.5">
+                  <div className="text-[11px] text-slate-600 dark:text-slate-400 font-bold mt-0.5">
                     1 Ganador ({modality.multiplier}x):{" "}
-                    <strong className="text-blue-400">
+                    <strong className="text-blue-700 dark:text-blue-400 font-black">
                       Bs. {formatIntBs(displayGrossPrize)}
                     </strong>{" "}
                     • Retención IGF:{" "}
-                    <strong className="text-red-400">
+                    <strong className="text-rose-700 dark:text-rose-400 font-black">
                       -{formatIntBs(totalIgf16)}
                     </strong>{" "}
                     • Neto:{" "}
-                    <strong className="text-emerald-400">
+                    <strong className="text-emerald-700 dark:text-emerald-400 font-black">
                       Bs. {formatIntBs(totalNetPrize)}
                     </strong>
                   </div>
                 </div>
               </div>
 
-              <div className="text-left sm:text-right border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800">
-                <div className="text-[10px] uppercase text-slate-400 font-semibold tracking-wider">
+              <div className="text-left sm:text-right border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-200 dark:border-slate-800">
+                <div className="text-[10px] uppercase text-slate-600 dark:text-slate-400 font-extrabold tracking-wider">
                   Sub-Total Captado:
                 </div>
                 <div
                   className={`font-mono font-black text-lg ${
                     activeModalityId === "triples"
-                      ? "text-amber-400"
-                      : "text-blue-400"
+                      ? "text-amber-900 dark:text-amber-400"
+                      : "text-blue-700 dark:text-blue-400"
                   }`}
                 >
                   Bs. {formatBs(totalFacial, 2)}
@@ -694,47 +702,47 @@ export const Module1POS: React.FC<Module1POSProps> = ({
               id="tour-pos-summary"
               className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs"
             >
-              <div className="p-2.5 rounded-xl bg-slate-950 border border-blue-500/40">
-                <div className="text-[10px] text-blue-300 uppercase font-bold tracking-wider">
+              <div className="p-2.5 rounded-xl bg-white dark:bg-slate-950 border-2 border-blue-400 dark:border-blue-500/40 shadow-sm">
+                <div className="text-[10px] text-blue-900 dark:text-blue-300 uppercase font-extrabold tracking-wider">
                   Total Captado (Ambas)
                 </div>
-                <div className="font-mono font-extrabold text-base text-white mt-0.5">
+                <div className="font-mono font-black text-base text-slate-950 dark:text-white mt-0.5">
                   Bs. {formatBs(combinedTotalFacial, 2)}
                 </div>
-                <div className="text-[9.5px] text-slate-400 font-mono mt-0.5">
+                <div className="text-[9.5px] text-slate-600 dark:text-slate-400 font-mono font-bold mt-0.5">
                   Triples: 1M + Anim: 38k
                 </div>
               </div>
-              <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
+              <div className="p-2.5 rounded-xl bg-white dark:bg-slate-950 border-2 border-slate-300 dark:border-slate-800 shadow-sm">
+                <div className="text-[10px] text-slate-700 dark:text-slate-400 uppercase font-extrabold tracking-wider">
                   Premios Ganadores (600x + 30x)
                 </div>
-                <div className="font-mono font-extrabold text-base text-blue-400 mt-0.5">
+                <div className="font-mono font-black text-base text-blue-700 dark:text-blue-400 mt-0.5">
                   Bs. {formatIntBs(combinedGrossPrize)}
                 </div>
-                <div className="text-[9.5px] text-slate-500 font-mono mt-0.5">
+                <div className="text-[9.5px] text-slate-600 dark:text-slate-500 font-mono font-bold mt-0.5">
                   Bs. 600.000 + Bs. 30.000
                 </div>
               </div>
-              <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
+              <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-slate-950 border-2 border-rose-300 dark:border-slate-800 shadow-sm">
+                <div className="text-[10px] text-rose-800 dark:text-slate-400 uppercase font-extrabold tracking-wider">
                   Retención IGF (16% Art. 18)
                 </div>
-                <div className="font-mono font-extrabold text-base text-red-400 mt-0.5">
+                <div className="font-mono font-black text-base text-rose-700 dark:text-red-400 mt-0.5">
                   -Bs. {formatIntBs(combinedIgf16)}
                 </div>
-                <div className="text-[9.5px] text-slate-500 font-mono mt-0.5">
+                <div className="text-[9.5px] text-rose-900 dark:text-slate-500 font-mono font-extrabold mt-0.5">
                   -Bs. 96.000 + -Bs. 4.800
                 </div>
               </div>
-              <div className="p-2.5 rounded-xl bg-slate-950 border border-emerald-500/40">
-                <div className="text-[10px] text-emerald-300 uppercase font-bold tracking-wider">
+              <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-slate-950 border-2 border-emerald-400 dark:border-emerald-500/40 shadow-sm">
+                <div className="text-[10px] text-emerald-900 dark:text-emerald-300 uppercase font-extrabold tracking-wider">
                   Neto Total a Pagar Ganadores
                 </div>
-                <div className="font-mono font-extrabold text-base text-emerald-400 mt-0.5">
+                <div className="font-mono font-black text-base text-emerald-700 dark:text-emerald-400 mt-0.5">
                   Bs. {formatIntBs(combinedNetPrize)}
                 </div>
-                <div className="text-[9.5px] text-slate-400 font-mono mt-0.5">
+                <div className="text-[9.5px] text-emerald-900 dark:text-slate-400 font-mono font-extrabold mt-0.5">
                   Bs. 504.000 + Bs. 25.200
                 </div>
               </div>
