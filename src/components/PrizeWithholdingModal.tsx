@@ -305,6 +305,7 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
     net: number;
     hash: string;
     headerBadge: string;
+    isTransmitted?: boolean;
   }) => {
     return (
       <div className="w-full max-w-[430px] select-text">
@@ -414,7 +415,9 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
               />
               15| CERT. API SCFD • HASH: {params.hash.slice(0, 14).toUpperCase()}
             </span>
-            <span style={{ color: "#059669" }}>[OK-200]</span>
+            <span style={{ color: params.isTransmitted ? "#059669" : "#d97706" }}>
+              {params.isTransmitted ? "[SCFD: OK-200]" : "[LISTO ART. 18]"}
+            </span>
           </div>
         </div>
         <div className="thermal-edge-bottom" />
@@ -443,6 +446,7 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
               net: triplesNetPaid,
               hash: triplesHash,
               headerBadge: "LIQUIDACIÓN #1",
+              isTransmitted: triplesTransmitted,
             })}
           </div>
         )}
@@ -462,6 +466,7 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
               net: animalitosNetPaid,
               hash: animalitosHash,
               headerBadge: "LIQUIDACIÓN #2",
+              isTransmitted: animalitosTransmitted,
             })}
           </div>
         )}
@@ -664,6 +669,29 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                         <div className="font-bold text-emerald-300">Bs. {formatIntBs(triplesNetPaid)}</div>
                       </div>
                     </div>
+
+                    {/* Botón Liquidar Triples por Separado */}
+                    <button
+                      type="button"
+                      onClick={handleTransmitTriples}
+                      className={`w-full py-2 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all font-mono cursor-pointer ${
+                        triplesTransmitted
+                          ? "bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 shadow-sm"
+                          : "bg-amber-600 hover:bg-amber-500 text-white shadow-md shadow-amber-950/50"
+                      }`}
+                    >
+                      {triplesTransmitted ? (
+                        <>
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>✓ Triples Liquidado (Retenido: Bs. {formatIntBs(triplesIgf16)})</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-3.5 h-3.5" />
+                          <span>Liquidar Triples por Separado (Retener: -Bs. {formatIntBs(triplesIgf16)})</span>
+                        </>
+                      )}
+                    </button>
                   </div>
                 )}
 
@@ -730,6 +758,29 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                         <div className="font-bold text-emerald-300">Bs. {formatIntBs(animalitosNetPaid)}</div>
                       </div>
                     </div>
+
+                    {/* Botón Liquidar Animalitos por Separado */}
+                    <button
+                      type="button"
+                      onClick={handleTransmitAnimalitos}
+                      className={`w-full py-2 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all font-mono cursor-pointer ${
+                        animalitosTransmitted
+                          ? "bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 shadow-sm"
+                          : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-950/50"
+                      }`}
+                    >
+                      {animalitosTransmitted ? (
+                        <>
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>✓ Animalitos Liquidado (Retenido: Bs. {formatIntBs(animalitosIgf16)})</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-3.5 h-3.5" />
+                          <span>Liquidar Animalitos por Separado (Retener: -Bs. {formatIntBs(animalitosIgf16)})</span>
+                        </>
+                      )}
+                    </button>
                   </div>
                 )}
 
@@ -738,13 +789,13 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                   <button
                     type="button"
                     onClick={handleTransmitBoth}
-                    className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/50 transition-all cursor-pointer font-mono"
+                    className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-950/50 transition-all cursor-pointer font-mono"
                   >
                     <Send className="w-4 h-4" />
                     <span>
                       {triplesTransmitted && animalitosTransmitted
                         ? "Ambas Liquidaciones Transmitidas a SCFD (Re-enviar)"
-                        : "Liquidar Ambos Premios y Transmitir Retenciones a SCFD (Bs. 100.800)"}
+                        : "Liquidar Ambas Liquidaciones Simultáneamente (Bs. 100.800 Total)"}
                     </span>
                   </button>
 
@@ -761,7 +812,11 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                     <div className="p-2.5 rounded-lg bg-emerald-950/70 border border-emerald-700/60 text-emerald-300 text-xs flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
                       <span>
-                        Retención consolidada de <strong>Bs. {formatIntBs(totalIgfWithheld)}</strong> registrada en Consola Telemática SCFD.
+                        {triplesTransmitted && animalitosTransmitted
+                          ? `Ambas retenciones (Bs. ${formatIntBs(totalIgfWithheld)}) registradas en Consola Telemática SCFD.`
+                          : triplesTransmitted
+                          ? `Retención Triples (Bs. ${formatIntBs(triplesIgf16)}) registrada en Consola Telemática SCFD.`
+                          : `Retención Animalitos (Bs. ${formatIntBs(animalitosIgf16)}) registrada en Consola Telemática SCFD.`}
                       </span>
                     </div>
                   )}
@@ -823,6 +878,7 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                         net: triplesNetPaid,
                         hash: triplesHash,
                         headerBadge: "LIQUIDACIÓN #1",
+                        isTransmitted: triplesTransmitted,
                       })}
                     </div>
 
@@ -861,6 +917,7 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                         net: animalitosNetPaid,
                         hash: animalitosHash,
                         headerBadge: "LIQUIDACIÓN #2",
+                        isTransmitted: animalitosTransmitted,
                       })}
                     </div>
 
@@ -897,6 +954,7 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                     net: triplesNetPaid,
                     hash: triplesHash,
                     headerBadge: "LIQUIDACIÓN #1",
+                    isTransmitted: triplesTransmitted,
                   })
                 ) : (
                   renderThermalReceipt({
@@ -912,6 +970,7 @@ export const PrizeWithholdingModal: React.FC<PrizeWithholdingModalProps> = ({
                     net: animalitosNetPaid,
                     hash: animalitosHash,
                     headerBadge: "LIQUIDACIÓN #2",
+                    isTransmitted: animalitosTransmitted,
                   })
                 )}
               </div>

@@ -7,6 +7,7 @@ import {
   GameModalityId,
 } from "@/types/simulator";
 import { ThermalTickets } from "./ThermalTickets";
+import { PrizeWithholdingModal } from "./PrizeWithholdingModal";
 import {
   buildFullTirajePlays,
   buildSCFDPayload,
@@ -16,6 +17,7 @@ import {
   isPlaysFullTiraje,
 } from "@/lib/cryptoUtils";
 import {
+  Award,
   Coins,
   Layers,
   Printer,
@@ -70,10 +72,12 @@ export const Module1POS: React.FC<Module1POSProps> = ({
   onEmitNewTicket,
   emittedTicketsCount,
   totalEmittedBs,
+  onEmitWithholdingToSCFD,
 }) => {
   const modality = modalities[activeModalityId];
   const [tirajeUnitBet, setTirajeUnitBet] = useState<number>(1000);
   const [forceShowBoth, setForceShowBoth] = useState<boolean>(false);
+  const [isPrizeModalOpen, setIsPrizeModalOpen] = useState<boolean>(false);
 
   // Jugadas activas por modalidad para permitir visualizar ambos tickets separados si existen jugadas en ambos
   const animalitosPlays =
@@ -422,6 +426,46 @@ export const Module1POS: React.FC<Module1POSProps> = ({
                 </span>
               </div>
             </div>
+
+            {/* MÓDULO DE LIQUIDACIÓN Y RETENCIÓN DE PREMIOS EN TAQUILLA (ART. 18 — MODELO 3) */}
+            <div className="mt-4 p-3.5 rounded-xl bg-slate-950/90 border border-emerald-500/40 space-y-2.5 shadow-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                  <Award className="w-3.5 h-3.5 text-emerald-400" />
+                  Módulo de Liquidación y Retención IGF (Art. 18)
+                </span>
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  Modelo 3 • 16% IGF
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-[10.5px] font-mono">
+                <div className="p-2 rounded-lg bg-slate-900 border border-slate-800">
+                  <div className="text-[9.5px] text-slate-400">Premios Acertados (2 Sorteos):</div>
+                  <div className="font-extrabold text-white text-xs mt-0.5">
+                    Bs. {formatIntBs(combinedGrossPrize)}
+                  </div>
+                  <div className="text-[9px] text-slate-500">600k (Trip) + 30k (Anim)</div>
+                </div>
+
+                <div className="p-2 rounded-lg bg-amber-950/30 border border-amber-800/40">
+                  <div className="text-[9.5px] text-amber-400">Retención 16% IGF:</div>
+                  <div className="font-extrabold text-amber-300 text-xs mt-0.5">
+                    -Bs. {formatIntBs(combinedIgf16)}
+                  </div>
+                  <div className="text-[9px] text-amber-400/80">-96k (Trip) + -4.8k (Anim)</div>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsPrizeModalOpen(true)}
+                className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/60 transition-all cursor-pointer font-mono"
+              >
+                <Award className="w-4 h-4 text-emerald-200" />
+                <span>Pagar Premio / Liquidar Retención IGF (Art. 18)</span>
+              </button>
+            </div>
           </div>
 
           {/* Acciones Ejecutivas: Emitir Ticket a SCFD */}
@@ -727,6 +771,14 @@ export const Module1POS: React.FC<Module1POSProps> = ({
               <Layers className="w-4 h-4" />
               {showBoth ? "Mostrando Ambos Tickets (Separados)" : "Ver Ambos Tickets (Triples + Animalitos)"}
             </button>
+            <button
+              type="button"
+              onClick={() => setIsPrizeModalOpen(true)}
+              className="px-3 py-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/50 text-emerald-300 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer font-mono"
+            >
+              <Award className="w-4 h-4 text-emerald-400" />
+              <span>Abrir Modelo 3: Comprobante (Art. 18)</span>
+            </button>
           </div>
         </div>
 
@@ -862,6 +914,23 @@ export const Module1POS: React.FC<Module1POSProps> = ({
           />
         )}
       </div>
+
+      {/* Motor Oficial de Liquidación y Retención de Premios (Art. 18 — Modelo 3) Copiado en Taquilla */}
+      <PrizeWithholdingModal
+        isOpen={isPrizeModalOpen}
+        onClose={() => setIsPrizeModalOpen(false)}
+        triplesModality={modalities.triples}
+        triplesPlays={triplesPlays.length > 0 ? triplesPlays : buildFullTirajePlays("triples", 1000)}
+        triplesTicketNumber={triplesTicketNumber}
+        triplesDrawNumber={drawNumber}
+        animalitosModality={modalities.animalitos}
+        animalitosPlays={animalitosPlays.length > 0 ? animalitosPlays : buildFullTirajePlays("animalitos", 1000)}
+        animalitosTicketNumber={animalitosTicketNumber}
+        animalitosDrawNumber={drawNumber}
+        initialTab="both"
+        dateTimeStr={dateTimeStr}
+        onEmitWithholdingToSCFD={onEmitWithholdingToSCFD}
+      />
     </div>
   );
 };
