@@ -175,7 +175,7 @@ export default function LlaveMovilPage() {
     const origin =
       typeof window !== "undefined"
         ? window.location.origin
-        : "http://67.205.150.98:3000";
+        : "https://simulador.site";
     const text = [
       "*ACCESO AUTORIZADO — SIMULADOR SCFD / RUNLOT*",
       `🔗 *Enlace:* ${origin}`,
