@@ -29,7 +29,7 @@ export async function middleware(request: NextRequest) {
         { status: 401 }
       );
     }
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.rewrite(new URL("/login", request.url));
   }
 
   try {

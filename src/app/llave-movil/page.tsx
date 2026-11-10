@@ -284,11 +284,18 @@ export default function LlaveMovilPage() {
               <div className="relative">
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  type={showPin ? "text" : "password"}
+                  type="text"
                   value={ownerPin}
                   onChange={(e) => setOwnerPin(e.target.value)}
-                  placeholder="PIN Maestro"
+                  placeholder="PIN de Control"
                   autoFocus
+                  autoComplete="off"
+                  spellCheck={false}
+                  style={
+                    showPin
+                      ? undefined
+                      : ({ WebkitTextSecurity: "disc" } as React.CSSProperties)
+                  }
                   className="w-full pl-10 pr-11 py-3.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-base font-bold tracking-wider focus:outline-none focus:border-emerald-500"
                 />
                 <button
@@ -571,7 +578,7 @@ export default function LlaveMovilPage() {
                 type="text"
                 value={customGuestCode}
                 onChange={(e) => setCustomGuestCode(e.target.value)}
-                placeholder="Ej: Seniat2026*"
+                placeholder="Ej: Invitado2026*"
                 className="flex-1 px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-xs font-bold focus:outline-none focus:border-blue-500"
               />
               <button
@@ -612,17 +619,23 @@ export default function LlaveMovilPage() {
                 Define el PIN con el que entras desde tu teléfono a esta pantalla (`/llave-movil`).
               </p>
               <input
-                type="password"
+                type="text"
                 value={newOwnerPin}
                 onChange={(e) => setNewOwnerPin(e.target.value)}
-                placeholder="Nuevo PIN Maestro (mín. 4 caracteres)"
+                placeholder="Nuevo PIN de Control (mín. 4 caracteres)"
+                autoComplete="off"
+                spellCheck={false}
+                style={{ WebkitTextSecurity: "disc" } as React.CSSProperties}
                 className="w-full px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-xs font-bold"
               />
               <input
-                type="password"
+                type="text"
                 value={confirmOwnerPin}
                 onChange={(e) => setConfirmOwnerPin(e.target.value)}
-                placeholder="Confirmar Nuevo PIN Maestro"
+                placeholder="Confirmar Nuevo PIN de Control"
+                autoComplete="off"
+                spellCheck={false}
+                style={{ WebkitTextSecurity: "disc" } as React.CSSProperties}
                 className="w-full px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-xs font-bold"
               />
               <button

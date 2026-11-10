@@ -3,9 +3,9 @@ import "./globals.css";
 import SecurityGuard from "@/components/SecurityGuard";
 
 export const metadata: Metadata = {
-  title: "Simulador Ejecutivo SCFD / RUNLOT | Reforma Tributaria SENIAT - CONALOT",
+  title: "Simulador Ejecutivo de Flujo Operativo | Modelo Matemático GGR",
   description:
-    "Simulador Ejecutivo de Reforma Tributaria y Fiscalización Digital en Tiempo Real (SCFD / RUNLOT) — Transición Valor Facial Bruto vs. Modelo GGR (CIAT) y Operaciones por Cuenta de Terceros (Arts. 32 y 33 Providencia SNAT/2026/00093).",
+    "Plataforma interactiva de simulación matemática, proyección financiera y arquitectura de red en tiempo real.",
 };
 
 export default function RootLayout({

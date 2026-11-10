@@ -91,25 +91,25 @@ function LoginContent() {
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono uppercase tracking-widest text-blue-400 font-bold">
-                CDAPUESTAS • SCFD / RUNLOT
+                SIMULADOR EJECUTIVO • MODELO GGR
               </span>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-bold">
-                Acceso Protegido JWT
+                Sala Interactiva
               </span>
             </div>
             <h1 className="text-sm sm:text-base font-extrabold text-white mt-0.5">
-              Propuesta Técnica y Reforma Tributaria (SENIAT / CONALOT)
+              Presentación Técnica y Financiera de Red Operativa
             </h1>
           </div>
         </div>
 
         <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-400 bg-slate-900/90 px-3 py-1.5 rounded-lg border border-slate-800">
           <Server className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Nodo Homologado: SYS-RUN-009</span>
+          <span>Nodo: SYS-RUN-009</span>
         </div>
       </header>
 
-      {/* Tarjeta Central de Login Único */}
+      {/* Tarjeta Central de Invitación */}
       <main className="relative z-10 w-full max-w-md mx-auto my-auto py-8">
         <div className="bg-slate-900/95 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
           <div className="text-center space-y-2">
@@ -117,10 +117,10 @@ function LoginContent() {
               <Lock className="w-7 h-7" />
             </div>
             <h2 className="text-xl font-black tracking-tight text-white">
-              Acceso a Presentación Ejecutiva
+              Sala de Presentación Ejecutiva
             </h2>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Ingrese el <strong className="text-slate-200">Código Temporal de Acceso</strong> suministrado por el propietario del proyecto para visualizar el Simulador Tributario SCFD / RUNLOT.
+              Introduzca el <strong className="text-slate-200">Código de Invitación Temporal</strong> suministrado por el anfitrión para abrir el simulador interactivo.
             </p>
           </div>
 
@@ -131,20 +131,31 @@ function LoginContent() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-4">
             <div>
               <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 font-bold mb-2">
-                Código / Clave de Acceso Autorizado
+                Código de Invitación a la Presentación
               </label>
               <div className="relative">
                 <KeyRound className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  type={showCode ? "text" : "password"}
+                  type="text"
                   value={accessCode}
                   onChange={(e) => setAccessCode(e.target.value)}
-                  placeholder="Ej: SCFD-XXXX o clave asignada"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleSubmit(e as unknown as React.FormEvent);
+                    }
+                  }}
+                  placeholder="Ej: SCFD-XXXX"
                   autoFocus
                   autoComplete="off"
+                  spellCheck={false}
+                  style={
+                    showCode
+                      ? undefined
+                      : ({ WebkitTextSecurity: "disc" } as React.CSSProperties)
+                  }
                   className="w-full pl-10 pr-11 py-3 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-sm font-bold tracking-wider placeholder:text-slate-600 focus:outline-none focus:border-blue-500 transition-colors"
                 />
                 <button
@@ -163,31 +174,32 @@ function LoginContent() {
             </div>
 
             <button
-              type="submit"
+              type="button"
+              onClick={(e) => handleSubmit(e as unknown as React.FormEvent)}
               disabled={loading}
               className="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-blue-950/60 transition-all cursor-pointer font-mono"
             >
               <span>
                 {loading
-                  ? "Verificando Token Criptográfico..."
-                  : "Ingresar al Simulador SCFD"}
+                  ? "Validando Invitación..."
+                  : "Abrir Simulador Interactivo"}
               </span>
               <ArrowRight className="w-4 h-4" />
             </button>
-          </form>
+          </div>
 
           <div className="pt-4 border-t border-slate-800/80 space-y-2 text-[11px] font-mono text-slate-400">
             <div className="flex items-center justify-between">
               <span className="flex items-center gap-1.5">
                 <Fingerprint className="w-3.5 h-3.5 text-emerald-400" />
-                Huella Anti-Copia:
+                Sesión Interactiva:
               </span>
-              <span className="text-slate-300 font-bold">SHA-256 + JWT HS256</span>
+              <span className="text-slate-300 font-bold">SHA-256 + JWT</span>
             </div>
             <div className="flex items-center justify-between">
-              <span>Marco Normativo:</span>
+              <span>Modo de Visualización:</span>
               <span className="text-amber-400 font-bold">
-                Prov. SNAT/2026/00093
+                Demostración Técnica en Vivo
               </span>
             </div>
           </div>
