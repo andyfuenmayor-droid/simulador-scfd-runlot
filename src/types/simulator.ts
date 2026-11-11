@@ -189,6 +189,10 @@ export interface RecordedRaffleTicket {
   ticketNumber: string;
   series: string;
   selectedNumber: string;
+  isFullTiraje?: boolean;
+  totalTirajeTickets?: number;
+  totalTirajeUsd?: number;
+  totalTirajeBs?: number;
   drawReference: string;
   drawDate: string;
   modalityId: RaffleModalityId;

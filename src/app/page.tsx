@@ -8,6 +8,7 @@ import {
   GameModalityConfig,
   GameModalityId,
   RecordedPOSTicket,
+  RecordedRaffleTicket,
   SCFDTransactionLog,
 } from "@/types/simulator";
 import {
@@ -261,6 +262,73 @@ export default function SimulatorDashboardPage() {
   const totalSalesRecordedInPOS = useMemo(() => {
     return recordedTicketsForCalc.reduce((acc, t) => acc + t.totalFacial, 0);
   }, [recordedTicketsForCalc]);
+
+  // Tirajes de Rifas efectivamente emitidos en caja cargados por defecto con Tiraje Completo Opción A (1.000 boletos)
+  const [emittedRaffleTickets, setEmittedRaffleTickets] = useState<
+    RecordedRaffleTicket[]
+  >(() => {
+    const bcv = 40;
+    const priceUsd = 10;
+    const totalQty = 1000;
+    const totalUsd = totalQty * priceUsd;
+    const totalBs = totalUsd * bcv;
+    const vehUsd = totalUsd * 0.7;
+    const vehBs = vehUsd * bcv;
+    const cashUsd = 1000;
+    const cashBs = cashUsd * bcv;
+    const hash = generateDeterministicSha256("RIFA-TIRAJE-1000-TACHIRA-INIT");
+
+    return [
+      {
+        ticketNumber: "TIRAJE-000001",
+        series: "A",
+        selectedNumber: "000 AL 999 (TIRAJE COMPLETO)",
+        isFullTiraje: true,
+        totalTirajeTickets: 1000,
+        totalTirajeUsd: totalUsd,
+        totalTirajeBs: totalBs,
+        drawReference: "Sorteo Triple Táchira (16:30 hrs - IOBPAS Táchira)",
+        drawDate: "15/12/2026",
+        modalityId: "rifa_triples_1000",
+        modalityName: "Rifa de Triples (1.000 Números • 000 al 999)",
+        ticketPriceUsd: priceUsd,
+        ticketPriceBs: priceUsd * bcv,
+        bcvRate: bcv,
+        vehiclePrizeUsd: vehUsd,
+        vehiclePrizeBs: vehBs,
+        cashPrizeUsd: cashUsd,
+        cashPrizeBs: cashBs,
+        cashIgf16Usd: cashUsd * 0.16,
+        cashIgf16Bs: cashBs * 0.16,
+        vehicleIgf16Usd: vehUsd * 0.16,
+        vehicleIgf16Bs: vehBs * 0.16,
+        sha256Hash: hash,
+        runlotCode: "RUN-RIF-2026-0042",
+        solvencyCode: "SOLV-CONALOT-0089",
+        timestamp: "15/12/2026 14:30:00",
+        status: "EMITIDO_EN_CAJA",
+      },
+    ];
+  });
+
+  const totalRaffleSalesRecorded = useMemo(() => {
+    return emittedRaffleTickets.reduce((acc, t) => {
+      return (
+        acc +
+        (t.isFullTiraje
+          ? t.totalTirajeBs || t.ticketPriceBs
+          : t.ticketPriceBs)
+      );
+    }, 0);
+  }, [emittedRaffleTickets]);
+
+  const handleEmitRaffleTicket = (newRaffleTicket: RecordedRaffleTicket) => {
+    setEmittedRaffleTickets((prev) => [newRaffleTicket, ...prev]);
+  };
+
+  const handleClearRaffleTickets = () => {
+    setEmittedRaffleTickets([]);
+  };
 
   // Bitácora de transacciones en vivo para el Módulo 3 cargada con los tirajes iniciales
   const [telemetryLogs, setTelemetryLogs] = useState<SCFDTransactionLog[]>(() => {
@@ -619,19 +687,44 @@ export default function SimulatorDashboardPage() {
               <div className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
                 <span className="font-mono text-slate-300">
-                  {emittedTickets.length > 0
-                    ? `Ventas Grabadas (${emittedTickets.length}): `
-                    : "Ticket/Tiraje POS: "}
-                  <strong className="text-emerald-400">
-                    Bs. {formatBs(totalSalesRecordedInPOS, 2)}
-                  </strong>
+                  {ecosystemMode === "rifas" ? (
+                    <>
+                      Ventas Rifas ({emittedRaffleTickets.length}):{" "}
+                      <strong className="text-purple-400">
+                        Bs. {formatBs(totalRaffleSalesRecorded, 2)}
+                      </strong>{" "}
+                      <span className="text-[11px] text-slate-400">
+                        (${Math.round(totalRaffleSalesRecorded / 40).toLocaleString()} USD)
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      {emittedTickets.length > 0
+                        ? `Ventas Grabadas (${emittedTickets.length}): `
+                        : "Ticket/Tiraje POS: "}
+                      <strong className="text-emerald-400">
+                        Bs. {formatBs(totalSalesRecordedInPOS, 2)}
+                      </strong>
+                    </>
+                  )}
                 </span>
               </div>
               <div className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 font-mono text-slate-300">
-                Modalidad Activa:{" "}
-                <strong className="text-blue-400">
-                  {currentModality.shortName} ({currentModality.multiplier}x • Payout {currentModality.standardPayoutPct}%)
-                </strong>
+                {ecosystemMode === "rifas" ? (
+                  <span>
+                    Modalidad Activa:{" "}
+                    <strong className="text-purple-400">
+                      Rifas Ocasionales y Permanentes (CONALOT/P/2025-001)
+                    </strong>
+                  </span>
+                ) : (
+                  <span>
+                    Modalidad Activa:{" "}
+                    <strong className="text-blue-400">
+                      {currentModality.shortName} ({currentModality.multiplier}x • Payout {currentModality.standardPayoutPct}%)
+                    </strong>
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -709,7 +802,7 @@ export default function SimulatorDashboardPage() {
                   <span>Módulo 1</span>
                   {ecosystemMode === "rifas" ? (
                     <span className="px-1 py-0.2 rounded bg-purple-500/20 text-purple-300 text-[8px]">
-                      RIFAS
+                      {emittedRaffleTickets.length} RIFAS
                     </span>
                   ) : (
                     emittedTickets.length > 0 && (
@@ -883,6 +976,9 @@ export default function SimulatorDashboardPage() {
         {activeTab === "module1" && (
           ecosystemMode === "rifas" ? (
             <Module1RifasPOS
+              emittedRaffleTickets={emittedRaffleTickets}
+              onEmitRaffleTicket={handleEmitRaffleTicket}
+              onClearRaffleTickets={handleClearRaffleTickets}
               onGoToCalculator={() => setActiveTab("module2")}
               onGoToIGF={() => setActiveTab("module_igf")}
             />
