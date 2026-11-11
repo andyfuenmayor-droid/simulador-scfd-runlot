@@ -28,6 +28,10 @@ import {
   Table,
   AlertCircle,
   FileText,
+  Scale,
+  Gavel,
+  AlertTriangle,
+  ShieldAlert,
 } from "lucide-react";
 import { RecordedPOSTicket } from "@/types/simulator";
 
@@ -35,6 +39,7 @@ interface Module4TributosEntesProps {
   recordedTickets?: RecordedPOSTicket[];
   onGoToPOS?: () => void;
   onGoToModule2?: () => void;
+  ecosystemMode?: "loteria" | "rifas";
 }
 
 type SubTabId =
@@ -43,7 +48,8 @@ type SubTabId =
   | "iobpas"
   | "seniat"
   | "conalot"
-  | "proyecciones";
+  | "proyecciones"
+  | "colision_rifas";
 
 type RunlotCategory =
   | "iobpas"
@@ -57,8 +63,18 @@ type RunlotCategory =
 export function Module4TributosEntes({
   recordedTickets = [],
   onGoToPOS,
+  ecosystemMode = "loteria",
 }: Module4TributosEntesProps) {
-  const [activeSubTab, setActiveSubTab] = useState<SubTabId>("tablas_hub");
+  const [activeSubTab, setActiveSubTab] = useState<SubTabId>(() =>
+    ecosystemMode === "rifas" ? "colision_rifas" : "tablas_hub"
+  );
+
+  useEffect(() => {
+    if (ecosystemMode === "rifas") {
+      setActiveSubTab("colision_rifas");
+    }
+  }, [ecosystemMode]);
+
   const [activeRunlotCategory, setActiveRunlotCategory] =
     useState<RunlotCategory>("sistemas_informaticos");
   const [selectedTicketFilter, setSelectedTicketFilter] =
@@ -778,7 +794,7 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
         </div>
 
         {/* NAVEGACIÓN POR CARPETAS / SUBNIVELES */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mt-5 pt-4 border-t border-slate-800">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 mt-5 pt-4 border-t border-slate-800">
           <button
             type="button"
             onClick={() => setActiveSubTab("tablas_hub")}
@@ -915,6 +931,30 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                 Subcarpeta
               </div>
               <div className="text-xs font-bold truncate">Simulador Multi-Actor</div>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveSubTab("colision_rifas")}
+            className={`p-3 rounded-xl border text-left transition-all flex items-center gap-2.5 cursor-pointer col-span-2 sm:col-span-1 ${
+              activeSubTab === "colision_rifas"
+                ? "bg-gradient-to-r from-rose-950/80 to-purple-950/80 border-rose-500 text-white shadow-md shadow-rose-950/50 ring-1 ring-rose-500/50"
+                : "bg-slate-950/60 border-slate-800 text-slate-400 hover:text-rose-300 hover:border-rose-900/60"
+            }`}
+          >
+            <Scale
+              className={`w-4 h-4 shrink-0 ${
+                activeSubTab === "colision_rifas"
+                  ? "text-rose-400 animate-pulse"
+                  : "text-slate-500"
+              }`}
+            />
+            <div className="min-w-0">
+              <div className="text-[10px] font-mono uppercase text-rose-400 font-bold flex items-center gap-1">
+                <span>Dictamen</span>
+              </div>
+              <div className="text-xs font-bold truncate">Colisión Rifas</div>
             </div>
           </button>
         </div>
@@ -4022,6 +4062,267 @@ TOTAL RECAUDACIÓN ESTATAL: Bs. ${formatBs(projTotalRecaudacionPublica, 2)}
                     </td>
                     <td className="p-3 text-right font-mono text-emerald-700 dark:text-emerald-400 font-bold">
                       Bs. {formatBs(projOperadoraUtilidadNeta, 2)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ====================================================================
+          SUBTAB: ANÁLISIS DE COLISIÓN LEGAL (CONALOT/P/2025-001 vs IOBPAS)
+      ==================================================================== */}
+      {activeSubTab === "colision_rifas" && (
+        <div className="space-y-6 animate-fadeIn">
+          {/* BANNER PRINCIPAL DE DICTAMEN LEGAL */}
+          <div className="bg-gradient-to-r from-rose-950/70 via-slate-900 to-purple-950/70 border-2 border-rose-500/40 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="p-3.5 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-400 shrink-0">
+                  <Scale className="w-8 h-8" />
+                </div>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                    <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 font-extrabold uppercase">
+                      Dictamen Jurídico • Derecho Administrativo & Tributario
+                    </span>
+                    <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                      G.O. #42.981 (CONALOT/P/2025-001)
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-black text-white tracking-tight">
+                    Análisis de Colisión Legal: Providencia de Rifas CONALOT/P/2025-001 vs. Ley Nacional de Lotería e IOBPAS
+                  </h3>
+                  <p className="text-xs text-slate-300 mt-1 max-w-4xl leading-relaxed">
+                    Evaluación de incompatibilidad estructural entre la regulación de rifas dictada por CONALOT (09/01/2025), el mandato de beneficencia pública regional de las Instituciones Oficiales de Beneficencia Pública y Asistencia Social (IOBPAS), la Reserva Legal Tributaria (Art. 317 CRBV) y la Providencia SENIAT/2026/00093.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-stretch lg:items-center gap-2 font-mono text-xs shrink-0">
+                <div className="px-3 py-2 bg-slate-950/80 border border-rose-500/30 rounded-xl text-center">
+                  <div className="text-[10px] text-slate-400 uppercase font-sans">Canon IOBPAS en Rifa</div>
+                  <div className="text-rose-400 font-extrabold text-sm">0,00% (Despojo)</div>
+                </div>
+                <div className="px-3 py-2 bg-slate-950/80 border border-purple-500/30 rounded-xl text-center">
+                  <div className="text-[10px] text-slate-400 uppercase font-sans">Aporte Anticipado CONALOT</div>
+                  <div className="text-purple-400 font-extrabold text-sm">7,00% s/ 100% Emisión</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 3 TARJETAS EJECUTIVAS DE CONFLICTO Y SOLUCIÓN */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* TARJETA 1: RESPONSABILIDAD SIN BENEFICIO IOBPAS */}
+            <div className="bg-slate-900 border-2 border-rose-500/30 hover:border-rose-500/60 transition-all rounded-2xl p-5 shadow-xl flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-black uppercase px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                    Conflicto 1 • Despojo Operativo
+                  </span>
+                  <ShieldAlert className="w-5 h-5 text-rose-400" />
+                </div>
+
+                <h4 className="text-base font-bold text-white flex items-center gap-2">
+                  <span>1. Responsabilidad sin Beneficio para las IOBPAS</span>
+                </h4>
+
+                <div className="space-y-3 text-xs text-slate-300 leading-relaxed font-sans">
+                  <div className="p-3 bg-slate-950/70 border border-rose-900/40 rounded-xl">
+                    <p className="font-semibold text-rose-300 mb-1">
+                      Dependencia técnica de Sorteos Oficiales:
+                    </p>
+                    <p className="text-[11px] text-slate-400">
+                      Las rifas autorizadas por CONALOT utilizan obligatoriamente los sorteos oficiales de las IOBPAS (<strong className="text-white">Triple Táchira</strong> para 1.000 números y <strong className="text-white">Súper Gana</strong> para 10.000 números, Art. 7 núms. 6 y 7). El Art. 6 (núms. 3, 5 y 11) del Reglamento de Rifas exige que la apuesta sea respaldada e interconectada al servidor de la IOBPAS para gozar de fe pública.
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-xl">
+                    <p className="font-semibold text-amber-300 mb-1">
+                      Asignación del 0% de ingresos y lavado de manos:
+                    </p>
+                    <p className="text-[11px] text-slate-400">
+                      Pese a utilizar su infraestructura, marca y fe pública, la Providencia CONALOT/P/2025-001 asigna <strong className="text-rose-400">0% de ingresos</strong> a la IOBPAS. Simultáneamente, en el <strong className="text-white">Art. 31</strong>, CONALOT se exime de toda responsabilidad civil, laboral o mercantil frente a ganadores, dejando a la IOBPAS y al operador expuestos al reclamo público.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] font-mono text-rose-400 font-bold flex items-center justify-between">
+                <span>Vulneración:</span>
+                <span className="text-slate-400">Art. 1 Ley Nacional de Lotería</span>
+              </div>
+            </div>
+
+            {/* TARJETA 2: DESVÍO DEL 7% ANTICIPADO Y RESERVA LEGAL */}
+            <div className="bg-slate-900 border-2 border-purple-500/30 hover:border-purple-500/60 transition-all rounded-2xl p-5 shadow-xl flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-black uppercase px-2.5 py-1 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/40">
+                    Conflicto 2 • Ilegalidad Fiscal
+                  </span>
+                  <AlertTriangle className="w-5 h-5 text-purple-400" />
+                </div>
+
+                <h4 className="text-base font-bold text-white flex items-center gap-2">
+                  <span>2. Desvío del 7% Anticipado a CONALOT</span>
+                </h4>
+
+                <div className="space-y-3 text-xs text-slate-300 leading-relaxed font-sans">
+                  <div className="p-3 bg-slate-950/70 border border-purple-900/40 rounded-xl">
+                    <p className="font-semibold text-purple-300 mb-1">
+                      Exacción previa s/ 100% de la emisión (Art. 28):
+                    </p>
+                    <p className="text-[11px] text-slate-400">
+                      CONALOT impone el pago anticipado de un <strong className="text-white">7% sobre el 100% del valor total emitido</strong>, antes de iniciar la venta. Sumado a las tasas de RUNLOT y Solvencia en TCMMV (Art. 32) y un peaje del <strong className="text-white">1,5% s/ ventas brutas</strong> a empresas de software homologado, asfixia al operador antes de generar flujo de caja.
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-xl">
+                    <p className="font-semibold text-amber-300 mb-1">
+                      Violación de la Reserva Legal (Art. 317 CRBV):
+                    </p>
+                    <p className="text-[11px] text-slate-400">
+                      La creación de contribuciones obligatorias mediante providencia administrativa usurpa la competencia legislativa de la AN. Además, estos fondos se concentran en el ente regulador nacional, sustrayéndolos del destino legal originario: los hospitales, ambulatorios y ancianatos de los estados regionales.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] font-mono text-purple-400 font-bold flex items-center justify-between">
+                <span>Vulneración:</span>
+                <span className="text-slate-400">Art. 317 CRBV & Art. 28 Providencia</span>
+              </div>
+            </div>
+
+            {/* TARJETA 3: SOLUCIÓN DE ARMONIZACIÓN INTEGRAL */}
+            <div className="bg-slate-900 border-2 border-emerald-500/40 hover:border-emerald-500/70 transition-all rounded-2xl p-5 shadow-xl flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-black uppercase px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                    Solución de Estado • Propuesta SCFD
+                  </span>
+                  <Gavel className="w-5 h-5 text-emerald-400" />
+                </div>
+
+                <h4 className="text-base font-bold text-white flex items-center gap-2">
+                  <span>3. Solución de Armonización Integral (GGR)</span>
+                </h4>
+
+                <div className="space-y-3 text-xs text-slate-300 leading-relaxed font-sans">
+                  <div className="p-3 bg-slate-950/70 border border-emerald-900/40 rounded-xl">
+                    <p className="font-semibold text-emerald-300 mb-1">
+                      Gravamen exclusivo sobre GGR Real:
+                    </p>
+                    <p className="text-[11px] text-slate-400">
+                      Migrar de la base facial teórica al <strong className="text-white">Gross Gaming Revenue real</strong> (Venta efectiva de boletos menos el costo real de los premios entregados: Vehículo + $1.000 metálico). Elimina el pago anticipado sobre boletos invendidos.
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-xl">
+                    <p className="font-semibold text-cyan-300 mb-1">
+                      Restitución a IOBPAS & Red Abierta CDAPUESTAS:
+                    </p>
+                    <p className="text-[11px] text-slate-400">
+                      Asignar un <strong className="text-emerald-400">5% del GGR a la IOBPAS</strong> dueña del sorteo. Reemplazar el Art. 27 autorizando a Taquillas y Comercializadoras a vender bajo <strong className="text-white">Cuentas de Terceros (Arts. 32-33 SENIAT)</strong> con fiscalización abierta en tiempo real mediante el switch SYS-CDAPUESTAS / RUNLOT sin peajes confiscatorios del 1,5%.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] font-mono text-emerald-400 font-bold flex items-center justify-between">
+                <span>Fundamento:</span>
+                <span className="text-slate-400">Arts. 32-33 SENIAT / Switch SCFD</span>
+              </div>
+            </div>
+          </div>
+
+          {/* MATRIZ COMPARATIVA DETALLADA DE IMPACTO */}
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl overflow-hidden">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <FileText className="w-5 h-5 text-blue-400" />
+                <h4 className="text-sm font-bold text-white uppercase font-mono tracking-wider">
+                  Matriz Comparativa: Régimen CONALOT 2025-001 vs. Reforma Armonizada GGR (CDAPUESTAS)
+                </h4>
+              </div>
+              <span className="text-[11px] font-mono text-slate-400">
+                5 Puntos Críticos de Conflicto
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs text-left border-collapse font-sans">
+                <thead>
+                  <tr className="bg-slate-950 text-slate-400 font-mono text-[11px] uppercase border-b border-slate-800">
+                    <th className="p-3">Variable Regulatoria</th>
+                    <th className="p-3 text-rose-300 bg-rose-950/20">Providencia CONALOT/P/2025-001 (Vigente)</th>
+                    <th className="p-3 text-emerald-300 bg-emerald-950/20">Reforma Armonizada GGR (Propuesta CDAPUESTAS)</th>
+                    <th className="p-3">Impacto Sistémico</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y border-t border-slate-800">
+                  <tr className="hover:bg-slate-800/30">
+                    <td className="p-3 font-semibold text-white">Sustento del Sorteo & IOBPAS</td>
+                    <td className="p-3 text-rose-300 font-mono">
+                      Usa sorteos IOBPAS oficiales (Triple Táchira / Súper Gana) con canon de <strong>0,00%</strong>
+                    </td>
+                    <td className="p-3 text-emerald-300 font-mono">
+                      Convenio formal IOBPAS con canon directo del <strong>5,00% sobre GGR</strong> para Beneficencia
+                    </td>
+                    <td className="p-3 text-slate-400">
+                      Restituye fondos a la salud regional de los estados (Art. 1 Ley Lotería).
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-800/30">
+                    <td className="p-3 font-semibold text-white">Base de Imposición y Momento</td>
+                    <td className="p-3 text-rose-300 font-mono">
+                      <strong>7% Anticipado s/ 100% Emisión</strong> (Art. 28) antes de vender boletos
+                    </td>
+                    <td className="p-3 text-emerald-300 font-mono">
+                      <strong>Liquidación Mensual s/ GGR Real</strong> (Boletos efectivamente vendidos - Premios)
+                    </td>
+                    <td className="p-3 text-slate-400">
+                      Garantiza solvencia operativa sin exigir liquidez previa por boletos no vendidos.
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-800/30">
+                    <td className="p-3 font-semibold text-white">Cadena de Comercialización</td>
+                    <td className="p-3 text-rose-300 font-mono">
+                      <strong>Prohibida (Art. 27)</strong>: Operadora debe vender directo al público
+                    </td>
+                    <td className="p-3 text-emerald-300 font-mono">
+                      <strong>Habilitada</strong>: Taquillas y Comercializadoras bajo Cuentas de Terceros (Arts. 32-33 SENIAT)
+                    </td>
+                    <td className="p-3 text-slate-400">
+                      Protege los puestos de trabajo de la red comercial y formaliza la tributación IAE (2,5%).
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-800/30">
+                    <td className="p-3 font-semibold text-white">Monitoreo Tecnológico y Costo</td>
+                    <td className="p-3 text-rose-300 font-mono">
+                      Exacción obligatoria de <strong>1,5% s/ Ventas Brutas</strong> a software privado
+                    </td>
+                    <td className="p-3 text-emerald-300 font-mono">
+                      Switch API Abierta <strong>SCFD / RUNLOT</strong> con firma RSA-4096 y auditoría pública
+                    </td>
+                    <td className="p-3 text-slate-400">
+                      Cero peaje confiscatorio privado; plena trazabilidad para el SENIAT e IOBPAS.
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-800/30">
+                    <td className="p-3 font-semibold text-white">Contradicción de Sorteo Desierto</td>
+                    <td className="p-3 text-rose-300 font-mono">
+                      <strong>Art. 25 inviable</strong>: Ordena repetir sorteo el mismo día en sorteo ajeno
+                    </td>
+                    <td className="p-3 text-emerald-300 font-mono">
+                      <strong>Protocolo Notarial</strong>: Balotas de contingencia o prórroga reglada ante Notaría
+                    </td>
+                    <td className="p-3 text-slate-400">
+                      Seguridad jurídica certera para apostadores sin colapsar el sistema.
                     </td>
                   </tr>
                 </tbody>

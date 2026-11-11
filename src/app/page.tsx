@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import {
   BetPlay,
+  EcosystemMode,
   GAME_MODALITIES,
   GameModalityConfig,
   GameModalityId,
@@ -19,6 +20,7 @@ import {
   isPlaysFullTiraje,
 } from "@/lib/cryptoUtils";
 import { Module1POS } from "@/components/Module1POS";
+import { Module1RifasPOS } from "@/components/Module1RifasPOS";
 import { Module2FinancialCalculator } from "@/components/Module2FinancialCalculator";
 import { ModuleMoneyRouteIGF } from "@/components/ModuleMoneyRouteIGF";
 import { Module4TributosEntes } from "@/components/Module4TributosEntes";
@@ -36,9 +38,8 @@ import {
   ShieldCheck,
   Sun,
   Terminal,
+  Ticket,
 } from "lucide-react";
-
-
 
 type ActiveTabId =
   | "module1"
@@ -50,6 +51,7 @@ type ActiveTabId =
 
 export default function SimulatorDashboardPage() {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [ecosystemMode, setEcosystemMode] = useState<EcosystemMode>("loteria");
   const [activeTab, setActiveTab] = useState<ActiveTabId>("module1");
   const [activeModalityId, setActiveModalityId] =
     useState<GameModalityId>("animalitos");
@@ -634,6 +636,54 @@ export default function SimulatorDashboardPage() {
             </div>
           </div>
 
+          {/* ====================================================================
+              SELECTOR MAESTRO DE ECOSISTEMA (SEGMENTED CONTROL EN EL HEADER)
+              Aislamiento Estricto: Lotería Tradicional vs. Rifas (CONALOT/P/2025-001)
+          ==================================================================== */}
+          <div className="mt-4 pt-3.5 border-t border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
+                Ecosistema:
+              </span>
+              <div className="inline-flex p-1 bg-slate-900 border border-slate-700/80 rounded-xl shadow-inner gap-1">
+                <button
+                  type="button"
+                  onClick={() => setEcosystemMode("loteria")}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                    ecosystemMode === "loteria"
+                      ? "bg-blue-600 text-white shadow-md shadow-blue-900/50"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  <span>🎯 Modo 1: Lotería Tradicional (Animalitos 38 / Triples 1.000)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEcosystemMode("rifas")}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                    ecosystemMode === "rifas"
+                      ? "bg-purple-600 text-white shadow-md shadow-purple-900/50"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  <span>🎟️ Modo 2: Rifas Ocasionales y Permanentes (CONALOT/P/2025-001)</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="text-xs font-mono">
+              {ecosystemMode === "loteria" ? (
+                <span className="text-blue-400">
+                  Marco: Lotería Tradicional • Triples & Animalitos • Cuentas de Terceros
+                </span>
+              ) : (
+                <span className="text-purple-300 font-bold">
+                  Marco: Providencia CONALOT/P/2025-001 • Vehículo 70% + $1.000 Metálico
+                </span>
+              )}
+            </div>
+          </div>
+
           {/* Barra de Navegación de los 6 Módulos Interactivos */}
           <nav className="mt-4 pt-3 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
             <button
@@ -641,26 +691,38 @@ export default function SimulatorDashboardPage() {
               onClick={() => setActiveTab("module1")}
               className={`p-3 rounded-xl border text-left transition-all flex items-center gap-2.5 cursor-pointer ${
                 activeTab === "module1"
-                  ? "bg-blue-600/20 border-blue-500 text-white shadow-md shadow-blue-950/50"
+                  ? ecosystemMode === "rifas"
+                    ? "bg-purple-600/20 border-purple-500 text-white shadow-md shadow-purple-950/50"
+                    : "bg-blue-600/20 border-blue-500 text-white shadow-md shadow-blue-950/50"
                   : "bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700"
               }`}
             >
-              <Printer
-                className={`w-4 h-4 shrink-0 ${
-                  activeTab === "module1" ? "text-blue-400" : "text-slate-500"
-                }`}
-              />
+              {ecosystemMode === "rifas" ? (
+                <Ticket className={`w-4 h-4 shrink-0 ${activeTab === "module1" ? "text-purple-400" : "text-slate-500"}`} />
+              ) : (
+                <Printer className={`w-4 h-4 shrink-0 ${activeTab === "module1" ? "text-blue-400" : "text-slate-500"}`} />
+              )}
               <div className="flex-1 min-w-0">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-blue-400 font-bold flex items-center justify-between">
+                <div className={`text-[10px] font-mono uppercase tracking-wider font-bold flex items-center justify-between ${
+                  ecosystemMode === "rifas" ? "text-purple-400" : "text-blue-400"
+                }`}>
                   <span>Módulo 1</span>
-                  {emittedTickets.length > 0 && (
-                    <span className="px-1 py-0.2 rounded bg-blue-500/20 text-blue-300 text-[8px]">
-                      {emittedTickets.length}
+                  {ecosystemMode === "rifas" ? (
+                    <span className="px-1 py-0.2 rounded bg-purple-500/20 text-purple-300 text-[8px]">
+                      RIFAS
                     </span>
+                  ) : (
+                    emittedTickets.length > 0 && (
+                      <span className="px-1 py-0.2 rounded bg-blue-500/20 text-blue-300 text-[8px]">
+                        {emittedTickets.length}
+                      </span>
+                    )
                   )}
                 </div>
                 <div className="text-xs font-extrabold leading-tight truncate">
-                  Terminal POS 80mm
+                  {ecosystemMode === "rifas"
+                    ? "Taquilla Rifas (CONALOT/P/2025-001)"
+                    : "Taquilla Lotería Tradicional"}
                 </div>
               </div>
             </button>
@@ -685,11 +747,13 @@ export default function SimulatorDashboardPage() {
                 <div className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold flex items-center justify-between">
                   <span>Módulo 2</span>
                   <span className="px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 text-[8px]">
-                    GGR
+                    {ecosystemMode === "rifas" ? "RIFAS" : "GGR"}
                   </span>
                 </div>
                 <div className="text-xs font-extrabold leading-tight truncate">
-                  Calculadora 3 Niveles
+                  {ecosystemMode === "rifas"
+                    ? "Calculadora Rifas (3 Niveles)"
+                    : "Calculadora 3 Niveles"}
                 </div>
               </div>
             </button>
@@ -718,7 +782,9 @@ export default function SimulatorDashboardPage() {
                   </span>
                 </div>
                 <div className="text-xs font-extrabold leading-tight truncate">
-                  Ruta del Dinero 16%
+                  {ecosystemMode === "rifas"
+                    ? "Ruta del Dinero IGF (Rifas)"
+                    : "Ruta del Dinero 16%"}
                 </div>
               </div>
             </button>
@@ -743,11 +809,13 @@ export default function SimulatorDashboardPage() {
                 <div className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold flex items-center justify-between">
                   <span>Módulo 4</span>
                   <span className="px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 text-[8px]">
-                    4 Entes
+                    {ecosystemMode === "rifas" ? "DICTAMEN" : "4 Entes"}
                   </span>
                 </div>
                 <div className="text-xs font-extrabold leading-tight truncate">
-                  Tributos & Proyección
+                  {ecosystemMode === "rifas"
+                    ? "Colisión CONALOT / IOBPAS"
+                    : "Tributos & Proyección"}
                 </div>
               </div>
             </button>
@@ -813,31 +881,39 @@ export default function SimulatorDashboardPage() {
       ==================================================================== */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8">
         {activeTab === "module1" && (
-          <Module1POS
-            modalities={GAME_MODALITIES}
-            activeModalityId={activeModalityId}
-            onSelectModality={handleSelectModality}
-            plays={currentPlays}
-            playsByModality={playsByModality}
-            onUpdatePlaysByModality={handleUpdatePlaysByModality}
-            timestampMs={timestampMs}
-            onUpdatePlays={handleUpdatePlays}
-            ticketNumber={ticketNumberStr}
-            drawNumber={drawNumber}
-            dateTimeStr={dateTimeStr}
-            sha256Hash={sha256Hash}
-            onEmitNewTicket={handleEmitNewTicket}
-            emittedTicketsCount={emittedTickets.length}
-            totalEmittedBs={emittedTickets.reduce(
-              (acc, t) => acc + t.totalFacial,
-              0
-            )}
-            onEmitWithholdingToSCFD={handleEmitWithholdingToSCFD}
-          />
+          ecosystemMode === "rifas" ? (
+            <Module1RifasPOS
+              onGoToCalculator={() => setActiveTab("module2")}
+              onGoToIGF={() => setActiveTab("module_igf")}
+            />
+          ) : (
+            <Module1POS
+              modalities={GAME_MODALITIES}
+              activeModalityId={activeModalityId}
+              onSelectModality={handleSelectModality}
+              plays={currentPlays}
+              playsByModality={playsByModality}
+              onUpdatePlaysByModality={handleUpdatePlaysByModality}
+              timestampMs={timestampMs}
+              onUpdatePlays={handleUpdatePlays}
+              ticketNumber={ticketNumberStr}
+              drawNumber={drawNumber}
+              dateTimeStr={dateTimeStr}
+              sha256Hash={sha256Hash}
+              onEmitNewTicket={handleEmitNewTicket}
+              emittedTicketsCount={emittedTickets.length}
+              totalEmittedBs={emittedTickets.reduce(
+                (acc, t) => acc + t.totalFacial,
+                0
+              )}
+              onEmitWithholdingToSCFD={handleEmitWithholdingToSCFD}
+            />
+          )
         )}
 
         {activeTab === "module2" && (
           <Module2FinancialCalculator
+            ecosystemMode={ecosystemMode}
             activeModalityId={activeModalityId}
             recordedTickets={recordedTicketsForCalc}
             hasEmittedTickets={emittedTickets.length > 0}
@@ -849,6 +925,7 @@ export default function SimulatorDashboardPage() {
 
         {activeTab === "module_igf" && (
           <ModuleMoneyRouteIGF
+            ecosystemMode={ecosystemMode}
             recordedTickets={recordedTicketsForCalc}
             onGoToPOS={() => setActiveTab("module1")}
             onGoToModule2={() => setActiveTab("module2")}
@@ -858,6 +935,7 @@ export default function SimulatorDashboardPage() {
 
         {activeTab === "module_tributos" && (
           <Module4TributosEntes
+            ecosystemMode={ecosystemMode}
             recordedTickets={recordedTicketsForCalc}
             onGoToPOS={() => setActiveTab("module1")}
             onGoToModule2={() => setActiveTab("module2")}

@@ -8,6 +8,8 @@ import {
   BetPlay,
 } from "@/types/simulator";
 import { PrizeWithholdingModal } from "./PrizeWithholdingModal";
+import { ModuleMoneyRouteRifasView } from "./ModuleMoneyRouteRifasView";
+import { ModuleMoneyRouteConsolidadoView } from "./ModuleMoneyRouteConsolidadoView";
 import {
   formatBs,
   formatIntBs,
@@ -46,6 +48,7 @@ interface ModuleMoneyRouteIGFProps {
   recordedTickets?: RecordedPOSTicket[];
   onGoToPOS?: () => void;
   onGoToModule2?: () => void;
+  ecosystemMode?: "loteria" | "rifas";
   onEmitWithholdingToSCFD?: (data: {
     winnerId: string;
     winningPlay: BetPlay;
@@ -60,8 +63,22 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
   recordedTickets = [],
   onGoToPOS,
   onGoToModule2,
+  ecosystemMode = "loteria",
   onEmitWithholdingToSCFD,
 }) => {
+  const [igfViewScope, setIgfViewScope] = useState<
+    "loteria" | "rifas" | "consolidado"
+  >(() => (ecosystemMode === "rifas" ? "rifas" : "loteria"));
+
+  // Sincronizar si cambia el selector maestro superior
+  React.useEffect(() => {
+    if (ecosystemMode === "rifas") {
+      setIgfViewScope("rifas");
+    } else {
+      setIgfViewScope("loteria");
+    }
+  }, [ecosystemMode]);
+
   const [activeStation, setActiveStation] = useState<number>(2); // Por defecto en estación 2 (Taquilla)
   const [selectedTicketFilter, setSelectedTicketFilter] =
     useState<string>("ALL");
@@ -460,63 +477,128 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
           </div>
         </div>
 
-        {/* SELECTOR DE TICKETS ACTIVOS / FILTROS DE TAQUILLA */}
-        <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-1 border-t border-slate-800/80">
-          <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
-            <Store className="w-4 h-4 text-blue-400" />
-            <span className="font-bold">Tickets en Taquilla ({sourceTickets.length}):</span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-1.5 font-mono text-xs">
+        {/* SELECTOR SUPERIOR DE PERSPECTIVA: LOTERÍA TRADICIONAL VS RIFAS VS CONSOLIDADO */}
+        <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-3 border-t border-slate-800">
+          <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-950 rounded-xl border border-slate-800 text-xs font-mono">
             <button
               type="button"
-              onClick={() => setSelectedTicketFilter("ALL")}
-              className={`px-2.5 py-1 rounded-lg border transition-all ${
-                selectedTicketFilter === "ALL"
-                  ? "bg-blue-600/20 border-blue-500 text-blue-300 font-bold"
-                  : "bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200"
+              onClick={() => setIgfViewScope("loteria")}
+              className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                igfViewScope === "loteria"
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "text-slate-400 hover:text-white"
               }`}
             >
-              Todos ({sourceTickets.length})
+              <span>🎯 Ver Lotería Tradicional</span>
             </button>
-            {sourceTickets.some((t) => t.modalityId === "triples") && (
-              <button
-                type="button"
-                onClick={() => setSelectedTicketFilter("MOD_TRIPLES")}
-                className={`px-2.5 py-1 rounded-lg border transition-all ${
-                  selectedTicketFilter === "MOD_TRIPLES"
-                    ? "bg-amber-500/20 border-amber-500 text-amber-300 font-bold"
-                    : "bg-slate-950 border-slate-800 text-slate-400 hover:text-amber-300"
-                }`}
-              >
-                Solo Triples
-              </button>
+            <button
+              type="button"
+              onClick={() => setIgfViewScope("rifas")}
+              className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                igfViewScope === "rifas"
+                  ? "bg-purple-600 text-white shadow-sm"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <span>🎟️ Ver Rifas (Vehículo + Metálico)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setIgfViewScope("consolidado")}
+              className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                igfViewScope === "consolidado"
+                  ? "bg-emerald-600 text-white shadow-sm"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <span>🏛️ Consolidado Fiscal SENIAT (Ambos)</span>
+            </button>
+          </div>
+
+          <div className="text-xs font-mono text-slate-400">
+            {igfViewScope === "loteria" && (
+              <span>Modo: Triples (600x) & Animalitos (30x)</span>
             )}
-            {sourceTickets.some((t) => t.modalityId === "animalitos") && (
-              <button
-                type="button"
-                onClick={() => setSelectedTicketFilter("MOD_ANIMALITOS")}
-                className={`px-2.5 py-1 rounded-lg border transition-all ${
-                  selectedTicketFilter === "MOD_ANIMALITOS"
-                    ? "bg-emerald-500/20 border-emerald-500 text-emerald-300 font-bold"
-                    : "bg-slate-950 border-slate-800 text-slate-400 hover:text-emerald-300"
-                }`}
-              >
-                Solo Animalitos
-              </button>
+            {igfViewScope === "rifas" && (
+              <span className="text-purple-300 font-bold">Modo: Providencia CONALOT/P/2025-001</span>
             )}
-            {onGoToPOS && (
-              <button
-                type="button"
-                onClick={onGoToPOS}
-                className="text-[11px] text-blue-400 hover:underline flex items-center gap-1 ml-1"
-              >
-                + Cargar en POS
-              </button>
+            {igfViewScope === "consolidado" && (
+              <span className="text-emerald-400 font-bold">Planilla 99029 Masiva Unificada</span>
             )}
           </div>
         </div>
+
+        {igfViewScope === "loteria" && (
+          /* SELECTOR DE TICKETS ACTIVOS / FILTROS DE TAQUILLA */
+          <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-1 border-t border-slate-800/80">
+            <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
+              <Store className="w-4 h-4 text-blue-400" />
+              <span className="font-bold">Tickets en Taquilla ({sourceTickets.length}):</span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1.5 font-mono text-xs">
+              <button
+                type="button"
+                onClick={() => setSelectedTicketFilter("ALL")}
+                className={`px-2.5 py-1 rounded-lg border transition-all ${
+                  selectedTicketFilter === "ALL"
+                    ? "bg-blue-600/20 border-blue-500 text-blue-300 font-bold"
+                    : "bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                Todos ({sourceTickets.length})
+              </button>
+              {sourceTickets.some((t) => t.modalityId === "triples") && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedTicketFilter("MOD_TRIPLES")}
+                  className={`px-2.5 py-1 rounded-lg border transition-all ${
+                    selectedTicketFilter === "MOD_TRIPLES"
+                      ? "bg-amber-500/20 border-amber-500 text-amber-300 font-bold"
+                      : "bg-slate-950 border-slate-800 text-slate-400 hover:text-amber-300"
+                  }`}
+                >
+                  Solo Triples
+                </button>
+              )}
+              {sourceTickets.some((t) => t.modalityId === "animalitos") && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedTicketFilter("MOD_ANIMALITOS")}
+                  className={`px-2.5 py-1 rounded-lg border transition-all ${
+                    selectedTicketFilter === "MOD_ANIMALITOS"
+                      ? "bg-emerald-500/20 border-emerald-500 text-emerald-300 font-bold"
+                      : "bg-slate-950 border-slate-800 text-slate-400 hover:text-emerald-300"
+                  }`}
+                >
+                  Solo Animalitos
+                </button>
+              )}
+              {onGoToPOS && (
+                <button
+                  type="button"
+                  onClick={onGoToPOS}
+                  className="text-[11px] text-blue-400 hover:underline flex items-center gap-1 ml-1"
+                >
+                  + Cargar en POS
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* CONTENIDO ESPECÍFICO SEGÚN EL SELECTOR DE PERSPECTIVA */}
+      {igfViewScope === "rifas" && (
+        <ModuleMoneyRouteRifasView onGoToPOS={onGoToPOS} />
+      )}
+
+      {igfViewScope === "consolidado" && (
+        <ModuleMoneyRouteConsolidadoView lotteryTickets={sourceTickets} />
+      )}
+
+      {igfViewScope === "loteria" && (
+        <>
 
       {/* AVISO DE ESTADO CUANDO LA TAQUILLA ESTÁ EN BLANCO */}
       {!hasRealTickets && (
@@ -1173,6 +1255,8 @@ export const ModuleMoneyRouteIGF: React.FC<ModuleMoneyRouteIGFProps> = ({
           </span>
         </div>
       </div>
+      </>
+      )}
 
 
 

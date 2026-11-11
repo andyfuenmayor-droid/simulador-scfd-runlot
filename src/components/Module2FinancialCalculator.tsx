@@ -15,6 +15,7 @@ import {
   generateSeniatWithholdingXML,
 } from "@/lib/cryptoUtils";
 import { COMMISSION_TIERS } from "@/components/ModuleCommissionsTier";
+import { Module2RifasCalculatorView } from "@/components/Module2RifasCalculatorView";
 import {
   AlertOctagon,
   ArrowRight,
@@ -247,6 +248,7 @@ interface Module2FinancialCalculatorProps {
   onRemoveTicket: (ticketNumber: string) => void;
   onClearEmittedTickets: () => void;
   onGoToPOS: () => void;
+  ecosystemMode?: "loteria" | "rifas";
 }
 
 export const Module2FinancialCalculator: React.FC<
@@ -258,7 +260,11 @@ export const Module2FinancialCalculator: React.FC<
   onRemoveTicket,
   onClearEmittedTickets,
   onGoToPOS,
+  ecosystemMode = "loteria",
 }) => {
+  if (ecosystemMode === "rifas") {
+    return <Module2RifasCalculatorView onGoToPOS={onGoToPOS} />;
+  }
   const [activeFolder, setActiveFolder] =
     useState<ActiveFolderLevel>("nivel1");
   const [selectedTicketFilter, setSelectedTicketFilter] =

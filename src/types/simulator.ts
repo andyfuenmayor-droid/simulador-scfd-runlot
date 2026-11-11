@@ -121,3 +121,93 @@ export interface SCFDTransactionLog {
   timestampMs: number;
   payload: Record<string, unknown>;
 }
+
+// ============================================================================
+// VERTICAL DE RIFAS OCASIONALES Y PERMANENTES (PROVIDENCIA CONALOT/P/2025-001)
+// ============================================================================
+
+export type EcosystemMode = "loteria" | "rifas";
+
+export type RaffleModalityId = "rifa_triples_1000" | "rifa_supergana_10000";
+
+export interface RaffleConfig {
+  id: RaffleModalityId;
+  name: string;
+  shortName: string;
+  totalNumbers: number;
+  numberRangeLabel: string;
+  lotteryDrawReference: string;
+  legalArticle: string;
+  defaultTicketPriceUsd: number;
+  defaultBcvRate: number;
+  vehiclePrizePercentage: number; // 70% del valor total de emisión
+  vehicleName: string;
+  defaultCashPrizeUsd: number; // $1.000 USD
+  conalotAdvanceAportePct: number; // 7% Art. 28
+  softwareCanonPct: number; // 1.5%
+  minSalesQuorumPct: number; // 70% Art. 20
+}
+
+export const RAFFLE_MODALITIES: Record<RaffleModalityId, RaffleConfig> = {
+  rifa_triples_1000: {
+    id: "rifa_triples_1000",
+    name: "Rifa de Triples (1.000 Números • 000 al 999)",
+    shortName: "Rifa Triples (1.000 Números)",
+    totalNumbers: 1000,
+    numberRangeLabel: "000 al 999 (1.000 Boletos)",
+    lotteryDrawReference: "Sorteo Triple Táchira (16:30 hrs - IOBPAS Táchira)",
+    legalArticle: "Art. 7 num. 6 Providencia CONALOT/P/2025-001",
+    defaultTicketPriceUsd: 10,
+    defaultBcvRate: 40,
+    vehiclePrizePercentage: 70,
+    vehicleName: "Vehículo 0 Km (Toyota Yaris Sedan 2026)",
+    defaultCashPrizeUsd: 1000,
+    conalotAdvanceAportePct: 7,
+    softwareCanonPct: 1.5,
+    minSalesQuorumPct: 70,
+  },
+  rifa_supergana_10000: {
+    id: "rifa_supergana_10000",
+    name: "Rifa Menor 4 Cifras (10.000 Números • 0000 al 9999)",
+    shortName: "Rifa Menor (10.000 Números)",
+    totalNumbers: 10000,
+    numberRangeLabel: "0000 al 9999 (10.000 Boletos)",
+    lotteryDrawReference: "Sorteo Súper Gana de la Lotería del Táchira",
+    legalArticle: "Art. 7 num. 7 Providencia CONALOT/P/2025-001",
+    defaultTicketPriceUsd: 2,
+    defaultBcvRate: 40,
+    vehiclePrizePercentage: 70,
+    vehicleName: "Vehículo 0 Km (Camioneta Pickup 4x4 2026)",
+    defaultCashPrizeUsd: 1000,
+    conalotAdvanceAportePct: 7,
+    softwareCanonPct: 1.5,
+    minSalesQuorumPct: 70,
+  },
+};
+
+export interface RecordedRaffleTicket {
+  ticketNumber: string;
+  series: string;
+  selectedNumber: string;
+  drawReference: string;
+  drawDate: string;
+  modalityId: RaffleModalityId;
+  modalityName: string;
+  ticketPriceUsd: number;
+  ticketPriceBs: number;
+  bcvRate: number;
+  vehiclePrizeUsd: number;
+  vehiclePrizeBs: number;
+  cashPrizeUsd: number;
+  cashPrizeBs: number;
+  cashIgf16Usd: number;
+  cashIgf16Bs: number;
+  vehicleIgf16Usd: number;
+  vehicleIgf16Bs: number;
+  sha256Hash: string;
+  runlotCode: string;
+  solvencyCode: string;
+  timestamp: string;
+  status: "EMITIDO_EN_CAJA" | "EN_PANTALLA_POS";
+}
+
