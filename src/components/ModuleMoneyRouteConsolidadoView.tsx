@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RecordedPOSTicket } from "@/types/simulator";
 import { formatBs, generateDeterministicSha256 } from "@/lib/cryptoUtils";
 import {
@@ -27,7 +27,18 @@ interface ModuleMoneyRouteConsolidadoViewProps {
 export const ModuleMoneyRouteConsolidadoView: React.FC<
   ModuleMoneyRouteConsolidadoViewProps
 > = ({ lotteryTickets = [] }) => {
-  const bcvRate = 40;
+  const [bcvRate, setBcvRate] = useState<number>(901.62);
+
+  useEffect(() => {
+    fetch("/api/bcv")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && typeof data.rate === "number" && data.rate > 0) {
+          setBcvRate(data.rate);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Totales Lotería
   const lotTotalSales = lotteryTickets.reduce((a, b) => a + b.totalFacial, 0);

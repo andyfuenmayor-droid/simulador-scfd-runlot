@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { formatBs, generateDeterministicSha256 } from "@/lib/cryptoUtils";
 import {
   Award,
@@ -17,6 +17,7 @@ import {
   Lock,
   Printer,
   QrCode,
+  RotateCcw,
   Scale,
   ShieldAlert,
   ShieldCheck,
@@ -32,7 +33,8 @@ interface ModuleMoneyRouteRifasViewProps {
 export const ModuleMoneyRouteRifasView: React.FC<
   ModuleMoneyRouteRifasViewProps
 > = ({ onGoToPOS }) => {
-  const [bcvRate, setBcvRate] = useState<number>(40);
+  const [bcvRate, setBcvRate] = useState<number>(901.62);
+  const [isFetchingBcv, setIsFetchingBcv] = useState<boolean>(false);
   const [vehicleValueUsd, setVehicleValueUsd] = useState<number>(7000);
   const [cashPrizeUsd, setCashPrizeUsd] = useState<number>(1000);
   const [activeTabSubway, setActiveTabSubway] = useState<"metalico" | "especie">(
@@ -40,6 +42,27 @@ export const ModuleMoneyRouteRifasView: React.FC<
   );
   const [showModelo3Modal, setShowModelo3Modal] = useState<boolean>(false);
   const [copiedHash, setCopiedHash] = useState<boolean>(false);
+
+  const fetchBcvRate = async () => {
+    try {
+      setIsFetchingBcv(true);
+      const res = await fetch("/api/bcv");
+      if (res.ok) {
+        const data = await res.json();
+        if (data && typeof data.rate === "number" && data.rate > 0) {
+          setBcvRate(data.rate);
+        }
+      }
+    } catch (err) {
+      console.warn("Error consultando API BCV:", err);
+    } finally {
+      setIsFetchingBcv(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBcvRate();
+  }, []);
 
   // Cálculos en Bolívares
   const vehicleValueBs = vehicleValueUsd * bcvRate;
@@ -68,9 +91,25 @@ export const ModuleMoneyRouteRifasView: React.FC<
             <Scale className="w-5 h-5 text-purple-400" />
             <span>Liquidación Dual del 16% IGF en Rifas (Art. 65 LISLR + Art. 18 SENIAT)</span>
           </div>
-          <span className="text-xs font-mono text-purple-300 bg-purple-500/20 px-2.5 py-0.5 rounded border border-purple-500/30 font-bold">
-            Concepto 077 SENIAT
-          </span>
+          <div className="flex items-center gap-2">
+            <div className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-[11px] font-mono flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-slate-400">BCV Oficial:</span>{" "}
+              <strong className="text-emerald-400">Bs. {formatBs(bcvRate, 2)}</strong>
+              <button
+                type="button"
+                onClick={fetchBcvRate}
+                disabled={isFetchingBcv}
+                className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-emerald-400 transition-colors ml-1 cursor-pointer"
+                title="Sincronizar tasa oficial del BCV en tiempo real"
+              >
+                <RotateCcw className={`w-3 h-3 ${isFetchingBcv ? "animate-spin text-amber-400" : ""}`} />
+              </button>
+            </div>
+            <span className="text-xs font-mono text-purple-300 bg-purple-500/20 px-2.5 py-1 rounded border border-purple-500/30 font-bold">
+              Concepto 077 SENIAT
+            </span>
+          </div>
         </div>
         <p className="text-xs text-slate-300 leading-relaxed max-w-4xl">
           El régimen de retención del Impuesto a las Ganancias Fortuitas (16% IGF) opera bajo dos mecánicas tributarias totalmente distintas según la naturaleza del premio: retención directa sobre premios en metálico (caja) y entero previo sobre bienes muebles en especie (vehículos 0 Km) para emisión del <strong>Comprobante Modelo 3</strong> y posterior <strong>Acta de Entrega de Premios (Art. 25 Providencia CONALOT)</strong>.

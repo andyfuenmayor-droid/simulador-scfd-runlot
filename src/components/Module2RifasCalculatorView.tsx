@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RaffleModalityId, RAFFLE_MODALITIES } from "@/types/simulator";
 import { formatBs } from "@/lib/cryptoUtils";
 import {
@@ -17,6 +17,7 @@ import {
   Info,
   Landmark,
   Layers,
+  RotateCcw,
   Scale,
   ShieldAlert,
   ShieldCheck,
@@ -40,8 +41,30 @@ export const Module2RifasCalculatorView: React.FC<
   const [activeRaffleId, setActiveRaffleId] =
     useState<RaffleModalityId>("rifa_triples_1000");
 
-  const [bcvRate, setBcvRate] = useState<number>(40);
+  const [bcvRate, setBcvRate] = useState<number>(901.62);
+  const [isFetchingBcv, setIsFetchingBcv] = useState<boolean>(false);
   const [soldPercentage, setSoldPercentage] = useState<number>(100);
+
+  const fetchBcvRate = async () => {
+    try {
+      setIsFetchingBcv(true);
+      const res = await fetch("/api/bcv");
+      if (res.ok) {
+        const data = await res.json();
+        if (data && typeof data.rate === "number" && data.rate > 0) {
+          setBcvRate(data.rate);
+        }
+      }
+    } catch (err) {
+      console.warn("Error consultando API BCV:", err);
+    } finally {
+      setIsFetchingBcv(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBcvRate();
+  }, []);
 
   const config = RAFFLE_MODALITIES[activeRaffleId];
   const ticketPriceUsd = config.defaultTicketPriceUsd;
@@ -195,9 +218,19 @@ export const Module2RifasCalculatorView: React.FC<
               </button>
             </div>
 
-            <div className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono">
-              <span className="text-slate-400">BCV:</span>{" "}
+            <div className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-slate-400">BCV Oficial:</span>{" "}
               <strong className="text-emerald-400">Bs. {formatBs(bcvRate, 2)}</strong>
+              <button
+                type="button"
+                onClick={fetchBcvRate}
+                disabled={isFetchingBcv}
+                className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-emerald-400 transition-colors ml-1 cursor-pointer"
+                title="Sincronizar tasa oficial del BCV en tiempo real"
+              >
+                <RotateCcw className={`w-3 h-3 ${isFetchingBcv ? "animate-spin text-amber-400" : ""}`} />
+              </button>
             </div>
           </div>
         </div>

@@ -267,7 +267,7 @@ export default function SimulatorDashboardPage() {
   const [emittedRaffleTickets, setEmittedRaffleTickets] = useState<
     RecordedRaffleTicket[]
   >(() => {
-    const bcv = 40;
+    const bcv = 901.62;
     const priceUsd = 10;
     const totalQty = 1000;
     const totalUsd = totalQty * priceUsd;

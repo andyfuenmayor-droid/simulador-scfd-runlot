@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   RaffleModalityId,
   RAFFLE_MODALITIES,
@@ -53,8 +53,42 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
 
   const config = RAFFLE_MODALITIES[activeRaffleId];
 
-  // Parámetros interactivos editables
-  const [bcvRate, setBcvRate] = useState<number>(40);
+  // Parámetros interactivos editables con conexión al API del BCV
+  const [bcvRate, setBcvRate] = useState<number>(901.62);
+  const [isFetchingBcv, setIsFetchingBcv] = useState<boolean>(false);
+  const [bcvSource, setBcvSource] = useState<string>("API BCV Oficial");
+  const [bcvLastUpdated, setBcvLastUpdated] = useState<string>("");
+
+  const fetchBcvRate = async () => {
+    try {
+      setIsFetchingBcv(true);
+      const res = await fetch("/api/bcv");
+      if (res.ok) {
+        const data = await res.json();
+        if (data && typeof data.rate === "number" && data.rate > 0) {
+          setBcvRate(data.rate);
+          setBcvSource(data.source || "Banco Central de Venezuela");
+          if (data.lastUpdated) {
+            try {
+              const d = new Date(data.lastUpdated);
+              setBcvLastUpdated(d.toLocaleDateString("es-VE"));
+            } catch {
+              setBcvLastUpdated("");
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("No se pudo obtener la tasa BCV:", err);
+    } finally {
+      setIsFetchingBcv(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBcvRate();
+  }, []);
+
   const [ticketPriceUsd, setTicketPriceUsd] = useState<number>(
     config.defaultTicketPriceUsd
   );
@@ -265,11 +299,21 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <div className="px-3.5 py-2 rounded-xl bg-slate-900/90 border border-slate-800 text-xs font-mono">
+            <div className="px-3.5 py-2 rounded-xl bg-slate-900/90 border border-slate-800 text-xs font-mono flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-slate-400">Tasa Oficial BCV:</span>{" "}
               <strong className="text-emerald-400">
                 Bs. {formatBs(bcvRate, 2)} / USD
               </strong>
+              <button
+                type="button"
+                onClick={fetchBcvRate}
+                disabled={isFetchingBcv}
+                className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-emerald-400 transition-colors ml-1 cursor-pointer"
+                title="Sincronizar en tiempo real con API oficial del BCV"
+              >
+                <RotateCcw className={`w-3.5 h-3.5 ${isFetchingBcv ? "animate-spin text-amber-400" : ""}`} />
+              </button>
             </div>
             {onGoToCalculator && (
               <button
@@ -401,22 +445,42 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
               </div>
 
               <div>
-                <label className="block text-[11px] font-mono text-slate-400 font-semibold mb-1">
-                  Tasa BCV (Bs.):
-                </label>
-                <input
-                  type="number"
-                  min={1}
-                  step={0.5}
-                  value={bcvRate}
-                  onChange={(e) =>
-                    setBcvRate(Math.max(1, Number(e.target.value)))
-                  }
-                  className="w-full px-2 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white font-mono font-bold text-sm focus:border-emerald-500 focus:outline-none"
-                />
-                <span className="block text-[10px] font-mono text-slate-400 mt-0.5">
-                  Factor oficial
-                </span>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-[11px] font-mono text-slate-400 font-semibold flex items-center gap-1.5">
+                    <span>Tasa BCV (Bs.):</span>
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" title="Conexión API en vivo" />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={fetchBcvRate}
+                    disabled={isFetchingBcv}
+                    className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/25 transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
+                    title="Actualizar tasa desde el API oficial del BCV"
+                  >
+                    <RotateCcw className={`w-2.5 h-2.5 ${isFetchingBcv ? "animate-spin text-amber-400" : ""}`} />
+                    <span>{isFetchingBcv ? "Consultando..." : "API BCV"}</span>
+                  </button>
+                </div>
+                <div className="relative">
+                  <input
+                    type="number"
+                    min={1}
+                    step={0.01}
+                    value={bcvRate}
+                    onChange={(e) =>
+                      setBcvRate(Math.max(1, Number(e.target.value)))
+                    }
+                    className="w-full px-2 py-1.5 rounded-lg bg-slate-950 border border-emerald-500/50 text-emerald-400 font-mono font-bold text-sm focus:border-emerald-400 focus:outline-none"
+                  />
+                </div>
+                <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 mt-0.5">
+                  <span className="text-emerald-400 flex items-center gap-1">
+                    ✓ En vivo BCV
+                  </span>
+                  {bcvLastUpdated && (
+                    <span className="text-slate-500">{bcvLastUpdated}</span>
+                  )}
+                </div>
               </div>
 
               <div className="col-span-2 sm:col-span-1">
