@@ -403,3 +403,4 @@ export const ModuleMoneyRouteRifasView: React.FC<
     </div>
   );
 };
+

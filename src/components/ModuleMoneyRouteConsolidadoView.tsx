@@ -269,3 +269,4 @@ export const ModuleMoneyRouteConsolidadoView: React.FC<
     </div>
   );
 };
+

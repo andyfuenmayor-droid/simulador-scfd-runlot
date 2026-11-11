@@ -692,3 +692,4 @@ export const Module2RifasCalculatorView: React.FC<
     </div>
   );
 };
+

@@ -860,3 +860,4 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
     </div>
   );
 };
+
