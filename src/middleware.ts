@@ -9,10 +9,13 @@ export async function middleware(request: NextRequest) {
   // Rutas públicas y enlace de llave móvil (protegido por su propio PIN Maestro)
   if (
     pathname.startsWith("/api/auth") ||
+    pathname.startsWith("/api/bcv") ||
     pathname === "/login" ||
     pathname.startsWith("/llave-movil") ||
     pathname.startsWith("/_next") ||
-    pathname === "/favicon.ico"
+    pathname === "/favicon.ico" ||
+    pathname === "/robots.txt" ||
+    pathname === "/sitemap.xml"
   ) {
     return NextResponse.next();
   }

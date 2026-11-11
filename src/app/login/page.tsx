@@ -206,6 +206,11 @@ function LoginContent() {
         </div>
       </main>
 
+      {/* Aviso de no suplantación para bots y verificación Google */}
+      <div className="relative z-10 max-w-md mx-auto text-center px-4 text-[10px] text-slate-500 leading-relaxed font-sans pb-2">
+        Aviso de Transparencia: Este sitio es una plataforma privada de modelado matemático, simulación financiera y análisis tributario. No recopila datos bancarios ni credenciales de usuario de entidades externas.
+      </div>
+
       {/* Pie de página de propiedad intelectual */}
       <footer className="relative z-10 text-center text-[11px] font-mono text-slate-500 pb-2">
         Propiedad Intelectual Protegida • Prohibida su reproducción o inspección sin autorización expresa.
