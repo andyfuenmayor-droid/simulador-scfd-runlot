@@ -6,7 +6,7 @@ import {
   RAFFLE_MODALITIES,
   RecordedRaffleTicket,
 } from "@/types/simulator";
-import { formatBs, generateDeterministicSha256 } from "@/lib/cryptoUtils";
+import { formatBs, formatIntBs, generateDeterministicSha256 } from "@/lib/cryptoUtils";
 import {
   AlertOctagon,
   AlertTriangle,
@@ -145,6 +145,143 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
   // Totales de Premiación (Vehículo 70% + Metálico)
   const totalPrizesUsd = vehiclePrizeUsd + cashPrizeUsd;
   const totalPrizesBs = vehiclePrizeBs + cashPrizeBs;
+
+  // Retención Total 16% IGF (Metálico + Vehículo)
+  const totalIgf16Usd = cashIgf16Usd + vehicleIgf16Usd;
+  const totalIgf16Bs = cashIgf16Bs + vehicleIgf16Bs;
+  const totalNetPrizeUsd = totalPrizesUsd - totalIgf16Usd;
+  const totalNetPrizeBs = totalPrizesBs - totalIgf16Bs;
+
+  // Filas para la tabla térmica (igual que en Triples tradicional)
+  const is3Digits = activeRaffleId === "rifa_triples_1000";
+  const drawShortTag = is3Digits ? "Táchira" : "Súper Gana";
+
+  const samplePlays = useMemo(() => {
+    if (ticketViewMode === "unitario") {
+      const paddedNum = selectedNumber.padStart(is3Digits ? 3 : 4, "0");
+      return [
+        {
+          id: `single-${paddedNum}`,
+          option: `${paddedNum} ${drawShortTag}`,
+          amount: ticketPriceBs,
+          amountUsd: ticketPriceUsd,
+          isSummary: false,
+          combCount: 1,
+        },
+      ];
+    }
+
+    if (is3Digits) {
+      return [
+        {
+          id: "000",
+          option: `000 ${drawShortTag}`,
+          amount: ticketPriceBs,
+          amountUsd: ticketPriceUsd,
+          isSummary: false,
+          combCount: 1,
+        },
+        {
+          id: "001",
+          option: `001 ${drawShortTag}`,
+          amount: ticketPriceBs,
+          amountUsd: ticketPriceUsd,
+          isSummary: false,
+          combCount: 1,
+        },
+        {
+          id: "002",
+          option: `002 ${drawShortTag}`,
+          amount: ticketPriceBs,
+          amountUsd: ticketPriceUsd,
+          isSummary: false,
+          combCount: 1,
+        },
+        {
+          id: "serie-middle",
+          option: `SERIE 003 AL 997`,
+          amount: ticketPriceBs * 995,
+          amountUsd: ticketPriceUsd * 995,
+          isSummary: true,
+          combCount: 995,
+        },
+        {
+          id: "998",
+          option: `998 ${drawShortTag}`,
+          amount: ticketPriceBs,
+          amountUsd: ticketPriceUsd,
+          isSummary: false,
+          combCount: 1,
+        },
+        {
+          id: "999",
+          option: `999 ${drawShortTag}`,
+          amount: ticketPriceBs,
+          amountUsd: ticketPriceUsd,
+          isSummary: false,
+          combCount: 1,
+        },
+      ];
+    } else {
+      return [
+        {
+          id: "0000",
+          option: `0000 ${drawShortTag}`,
+          amount: ticketPriceBs,
+          amountUsd: ticketPriceUsd,
+          isSummary: false,
+          combCount: 1,
+        },
+        {
+          id: "0001",
+          option: `0001 ${drawShortTag}`,
+          amount: ticketPriceBs,
+          amountUsd: ticketPriceUsd,
+          isSummary: false,
+          combCount: 1,
+        },
+        {
+          id: "0002",
+          option: `0002 ${drawShortTag}`,
+          amount: ticketPriceBs,
+          amountUsd: ticketPriceUsd,
+          isSummary: false,
+          combCount: 1,
+        },
+        {
+          id: "serie-middle",
+          option: `SERIE 0003 AL 9997`,
+          amount: ticketPriceBs * 9995,
+          amountUsd: ticketPriceUsd * 9995,
+          isSummary: true,
+          combCount: 9995,
+        },
+        {
+          id: "9998",
+          option: `9998 ${drawShortTag}`,
+          amount: ticketPriceBs,
+          amountUsd: ticketPriceUsd,
+          isSummary: false,
+          combCount: 1,
+        },
+        {
+          id: "9999",
+          option: `9999 ${drawShortTag}`,
+          amount: ticketPriceBs,
+          amountUsd: ticketPriceUsd,
+          isSummary: false,
+          combCount: 1,
+        },
+      ];
+    }
+  }, [
+    ticketViewMode,
+    selectedNumber,
+    is3Digits,
+    drawShortTag,
+    ticketPriceBs,
+    ticketPriceUsd,
+  ]);
 
   // Boletos vendidos según el control deslizante
   const soldCount = Math.round((config.totalNumbers * soldPercentage) / 100);
@@ -893,33 +1030,98 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
 
                 {/* Detalle según modo unitario o tiraje completo */}
                 {ticketViewMode === "unitario" ? (
-                  <div className="text-center py-2.5 my-2 border-2 border-dashed !border-rose-700 rounded bg-rose-50/50">
+                  <div className="text-center py-2 my-1.5 border border-dashed !border-rose-700 rounded bg-rose-50/50">
                     <div className="text-[9px] uppercase tracking-widest font-extrabold !text-rose-900">
                       NÚMERO ASIGNADO EN BOLETO
                     </div>
-                    <div className="text-3xl font-black tracking-widest !text-slate-950 my-0.5">
+                    <div className="text-2xl font-black tracking-widest !text-slate-950 my-0.5">
                       {selectedNumber.padStart(
                         activeRaffleId === "rifa_triples_1000" ? 3 : 4,
                         "0"
                       )}
                     </div>
-                    <div className="text-[10.5px] font-bold text-rose-900">
+                    <div className="text-[10px] font-bold text-rose-900">
                       VALOR BOLETO: Bs. {formatBs(ticketPriceBs, 2)} (${ticketPriceUsd} USD)
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center py-2.5 my-2 border-2 border-dashed !border-rose-700 rounded bg-rose-50/50">
-                    <div className="text-[9px] uppercase tracking-widest font-extrabold !text-rose-900">
-                      MODO: TIRAJE COMPLETO EMITIDO (TALONARIO TOTAL)
-                    </div>
-                    <div className="text-xl font-black tracking-wider !text-slate-950 my-0.5">
-                      {config.numberRangeLabel}
-                    </div>
-                    <div className="text-[10.5px] font-bold text-rose-900">
-                      TOTAL {config.totalNumbers.toLocaleString()} BOLETOS = Bs. {formatBs(totalEmissionBs, 2)} (${totalEmissionUsd.toLocaleString()} USD)
-                    </div>
+                  <div
+                    className="p-1.5 mb-2 text-center font-bold text-[10px] rounded border"
+                    style={{
+                      backgroundColor: "#fef2f2",
+                      color: "#991b1b",
+                      borderColor: "#fecaca",
+                    }}
+                  >
+                    MODO: TIRAJE COMPLETO ({config.numberRangeLabel} ={" "}
+                    {config.totalNumbers.toLocaleString()} boletos × Bs.{" "}
+                    {formatIntBs(ticketPriceBs)} [${ticketPriceUsd} USD])
                   </div>
                 )}
+
+                {/* Encabezado Lista Simple */}
+                <div className="flex justify-between font-bold text-[10px] border-b border-dashed !border-slate-400 pb-1 mb-1.5 !text-slate-950">
+                  <span>DESCRIPCIÓN / BOLETO EMITIDO</span>
+                  <span>MONTO FACIAL</span>
+                </div>
+
+                {/* Filas de boletos (Solo Valor Facial) */}
+                <div className="space-y-1 mb-2 min-h-[48px]">
+                  {samplePlays.map((play) => (
+                    <div
+                      key={play.id}
+                      className={`flex justify-between items-center text-[10px] !text-slate-950 ${
+                        play.isSummary
+                          ? "py-0.5 px-1 rounded font-bold border border-dashed bg-slate-100 border-slate-300"
+                          : ""
+                      }`}
+                    >
+                      <span className="font-semibold">{play.option}</span>
+                      <span className="font-bold">
+                        {play.isSummary
+                          ? `Bs. ${formatIntBs(play.amount)}`
+                          : `Bs. ${formatIntBs(play.amount)} ($${play.amountUsd})`}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Cierre Total Factura y Serial Máquina Fiscal */}
+                <div className="border-t-2 border-b-2 border-double !border-slate-900 py-1.5 my-2">
+                  <div className="flex justify-between items-center font-extrabold text-[11px] !text-slate-950">
+                    <span>TOTAL FACTURA:</span>
+                    <span>
+                      Bs.{" "}
+                      {formatIntBs(
+                        ticketViewMode === "unitario"
+                          ? ticketPriceBs
+                          : totalEmissionBs
+                      )}
+                      <span className="text-[9px] font-normal ml-1 text-slate-700">
+                        ($
+                        {ticketViewMode === "unitario"
+                          ? ticketPriceUsd
+                          : totalEmissionUsd.toLocaleString()}{" "}
+                        USD)
+                      </span>
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-[9.5px] !text-slate-700 mt-0.5">
+                    <span>BASE IMPONIBLE ACUMULADA (100%):</span>
+                    <span>
+                      Bs.{" "}
+                      {formatIntBs(
+                        ticketViewMode === "unitario"
+                          ? ticketPriceBs
+                          : totalEmissionBs
+                      )}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="text-center font-bold text-[10px] !text-slate-950 tracking-wide my-1">
+                  MÁQUINA FISCAL SERIAL: Z1A2345678
+                </div>
 
                 {/* Plan de Premios en Modelo Actual */}
                 <div className="border-t border-b !border-slate-300 py-1.5 my-2 space-y-1 text-[10px]">
@@ -1069,47 +1271,157 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
 
                 {/* Detalle según modo unitario o tiraje completo */}
                 {ticketViewMode === "unitario" ? (
-                  <div className="text-center py-2.5 my-2 border-2 border-dashed !border-emerald-600 rounded bg-emerald-50/40">
+                  <div className="text-center py-2 my-1.5 border border-dashed !border-emerald-600 rounded bg-emerald-50/40">
                     <div className="text-[9px] uppercase tracking-widest font-extrabold !text-emerald-900">
                       NÚMERO ASIGNADO EN BOLETO
                     </div>
-                    <div className="text-3xl font-black tracking-widest !text-slate-950 my-0.5">
+                    <div className="text-2xl font-black tracking-widest !text-slate-950 my-0.5">
                       {selectedNumber.padStart(
                         activeRaffleId === "rifa_triples_1000" ? 3 : 4,
                         "0"
                       )}
                     </div>
-                    <div className="text-[10.5px] font-bold text-emerald-900">
+                    <div className="text-[10px] font-bold text-emerald-900">
                       VALOR BOLETO: Bs. {formatBs(ticketPriceBs, 2)} (${ticketPriceUsd} USD)
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center py-2.5 my-2 border-2 border-dashed !border-emerald-600 rounded bg-emerald-50/40">
-                    <div className="text-[9px] uppercase tracking-widest font-extrabold !text-emerald-900">
-                      TALONARIO Y TIRAJE COMPLETO HOMOLOGADO
-                    </div>
-                    <div className="text-xl font-black tracking-wider !text-slate-950 my-0.5">
-                      {config.numberRangeLabel}
-                    </div>
-                    <div className="text-[10.5px] font-bold text-emerald-900">
-                      TOTAL {config.totalNumbers.toLocaleString()} BOLETOS = Bs. {formatBs(totalEmissionBs, 2)} (${totalEmissionUsd.toLocaleString()} USD)
-                    </div>
+                  <div
+                    className="p-1.5 mb-2 text-center font-bold text-[10px] rounded border"
+                    style={{
+                      backgroundColor: "#ecfdf5",
+                      color: "#065f46",
+                      borderColor: "#a7f3d0",
+                    }}
+                  >
+                    TALONARIO Y TIRAJE COMPLETO HOMOLOGADO ({config.numberRangeLabel} ={" "}
+                    {config.totalNumbers.toLocaleString()} boletos)
                   </div>
                 )}
 
+                {/* Tabla Ultra Compacta en 1 sola línea por jugada (5 Columnas - EXACTAMENTE COMO TRIPLES) */}
+                <div className="mb-2">
+                  <div
+                    className="grid items-center font-extrabold text-[9px] border-b-2 !border-slate-900 pb-1 mb-1 !text-slate-950 whitespace-nowrap"
+                    style={{
+                      gridTemplateColumns: "25% 15% 21% 18% 21%",
+                    }}
+                  >
+                    <div className="text-left pr-1">OPCIÓN</div>
+                    <div className="text-right px-1">APUEST</div>
+                    <div className="text-right px-1">PREMIO BRUTO</div>
+                    <div className="text-right px-1">IGF 16%</div>
+                    <div className="text-right pl-1">NETO COBRAR</div>
+                  </div>
+
+                  <div className="space-y-1 min-h-[48px]">
+                    {samplePlays.map((play) => (
+                      <div
+                        key={play.id}
+                        className="grid items-center text-[9.5px] border-b border-dotted !border-slate-300 py-0.5 whitespace-nowrap"
+                        style={{
+                          gridTemplateColumns: "25% 15% 21% 18% 21%",
+                          backgroundColor: play.isSummary
+                            ? "#f8fafc"
+                            : "transparent",
+                        }}
+                      >
+                        <div
+                          className="font-bold !text-slate-950 truncate pr-1"
+                          title={play.option}
+                        >
+                          {play.option}
+                        </div>
+                        <div className="text-right font-semibold !text-slate-900 px-1">
+                          {play.isSummary
+                            ? `${play.combCount}×${formatIntBs(ticketPriceBs)}`
+                            : formatIntBs(play.amount)}
+                        </div>
+                        <div className="text-right font-bold !text-slate-950 px-1">
+                          {formatIntBs(totalPrizesBs)}
+                        </div>
+                        <div
+                          className="text-right font-bold px-1"
+                          style={{ color: "#dc2626" }}
+                        >
+                          -{formatIntBs(totalIgf16Bs)}
+                        </div>
+                        <div
+                          className="text-right font-extrabold pl-1"
+                          style={{ color: "#15803d" }}
+                        >
+                          {formatIntBs(totalNetPrizeBs)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Resumen Tiraje Completo / Retención 16% (IGUAL QUE TRIPLES) */}
+                <div className="p-2 my-1.5 rounded border border-dashed !border-slate-400 bg-slate-50 text-[9.5px] space-y-1">
+                  <div className="font-extrabold !text-slate-950 uppercase border-b border-slate-200 pb-0.5 flex justify-between items-center">
+                    <span>
+                      RESUMEN{" "}
+                      {ticketViewMode === "unitario"
+                        ? "BOLETO EN CAJA"
+                        : `TIRAJE COMPLETO (${config.totalNumbers.toLocaleString()} OPCIONES)`}
+                      :
+                    </span>
+                    <span className="text-[8.5px] font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded">
+                      Régimen Cuentas Terceros
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>• 1 Ganador Garantizado ({drawShortTag}):</span>
+                    <strong className="!text-slate-950">
+                      Bs. {formatIntBs(totalPrizesBs)}
+                      <span className="text-[8.5px] font-normal text-slate-600 ml-1">
+                        (${totalPrizesUsd.toLocaleString()} USD)
+                      </span>
+                    </strong>
+                  </div>
+                  <div className="text-[8.5px] text-slate-600 pl-2">
+                    Vehículo 0 Km (${vehiclePrizeUsd.toLocaleString()} USD) + Metálico (${cashPrizeUsd.toLocaleString()} USD)
+                  </div>
+                  <div className="flex justify-between items-center font-bold">
+                    <span className="text-rose-700">
+                      • Retención Total IGF 16% (Art. 18 SENIAT):
+                    </span>
+                    <span className="text-rose-700">
+                      -Bs. {formatIntBs(totalIgf16Bs)}
+                      <span className="text-[8.5px] font-normal ml-1">
+                        (-${totalIgf16Usd.toLocaleString()} USD)
+                      </span>
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center font-extrabold text-emerald-800">
+                    <span>• Premio Neto Total a Cobrar/Entregar:</span>
+                    <span>
+                      Bs. {formatIntBs(totalNetPrizeBs)}
+                      <span className="text-[8.5px] font-normal text-emerald-700 ml-1">
+                        (${totalNetPrizeUsd.toLocaleString()} USD)
+                      </span>
+                    </span>
+                  </div>
+                </div>
+
                 {/* Detalle del Plan de Premios Homologado */}
-                <div className="border-t border-b !border-slate-300 py-1.5 my-2 space-y-1 text-[10px]">
-                  <div className="font-extrabold uppercase !text-slate-900 text-center">
+                <div className="border-t border-b !border-slate-300 py-1.5 my-1.5 space-y-1 text-[9.5px]">
+                  <div className="font-extrabold uppercase !text-slate-900 text-center text-[10px]">
                     --- PLAN DE PREMIOS HOMOLOGADO ---
                   </div>
                   <div className="flex justify-between items-start">
                     <div>
-                      <div className="font-bold !text-slate-950">1. Premio Principal (Especie):</div>
-                      <div className="text-[9px] !text-slate-600">{config.vehicleName}</div>
+                      <div className="font-bold !text-slate-950">
+                        1. Premio Principal (Especie):
+                      </div>
+                      <div className="text-[8.5px] !text-slate-600">
+                        {config.vehicleName}
+                      </div>
                     </div>
                     <strong className="!text-slate-950 text-right">
                       ${vehiclePrizeUsd.toLocaleString()} USD
-                      <span className="block text-[8.5px] font-normal !text-slate-600">
+                      <span className="block text-[8px] font-normal !text-slate-600">
                         (Bs. {formatBs(vehiclePrizeBs, 2)})
                       </span>
                     </strong>
@@ -1117,35 +1429,76 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
 
                   <div className="flex justify-between items-start pt-1 border-t border-dotted !border-slate-300">
                     <div>
-                      <div className="font-bold !text-slate-950">2. Premios Secundarios (Metálico):</div>
-                      <div className="text-[9px] !text-slate-600">Aproximaciones en Caja</div>
+                      <div className="font-bold !text-slate-950">
+                        2. Premios Secundarios (Metálico):
+                      </div>
+                      <div className="text-[8.5px] !text-slate-600">
+                        Aproximaciones en Caja
+                      </div>
                     </div>
                     <strong className="!text-slate-950 text-right">
                       ${cashPrizeUsd.toLocaleString()} USD
-                      <span className="block text-[8.5px] font-normal !text-slate-600">
+                      <span className="block text-[8px] font-normal !text-slate-600">
                         (Bs. {formatBs(cashPrizeBs, 2)})
                       </span>
                     </strong>
                   </div>
                 </div>
 
-                {/* Liquidación 16% IGF SENIAT */}
-                <div className="bg-slate-50 p-2 rounded border !border-slate-300 mb-2 space-y-1 text-[9.5px] !text-slate-900">
-                  <div className="font-extrabold uppercase text-center text-[10px] !text-slate-950">
-                    LIQUIDACIÓN TRIBUTARIA 16% IGF (ART. 18 SENIAT)
+                {/* Liquidación 16% IGF SENIAT (Desglose Dual Metálico vs. Vehículo) */}
+                <div className="bg-slate-50 p-2 rounded border !border-slate-300 mb-2 space-y-1 text-[9px] !text-slate-900">
+                  <div className="font-extrabold uppercase text-center text-[9.5px] !text-slate-950">
+                    LIQUIDACIÓN DUAL 16% IGF (ART. 18 SENIAT + ART. 65 LISLR)
                   </div>
                   <div className="flex justify-between">
-                    <span>Metálico: Retención en Caja (16%):</span>
+                    <span>a) Metálico (${cashPrizeUsd.toLocaleString()}): Retención Caja (16%):</span>
                     <span className="font-bold text-rose-700">
                       -Bs. {formatBs(cashIgf16Bs, 2)} (-${cashIgf16Usd} USD)
                     </span>
                   </div>
-                  <div className="flex justify-between font-bold text-emerald-800">
-                    <span>Neto a Pagar en Efectivo (84%):</span>
-                    <span>Bs. {formatBs(cashNetPaidBs, 2)} (${cashNetPaidUsd} USD)</span>
+                  <div className="flex justify-between font-bold text-emerald-800 pl-2">
+                    <span>→ Neto Efectivo en Caja (84%):</span>
+                    <span>
+                      Bs. {formatBs(cashNetPaidBs, 2)} (${cashNetPaidUsd} USD)
+                    </span>
                   </div>
-                  <div className="pt-1 border-t border-slate-200 text-[9px] !text-slate-700 leading-snug">
-                    * <strong>Vehículo en Especie:</strong> Ganador entera el 16% (Bs. {formatBs(vehicleIgf16Bs, 2)}) ante Operadora para emitir Comprobante Modelo 3 y suscribir Acta Notariada (Art. 25).
+                  <div className="pt-1 border-t border-slate-200 flex justify-between">
+                    <span>
+                      b) Vehículo (${vehiclePrizeUsd.toLocaleString()}): Entero Ganador (16%):
+                    </span>
+                    <span className="font-bold text-amber-800">
+                      Bs. {formatBs(vehicleIgf16Bs, 2)} (${vehicleIgf16Usd} USD)
+                    </span>
+                  </div>
+                  <div className="text-[8.5px] !text-slate-600 pl-2 leading-snug">
+                    * Ganador entera/deposita el 16% ante la Operadora para emitir
+                    Comprobante Modelo 3 SENIAT y suscribir Acta Notariada (Art. 25).
+                  </div>
+                </div>
+
+                {/* Total Captado Terceros */}
+                <div className="border-t-2 border-b-2 border-double !border-slate-900 py-1.5 my-2">
+                  <div className="flex justify-between items-center font-extrabold text-[11px] !text-slate-950">
+                    <span>TOTAL CAPTADO (TERCEROS):</span>
+                    <span>
+                      Bs.{" "}
+                      {formatIntBs(
+                        ticketViewMode === "unitario"
+                          ? ticketPriceBs
+                          : totalEmissionBs
+                      )}
+                      <span className="text-[9px] font-normal ml-1 text-slate-700">
+                        ($
+                        {ticketViewMode === "unitario"
+                          ? ticketPriceUsd
+                          : totalEmissionUsd.toLocaleString()}{" "}
+                        USD)
+                      </span>
+                    </span>
+                  </div>
+                  <div className="text-[8.5px] text-slate-600 italic">
+                    &quot;Fondos en custodia (Arts. 32-33 Providencia). Base
+                    imponible propia s/comisión (Art. 29.1)&quot;
                   </div>
                 </div>
 
