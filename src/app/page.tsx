@@ -263,20 +263,33 @@ export default function SimulatorDashboardPage() {
     return recordedTicketsForCalc.reduce((acc, t) => acc + t.totalFacial, 0);
   }, [recordedTicketsForCalc]);
 
-  // Tirajes de Rifas efectivamente emitidos en caja cargados por defecto con Tiraje Completo Opción A (1.000 boletos)
+  // Tirajes de Rifas efectivamente emitidos en caja cargados por defecto con Ambas Ventas (Opción A 1.000 boletos @ $30 y Opción B 10.000 boletos @ $5)
   const [emittedRaffleTickets, setEmittedRaffleTickets] = useState<
     RecordedRaffleTicket[]
   >(() => {
-    const bcv = 901.62;
-    const priceUsd = 10;
-    const totalQty = 1000;
-    const totalUsd = totalQty * priceUsd;
-    const totalBs = totalUsd * bcv;
-    const vehUsd = totalUsd * 0.7;
-    const vehBs = vehUsd * bcv;
-    const cashUsd = 1000;
-    const cashBs = cashUsd * bcv;
-    const hash = generateDeterministicSha256("RIFA-TIRAJE-1000-TACHIRA-INIT");
+    const bcv = 904.45;
+
+    // Ticket 1: Opción A - Rifa de Triples (1.000 Números @ $30 USD = $30.000 USD)
+    const tripPriceUsd = 30;
+    const tripQty = 1000;
+    const tripTotalUsd = tripQty * tripPriceUsd; // $30.000 USD
+    const tripTotalBs = tripTotalUsd * bcv;
+    const tripVehUsd = tripTotalUsd * 0.7; // $21.000 USD
+    const tripVehBs = tripVehUsd * bcv;
+    const tripCashUsd = 1000;
+    const tripCashBs = tripCashUsd * bcv;
+    const tripHash = generateDeterministicSha256("RIFA-TIRAJE-1000-TRIPLES-30USD");
+
+    // Ticket 2: Opción B - Rifa Menor 4 Cifras (10.000 Números @ $5 USD = $50.000 USD)
+    const superPriceUsd = 5;
+    const superQty = 10000;
+    const superTotalUsd = superQty * superPriceUsd; // $50.000 USD
+    const superTotalBs = superTotalUsd * bcv;
+    const superVehUsd = superTotalUsd * 0.7; // $35.000 USD
+    const superVehBs = superVehUsd * bcv;
+    const superCashUsd = 1000;
+    const superCashBs = superCashUsd * bcv;
+    const superHash = generateDeterministicSha256("RIFA-TIRAJE-10000-SUPERGANA-5USD");
 
     return [
       {
@@ -284,28 +297,57 @@ export default function SimulatorDashboardPage() {
         series: "A",
         selectedNumber: "000 AL 999 (TIRAJE COMPLETO)",
         isFullTiraje: true,
-        totalTirajeTickets: 1000,
-        totalTirajeUsd: totalUsd,
-        totalTirajeBs: totalBs,
+        totalTirajeTickets: tripQty,
+        totalTirajeUsd: tripTotalUsd,
+        totalTirajeBs: tripTotalBs,
         drawReference: "Sorteo Triple Táchira (16:30 hrs - IOBPAS Táchira)",
         drawDate: "15/12/2026",
         modalityId: "rifa_triples_1000",
         modalityName: "Rifa de Triples (1.000 Números • 000 al 999)",
-        ticketPriceUsd: priceUsd,
-        ticketPriceBs: priceUsd * bcv,
+        ticketPriceUsd: tripPriceUsd,
+        ticketPriceBs: tripPriceUsd * bcv,
         bcvRate: bcv,
-        vehiclePrizeUsd: vehUsd,
-        vehiclePrizeBs: vehBs,
-        cashPrizeUsd: cashUsd,
-        cashPrizeBs: cashBs,
-        cashIgf16Usd: cashUsd * 0.16,
-        cashIgf16Bs: cashBs * 0.16,
-        vehicleIgf16Usd: vehUsd * 0.16,
-        vehicleIgf16Bs: vehBs * 0.16,
-        sha256Hash: hash,
+        vehiclePrizeUsd: tripVehUsd,
+        vehiclePrizeBs: tripVehBs,
+        cashPrizeUsd: tripCashUsd,
+        cashPrizeBs: tripCashBs,
+        cashIgf16Usd: tripCashUsd * 0.16,
+        cashIgf16Bs: tripCashBs * 0.16,
+        vehicleIgf16Usd: tripVehUsd * 0.16,
+        vehicleIgf16Bs: tripVehBs * 0.16,
+        sha256Hash: tripHash,
         runlotCode: "RUN-RIF-2026-0042",
         solvencyCode: "SOLV-CONALOT-0089",
         timestamp: "15/12/2026 14:30:00",
+        status: "EMITIDO_EN_CAJA",
+      },
+      {
+        ticketNumber: "TIRAJE-000002",
+        series: "A",
+        selectedNumber: "0000 AL 9999 (TIRAJE COMPLETO)",
+        isFullTiraje: true,
+        totalTirajeTickets: superQty,
+        totalTirajeUsd: superTotalUsd,
+        totalTirajeBs: superTotalBs,
+        drawReference: "Sorteo Súper Gana de la Lotería del Táchira",
+        drawDate: "15/12/2026",
+        modalityId: "rifa_supergana_10000",
+        modalityName: "Rifa Menor (10.000 Números • 0000 al 9999)",
+        ticketPriceUsd: superPriceUsd,
+        ticketPriceBs: superPriceUsd * bcv,
+        bcvRate: bcv,
+        vehiclePrizeUsd: superVehUsd,
+        vehiclePrizeBs: superVehBs,
+        cashPrizeUsd: superCashUsd,
+        cashPrizeBs: superCashBs,
+        cashIgf16Usd: superCashUsd * 0.16,
+        cashIgf16Bs: superCashBs * 0.16,
+        vehicleIgf16Usd: superVehUsd * 0.16,
+        vehicleIgf16Bs: superVehBs * 0.16,
+        sha256Hash: superHash,
+        runlotCode: "RUN-RIF-2026-0042",
+        solvencyCode: "SOLV-CONALOT-0089",
+        timestamp: "15/12/2026 14:31:30",
         status: "EMITIDO_EN_CAJA",
       },
     ];

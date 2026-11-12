@@ -55,14 +55,17 @@ export const ModuleMoneyRouteConsolidadoView: React.FC<
     0
   );
 
-  // Rifas simuladas (Emisión estándar 1.000 boletos a $10 USD = $10.000 USD / Bs. 400.000)
-  const rifaTotalSalesBs = 400000; // $10.000 USD
-  const rifaCashPrizeBs = 40000; // $1.000 USD
-  const rifaCashIgf16Bs = rifaCashPrizeBs * 0.16; // Bs. 6.400 ($160 USD)
-  const rifaCashNetBs = rifaCashPrizeBs - rifaCashIgf16Bs; // Bs. 33.600 ($840 USD)
+  // Rifas simuladas (Emisión estándar 1.000 boletos a $30 USD = $30.000 USD)
+  const rifaTotalSalesUsd = 30000;
+  const rifaTotalSalesBs = rifaTotalSalesUsd * bcvRate;
+  const rifaCashPrizeUsd = 1000;
+  const rifaCashPrizeBs = rifaCashPrizeUsd * bcvRate;
+  const rifaCashIgf16Bs = rifaCashPrizeBs * 0.16;
+  const rifaCashNetBs = rifaCashPrizeBs - rifaCashIgf16Bs;
 
-  const rifaVehiclePrizeBs = 280000; // $7.000 USD (70% emisión)
-  const rifaVehicleIgf16Bs = rifaVehiclePrizeBs * 0.16; // Bs. 44.800 ($1.120 USD)
+  const rifaVehiclePrizeUsd = 21000; // 70% emisión
+  const rifaVehiclePrizeBs = rifaVehiclePrizeUsd * bcvRate;
+  const rifaVehicleIgf16Bs = rifaVehiclePrizeBs * 0.16;
 
   // Gran Total Consolidado
   const grandTotalSalesBs = lotTotalSales + rifaTotalSalesBs;

@@ -33,9 +33,9 @@ interface ModuleMoneyRouteRifasViewProps {
 export const ModuleMoneyRouteRifasView: React.FC<
   ModuleMoneyRouteRifasViewProps
 > = ({ onGoToPOS }) => {
-  const [bcvRate, setBcvRate] = useState<number>(901.62);
+  const [bcvRate, setBcvRate] = useState<number>(904.45);
   const [isFetchingBcv, setIsFetchingBcv] = useState<boolean>(false);
-  const [vehicleValueUsd, setVehicleValueUsd] = useState<number>(7000);
+  const [vehicleValueUsd, setVehicleValueUsd] = useState<number>(21000);
   const [cashPrizeUsd, setCashPrizeUsd] = useState<number>(1000);
   const [activeTabSubway, setActiveTabSubway] = useState<"metalico" | "especie">(
     "especie"
