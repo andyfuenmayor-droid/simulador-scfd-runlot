@@ -33,13 +33,15 @@ import {
   AlertTriangle,
   ShieldAlert,
 } from "lucide-react";
-import { RecordedPOSTicket } from "@/types/simulator";
+import { RecordedPOSTicket, RecordedRaffleTicket } from "@/types/simulator";
+import { Module4RifasTributosProyeccionView } from "./Module4RifasTributosProyeccionView";
 
 interface Module4TributosEntesProps {
   recordedTickets?: RecordedPOSTicket[];
   onGoToPOS?: () => void;
   onGoToModule2?: () => void;
   ecosystemMode?: "loteria" | "rifas";
+  emittedRaffleTickets?: RecordedRaffleTicket[];
 }
 
 type SubTabId =
@@ -63,17 +65,22 @@ type RunlotCategory =
 export function Module4TributosEntes({
   recordedTickets = [],
   onGoToPOS,
+  onGoToModule2,
   ecosystemMode = "loteria",
+  emittedRaffleTickets = [],
 }: Module4TributosEntesProps) {
-  const [activeSubTab, setActiveSubTab] = useState<SubTabId>(() =>
-    ecosystemMode === "rifas" ? "colision_rifas" : "tablas_hub"
-  );
+  // Aislamiento estricto de Arquitectura: Si está en Modo Rifas, renderiza la vista tributaria y de proyección de Rifas
+  if (ecosystemMode === "rifas") {
+    return (
+      <Module4RifasTributosProyeccionView
+        onGoToPOS={onGoToPOS}
+        onGoToModule2={onGoToModule2}
+        emittedRaffleTickets={emittedRaffleTickets}
+      />
+    );
+  }
 
-  useEffect(() => {
-    if (ecosystemMode === "rifas") {
-      setActiveSubTab("colision_rifas");
-    }
-  }, [ecosystemMode]);
+  const [activeSubTab, setActiveSubTab] = useState<SubTabId>("tablas_hub");
 
   const [activeRunlotCategory, setActiveRunlotCategory] =
     useState<RunlotCategory>("sistemas_informaticos");

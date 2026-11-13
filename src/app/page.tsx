@@ -944,12 +944,12 @@ export default function SimulatorDashboardPage() {
                 <div className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold flex items-center justify-between">
                   <span>Módulo 4</span>
                   <span className="px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 text-[8px]">
-                    {ecosystemMode === "rifas" ? "DICTAMEN" : "4 Entes"}
+                    {ecosystemMode === "rifas" ? "RIFAS" : "4 Entes"}
                   </span>
                 </div>
                 <div className="text-xs font-extrabold leading-tight truncate">
                   {ecosystemMode === "rifas"
-                    ? "Colisión CONALOT / IOBPAS"
+                    ? "Tributos & Proyección Rifas"
                     : "Tributos & Proyección"}
                 </div>
               </div>
@@ -1075,6 +1075,7 @@ export default function SimulatorDashboardPage() {
           <Module4TributosEntes
             ecosystemMode={ecosystemMode}
             recordedTickets={recordedTicketsForCalc}
+            emittedRaffleTickets={emittedRaffleTickets}
             onGoToPOS={() => setActiveTab("module1")}
             onGoToModule2={() => setActiveTab("module2")}
           />

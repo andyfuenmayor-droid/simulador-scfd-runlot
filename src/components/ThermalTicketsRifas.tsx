@@ -666,3 +666,4 @@ export const ThermalTicketsRifas: React.FC<ThermalTicketsRifasProps> = ({
     </div>
   );
 };
+
