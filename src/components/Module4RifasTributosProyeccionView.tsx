@@ -1496,3 +1496,4 @@ export const Module4RifasTributosProyeccionView: React.FC<
     </div>
   );
 };
+
