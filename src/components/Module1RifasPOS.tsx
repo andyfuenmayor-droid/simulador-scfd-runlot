@@ -28,8 +28,6 @@ import {
   Info,
   Layers,
   Percent,
-  Plus,
-  Printer,
   QrCode,
   RefreshCw,
   RotateCcw,
@@ -340,10 +338,8 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
   const currentUnitUsd = unitPriceByModality[activeRaffleId];
   const currentPlays = playsByModality[activeRaffleId];
 
-  // Entrada rápida de nuevo boleto individual
+  // Serie y visualización
   const [seriesName, setSeriesName] = useState<string>("A");
-  const [newBoletoNum, setNewBoletoNum] = useState<string>("748");
-  const [newBoletoUsd, setNewBoletoUsd] = useState<number>(30);
 
   // Alternador para ver ambos tickets impresos en el rollo de 80 mm
   const [showBothTickets, setShowBothTickets] = useState<boolean>(true);
@@ -354,9 +350,6 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
   // Selección de modalidad
   const handleSelectModality = (id: RaffleModalityId) => {
     setActiveRaffleId(id);
-    const unitPrice = unitPriceByModality[id];
-    setNewBoletoUsd(unitPrice);
-    setNewBoletoNum(id === "rifa_triples_1000" ? "748" : "4512");
   };
 
   // Cambio de precio unitario del tiraje activo
@@ -407,24 +400,6 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
     setPlaysByModality((prev) => ({
       ...prev,
       [activeRaffleId]: [],
-    }));
-  };
-
-  // Agregar boleto individual
-  const handleAddBoleto = () => {
-    const padLen = is3Digits ? 3 : 4;
-    const cleanNum = newBoletoNum.trim().padStart(padLen, "0");
-    const item: RafflePlayItem = {
-      id: `play-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-      number: cleanNum,
-      option: `${cleanNum} ${drawShortTag}`,
-      amountUsd: Math.max(1, newBoletoUsd),
-      amountBs: Math.max(1, newBoletoUsd) * bcvRate,
-      combinationsCount: 1,
-    };
-    setPlaysByModality((prev) => ({
-      ...prev,
-      [activeRaffleId]: [item, ...prev[activeRaffleId]],
     }));
   };
 
@@ -554,60 +529,6 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
       ),
     [unitPriceByModality.rifa_supergana_10000, superFacialBs, bcvRate]
   );
-
-  // Emisión a SCFD
-  const ticketNumberStr = useMemo(() => {
-    return String(emittedRaffleTickets.length + 1).padStart(6, "0");
-  }, [emittedRaffleTickets.length]);
-
-  const handleEmitToSCFD = () => {
-    const isFull = isFullTirajeActive;
-    const primaryNumber =
-      currentPlays[0]?.number || (is3Digits ? "748" : "4512");
-
-    const record: RecordedRaffleTicket = {
-      ticketNumber: isFull ? `TIRAJE-${ticketNumberStr}` : `RIF-${ticketNumberStr}`,
-      series: seriesName,
-      selectedNumber: isFull
-        ? `${config.numberRangeLabel} (TIRAJE COMPLETO)`
-        : primaryNumber,
-      isFullTiraje: isFull,
-      totalTirajeTickets: isFull ? config.totalNumbers : totalComb,
-      totalTirajeUsd: totalFacialUsd,
-      totalTirajeBs: totalFacialBs,
-      drawReference: config.lotteryDrawReference,
-      drawDate: "15/12/2026",
-      modalityId: activeRaffleId,
-      modalityName: config.name,
-      ticketPriceUsd: currentUnitUsd,
-      ticketPriceBs: currentUnitUsd * bcvRate,
-      bcvRate,
-      vehiclePrizeUsd,
-      vehiclePrizeBs,
-      cashPrizeUsd,
-      cashPrizeBs,
-      cashIgf16Usd,
-      cashIgf16Bs,
-      vehicleIgf16Usd,
-      vehicleIgf16Bs,
-      sha256Hash: is3Digits ? tripHash : superHash,
-      runlotCode: "RUN-RIF-2026-0042",
-      solvencyCode: "SOLV-CONALOT-0089",
-      timestamp: new Date().toLocaleString("es-VE"),
-      status: "EMITIDO_EN_CAJA",
-    };
-
-    if (onEmitRaffleTicket) {
-      onEmitRaffleTicket(record);
-    }
-  };
-
-  const totalEmittedRifasBs = emittedRaffleTickets.reduce((acc, t) => {
-    return (
-      acc +
-      (t.isFullTiraje ? t.totalTirajeBs || t.ticketPriceBs : t.ticketPriceBs)
-    );
-  }, 0);
 
   return (
     <div className="space-y-8">
@@ -864,30 +785,6 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
               </button>
             </div>
           </div>
-
-          {/* Acciones Ejecutivas: Emitir Ticket a SCFD */}
-          <div className="pt-4 mt-4 border-t border-slate-800 space-y-2.5">
-            <button
-              type="button"
-              onClick={handleEmitToSCFD}
-              className="w-full py-3 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-purple-950/60 transition-all cursor-pointer font-mono"
-            >
-              <Printer className="w-4 h-4" />
-              {isFullTirajeActive
-                ? `Emitir Tiraje #${ticketNumberStr} a SCFD`
-                : `Emitir Ticket #${ticketNumberStr} a SCFD`}
-            </button>
-            <div className="px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between text-[11px] font-mono">
-              <span className="text-slate-400">
-                Boletos / Tirajes Emitidos en Caja:
-              </span>
-              <span className="font-bold text-emerald-400">
-                {emittedRaffleTickets.length}{" "}
-                {emittedRaffleTickets.length === 1 ? "Emitido" : "Emitidos"} (Bs.{" "}
-                {formatBs(totalEmittedRifasBs, 2)})
-              </span>
-            </div>
-          </div>
         </div>
 
         {/* ================================================================
@@ -933,51 +830,6 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
                   </button>
                 )}
               </div>
-            </div>
-
-            {/* Formulario de Entrada Rápida de Boletos */}
-            <div className="mb-4 p-3 rounded-xl bg-slate-950 border border-slate-800 flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-mono text-slate-400 font-semibold">
-                  Número:
-                </span>
-                <input
-                  type="text"
-                  maxLength={is3Digits ? 3 : 4}
-                  value={newBoletoNum}
-                  onChange={(e) => setNewBoletoNum(e.target.value)}
-                  placeholder={is3Digits ? "000" : "0000"}
-                  className="w-20 px-2 py-1 rounded-lg bg-slate-900 border border-purple-500/50 text-amber-300 font-mono font-bold text-center text-xs focus:outline-none tracking-wider"
-                />
-              </div>
-
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-mono text-slate-400 font-semibold">
-                  Precio ($):
-                </span>
-                <input
-                  type="number"
-                  min={1}
-                  step={1}
-                  value={newBoletoUsd}
-                  onChange={(e) =>
-                    setNewBoletoUsd(Math.max(1, parseFloat(e.target.value) || 0))
-                  }
-                  className="w-16 px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 text-emerald-400 font-mono font-bold text-center text-xs focus:outline-none"
-                />
-                <span className="text-[10px] font-mono text-slate-400">
-                  = Bs. {formatIntBs(newBoletoUsd * bcvRate)}
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleAddBoleto}
-                className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer ml-auto"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Agregar Boleto</span>
-              </button>
             </div>
 
             {/* Lista Interactiva de Boletos Activos en Pantalla */}
@@ -1363,7 +1215,7 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
           <ThermalTicketsRifas
             modality={config}
             plays={currentPlays}
-            ticketNumber={ticketNumberStr}
+            ticketNumber={is3Digits ? "TIRAJE-000001" : "TIRAJE-000002"}
             series={seriesName}
             dateTimeStr="15/12/2026 14:30:00"
             bcvRate={bcvRate}
