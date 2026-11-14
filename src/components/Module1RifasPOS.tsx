@@ -16,7 +16,6 @@ import {
   RafflePlayItem,
 } from "./ThermalTicketsRifas";
 import {
-  AlertTriangle,
   Award,
   Car,
   CheckCircle2,
@@ -352,21 +351,12 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
   // Modal de Retención Modelo 3 SENIAT
   const [isPrizeModalOpen, setIsPrizeModalOpen] = useState<boolean>(false);
 
-  // Simulador de Traba Operativa (Arts. 20 y 25 Providencia CONALOT/P/2025-001)
-  const [soldPercentage, setSoldPercentage] = useState<number>(85);
-  const [simulatedDrawnNumber, setSimulatedDrawnNumber] = useState<
-    string | null
-  >(null);
-  const [isDrawnSold, setIsDrawnSold] = useState<boolean | null>(null);
-
   // Selección de modalidad
   const handleSelectModality = (id: RaffleModalityId) => {
     setActiveRaffleId(id);
     const unitPrice = unitPriceByModality[id];
     setNewBoletoUsd(unitPrice);
     setNewBoletoNum(id === "rifa_triples_1000" ? "748" : "4512");
-    setSimulatedDrawnNumber(null);
-    setIsDrawnSold(null);
   };
 
   // Cambio de precio unitario del tiraje activo
@@ -516,18 +506,6 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
   const displayGrossPrize = totalPrizesBs;
   const displayIgf16 = totalIgf16Bs;
   const displayNetPrize = totalNetPrizeBs;
-
-  // Simulador de Traba Operativa (Arts. 20 y 25)
-  const soldCount = Math.round((config.totalNumbers * soldPercentage) / 100);
-  const handleSimulateDraw = () => {
-    const max = config.totalNumbers;
-    const rand = Math.floor(Math.random() * max);
-    const padLen = is3Digits ? 3 : 4;
-    const drawnStr = String(rand).padStart(padLen, "0");
-    setSimulatedDrawnNumber(drawnStr);
-    const wasSold = rand < soldCount;
-    setIsDrawnSold(wasSold);
-  };
 
   // Cálculos Consolidados de AMBAS modalidades
   const tripPlays = playsByModality.rifa_triples_1000;
@@ -884,79 +862,6 @@ export const Module1RifasPOS: React.FC<Module1RifasPOSProps> = ({
                 <Award className="w-4 h-4 text-emerald-100" />
                 <span>Pagar Premio / Liquidar Retención IGF (Art. 18)</span>
               </button>
-            </div>
-
-            {/* ==============================================================
-                SIMULADOR DE TRABA OPERATIVA (ARTS. 20 Y 25 PROVIDENCIA)
-            ============================================================== */}
-            <div className="mt-4 p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono space-y-2.5">
-              <div className="flex items-center justify-between">
-                <span className="font-extrabold text-white flex items-center gap-1.5 text-[11px]">
-                  <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
-                  Traba Operativa (Arts. 20 y 25 Providencia)
-                </span>
-                <span
-                  className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
-                    soldPercentage < 70
-                      ? "bg-rose-500/20 text-rose-300 border-rose-500/40"
-                      : "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
-                  }`}
-                >
-                  {soldPercentage}% Vendido ({soldCount} boletos)
-                </span>
-              </div>
-
-              <div className="space-y-1">
-                <div className="flex justify-between text-[10px] text-slate-400">
-                  <span>50% (Colapso)</span>
-                  <span className="text-amber-400 font-bold">
-                    70% Mínimo (Art. 20)
-                  </span>
-                  <span>100% (Total)</span>
-                </div>
-                <input
-                  type="range"
-                  min={50}
-                  max={100}
-                  step={1}
-                  value={soldPercentage}
-                  onChange={(e) => setSoldPercentage(Number(e.target.value))}
-                  className="w-full accent-purple-500 cursor-pointer"
-                />
-              </div>
-
-              <div className="flex items-center justify-between pt-1 border-t border-slate-800">
-                <div className="text-[10.5px]">
-                  {simulatedDrawnNumber ? (
-                    <span>
-                      Número Extraído:{" "}
-                      <strong className="text-amber-300 font-mono text-sm font-black">
-                        #{simulatedDrawnNumber}
-                      </strong>{" "}
-                      {isDrawnSold ? (
-                        <span className="text-emerald-400 font-bold">
-                          (✓ VENDIDO)
-                        </span>
-                      ) : (
-                        <span className="text-rose-400 font-bold">
-                          (✗ NO VENDIDO - Traba Art. 25)
-                        </span>
-                      )}
-                    </span>
-                  ) : (
-                    <span className="text-slate-500">
-                      Sorteo Oficial: {config.lotteryDrawReference}
-                    </span>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={handleSimulateDraw}
-                  className="px-2.5 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold text-[10px] transition-colors cursor-pointer"
-                >
-                  Extraer Número
-                </button>
-              </div>
             </div>
           </div>
 
